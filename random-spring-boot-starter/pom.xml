@@ -60,6 +60,13 @@
 
         <dependency>
             <groupId>com.pavelshapel</groupId>
+            <artifactId>core-spring-boot-starter</artifactId>
+            <version>1.0.0</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.pavelshapel</groupId>
             <artifactId>test-spring-boot-starter</artifactId>
             <version>1.0.0</version>
             <scope>test</scope>

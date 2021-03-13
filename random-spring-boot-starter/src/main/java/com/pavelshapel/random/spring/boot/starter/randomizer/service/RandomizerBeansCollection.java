@@ -1,6 +1,6 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.service;
 
-import com.pavelshapel.random.spring.boot.starter.randomizer.AbstractBeansCollection;
+import com.pavelshapel.core.spring.boot.starter.bean.AbstractBeansCollection;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.Randomizer;
 import org.springframework.beans.factory.annotation.Autowired;
 
