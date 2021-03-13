@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public final class GenericCollectionRandomizer implements CollectionRandomizer {
+public class GenericCollectionRandomizer implements CollectionRandomizer {
     @Autowired
     private GenericRandomizerFactory genericRandomizerFactory;
 

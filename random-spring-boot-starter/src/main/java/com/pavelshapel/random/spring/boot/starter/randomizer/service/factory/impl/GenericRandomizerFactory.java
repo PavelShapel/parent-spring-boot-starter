@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.function.Predicate;
 
-public final class GenericRandomizerFactory implements RandomizerFactory {
+public class GenericRandomizerFactory implements RandomizerFactory {
     @Autowired
     private RandomizerBeansCollection randomizerBeansCollection;
 
