@@ -5,7 +5,7 @@ import org.apache.commons.lang3.Range;
 
 import static com.pavelshapel.random.spring.boot.starter.randomizer.enums.DefaultRanges.DEFAULT_NATURAL_RANGE;
 
-public final class StringBoundedType implements BoundedType<String> {
+public class StringBoundedType implements BoundedType<String> {
     @Override
     public Class<String> getType() {
         return String.class;

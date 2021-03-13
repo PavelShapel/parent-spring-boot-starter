@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
-public final class BoundedTypeBeansCollection extends AbstractBeansCollection<BoundedType<?>> {
+public class BoundedTypeBeansCollection extends AbstractBeansCollection<BoundedType<?>> {
     @Autowired
     private Map<String, BoundedType<?>> beans;
 

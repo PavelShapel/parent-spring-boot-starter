@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public final class StreamUtils {
+public class StreamUtils {
     public <T> Collector<T, ?, Optional<T>> toSingleton() {
         return Collectors.collectingAndThen(
                 Collectors.toList(),

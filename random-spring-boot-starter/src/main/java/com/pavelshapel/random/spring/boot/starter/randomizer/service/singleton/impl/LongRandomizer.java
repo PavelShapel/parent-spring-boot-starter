@@ -5,7 +5,7 @@ import com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.A
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public final class LongRandomizer extends AbstractRandomizer<Long> {
+public class LongRandomizer extends AbstractRandomizer<Long> {
     @Override
     public Long randomize(Specification specification) {
         return ThreadLocalRandom.current().nextLong(

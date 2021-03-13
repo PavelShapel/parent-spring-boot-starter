@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public final class Specification {
+public class Specification {
     private String type;
     private long min;
     private long max;

@@ -5,7 +5,7 @@ import org.apache.commons.lang3.Range;
 
 import static com.pavelshapel.random.spring.boot.starter.randomizer.enums.DefaultRanges.DEFAULT_LONG_RANGE;
 
-public final class DoubleBoundedType implements BoundedType<Double> {
+public class DoubleBoundedType implements BoundedType<Double> {
     @Override
     public Class<Double> getType() {
         return Double.class;

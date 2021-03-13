@@ -7,7 +7,7 @@ import java.util.Date;
 
 import static com.pavelshapel.random.spring.boot.starter.randomizer.enums.DefaultRanges.DEFAULT_YEAR_RANGE;
 
-public final class DateBoundedType implements BoundedType<Date> {
+public class DateBoundedType implements BoundedType<Date> {
     @Override
     public Class<Date> getType() {
         return Date.class;

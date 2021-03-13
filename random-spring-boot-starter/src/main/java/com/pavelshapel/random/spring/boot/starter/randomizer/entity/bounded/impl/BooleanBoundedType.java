@@ -5,7 +5,7 @@ import org.apache.commons.lang3.Range;
 
 import static com.pavelshapel.random.spring.boot.starter.randomizer.enums.DefaultRanges.DEFAULT_LONG_RANGE;
 
-public final class BooleanBoundedType implements BoundedType<Boolean> {
+public class BooleanBoundedType implements BoundedType<Boolean> {
     @Override
     public Class<Boolean> getType() {
         return Boolean.class;

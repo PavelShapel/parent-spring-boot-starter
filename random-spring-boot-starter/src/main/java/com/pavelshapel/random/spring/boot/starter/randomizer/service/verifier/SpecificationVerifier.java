@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.function.Predicate;
 
 @Log4j2
-public final class SpecificationVerifier implements Verifier<Specification> {
+public class SpecificationVerifier implements Verifier<Specification> {
     @Autowired
     private BoundedTypeBeansCollection boundedTypeBeansCollection;
 

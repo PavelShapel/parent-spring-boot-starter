@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
-public final class RandomizerBeansCollection extends AbstractBeansCollection<Randomizer<?>> {
+public class RandomizerBeansCollection extends AbstractBeansCollection<Randomizer<?>> {
     @Autowired
     private Map<String, Randomizer<?>> beans;
 

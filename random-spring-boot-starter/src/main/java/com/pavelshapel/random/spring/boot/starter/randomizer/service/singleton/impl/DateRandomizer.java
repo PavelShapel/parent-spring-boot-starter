@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.ThreadLocalRandom;
 
-public final class DateRandomizer extends AbstractRandomizer<Date> {
+public class DateRandomizer extends AbstractRandomizer<Date> {
     @Override
     public Date randomize(Specification specification) {
         final Range<Calendar> dateRange = getDateRange(specification);

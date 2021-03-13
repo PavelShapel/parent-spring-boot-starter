@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
-public final class Entity extends TreeMap<String, Specification> {
+public class Entity extends TreeMap<String, Specification> {
     public Entity() {
         super(Comparator.naturalOrder());
     }

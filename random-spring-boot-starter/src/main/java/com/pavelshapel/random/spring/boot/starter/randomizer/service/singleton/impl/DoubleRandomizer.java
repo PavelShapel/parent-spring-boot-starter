@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import static com.pavelshapel.random.spring.boot.starter.randomizer.enums.DefaultRanges.DEFAULT_NATURAL_RANGE;
 
-public final class DoubleRandomizer extends AbstractRandomizer<Double> {
+public class DoubleRandomizer extends AbstractRandomizer<Double> {
     @Override
     public Double randomize(Specification specification) {
         final double randomizedDouble = ThreadLocalRandom.current().nextDouble(
