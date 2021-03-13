@@ -6,10 +6,18 @@
     * methodDurationAspectLog (bean)
     * LogMethodDuration (annotation)
     * LogMethodResult (annotation)
+* core 
+    * BeansCollection (interface)
+    * AbstractBeansCollection (abstract class)
 * json
+    * JsonConverter (interface)
     * jacksonJsonConverter (bean)
     * objectMapper (bean)
 * random
+    * Randomizer (interface)
+    * AbstractRandomizer (abstract class)
+    * Verifier (functional interface)
+    
     * booleanBoundedTyped (bean)
     * dateBoundedType (bean)
     * doubleBoundedType (bean)
