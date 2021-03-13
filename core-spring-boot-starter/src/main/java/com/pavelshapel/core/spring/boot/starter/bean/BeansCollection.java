@@ -1,4 +1,4 @@
-package com.pavelshapel.random.spring.boot.starter.randomizer;
+package com.pavelshapel.core.spring.boot.starter.bean;
 
 import java.util.Map;
 import java.util.Optional;
