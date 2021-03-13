@@ -48,21 +48,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>com.pavelshapel</groupId>
             <artifactId>stream-spring-boot-starter</artifactId>
             <version>1.0.0</version>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>com.pavelshapel</groupId>
             <artifactId>core-spring-boot-starter</artifactId>
             <version>1.0.0</version>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -70,20 +67,17 @@
             <artifactId>test-spring-boot-starter</artifactId>
             <version>1.0.0</version>
             <scope>test</scope>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
