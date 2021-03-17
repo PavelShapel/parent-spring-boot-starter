@@ -6,28 +6,30 @@ import org.aspectj.lang.JoinPoint;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 
 import static com.pavelshapel.aop.spring.boot.starter.StarterAutoConfiguration.PREFIX;
 import static com.pavelshapel.aop.spring.boot.starter.StarterAutoConfiguration.TRUE;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(properties = {
-        PREFIX + ".log-method-result="+TRUE
+        PREFIX + ".log-method-result=" + TRUE
 })
 @ContextConfiguration(classes = {
         StarterAutoConfiguration.class,
         TestMessenger.class
 })
 @Import(AnnotationAwareAspectJAutoProxyCreator.class)
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(OutputCaptureExtension.class)
 class MethodResultAspectLogTest {
     @SpyBean
     private MethodResultAspectLog methodResultAspectLog;
@@ -35,28 +37,32 @@ class MethodResultAspectLogTest {
     private TestMessenger testMessenger;
 
     @Test
-    void call_WithAnnotation_ShouldLogResult() {
+    void call_WithAnnotation_ShouldLogResult(CapturedOutput capturedOutput) {
         testMessenger.sendMessageWithAspect();
 
+        assertThat(capturedOutput.getOut()).contains(TestMessenger.MESSAGE);
         verify(methodResultAspectLog, times(1)).onSuccess(any(JoinPoint.class), any());
     }
 
     @Test
-    void call_WithoutAnnotation_ShouldNotLogResult() {
+    void call_WithoutAnnotation_ShouldNotLogResult(CapturedOutput capturedOutput) {
         testMessenger.sendMessageWithoutAspect();
 
+        assertThat(capturedOutput.getOut()).doesNotContain(TestMessenger.MESSAGE);
         verifyNoInteractions(methodResultAspectLog);
     }
 
     @Test
-    void call_WithAnnotation_ShouldLogException() {
+    void call_WithAnnotation_ShouldLogException(CapturedOutput capturedOutput) {
         Assertions.assertThrows(RuntimeException.class, () -> testMessenger.throwExceptionWithAspect());
+        assertThat(capturedOutput.getOut()).contains(TestMessenger.MESSAGE);
         verify(methodResultAspectLog, times(1)).onFailed(any(JoinPoint.class), any());
     }
 
     @Test
-    void call_WithoutAnnotation_ShouldNotLogException() {
+    void call_WithoutAnnotation_ShouldNotLogException(CapturedOutput capturedOutput) {
         Assertions.assertThrows(RuntimeException.class, () -> testMessenger.throwExceptionWithoutAspect());
+        assertThat(capturedOutput.getOut()).doesNotContain(TestMessenger.MESSAGE);
         verifyNoInteractions(methodResultAspectLog);
     }
 }
