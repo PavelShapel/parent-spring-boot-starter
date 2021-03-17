@@ -17,6 +17,8 @@ import org.springframework.test.context.ContextConfiguration;
 
 import static com.pavelshapel.aop.spring.boot.starter.StarterAutoConfiguration.PREFIX;
 import static com.pavelshapel.aop.spring.boot.starter.StarterAutoConfiguration.TRUE;
+import static com.pavelshapel.aop.spring.boot.starter.log.AbstractAspectLog.SUCCESS_RESULT;
+import static com.pavelshapel.aop.spring.boot.starter.log.AbstractAspectLog.THREW_AN_EXCEPTION;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -40,7 +42,7 @@ class MethodResultAspectLogTest {
     void call_WithAnnotation_ShouldLogResult(CapturedOutput capturedOutput) {
         testMessenger.sendMessageWithAspect();
 
-        assertThat(capturedOutput.getOut()).contains(TestMessenger.MESSAGE);
+        assertThat(capturedOutput.getOut()).contains(SUCCESS_RESULT).contains(TestMessenger.MESSAGE);
         verify(methodResultAspectLog, times(1)).onSuccess(any(JoinPoint.class), any());
     }
 
@@ -48,21 +50,21 @@ class MethodResultAspectLogTest {
     void call_WithoutAnnotation_ShouldNotLogResult(CapturedOutput capturedOutput) {
         testMessenger.sendMessageWithoutAspect();
 
-        assertThat(capturedOutput.getOut()).doesNotContain(TestMessenger.MESSAGE);
+        assertThat(capturedOutput.getOut()).doesNotContain(SUCCESS_RESULT);
         verifyNoInteractions(methodResultAspectLog);
     }
 
     @Test
     void call_WithAnnotation_ShouldLogException(CapturedOutput capturedOutput) {
         Assertions.assertThrows(RuntimeException.class, () -> testMessenger.throwExceptionWithAspect());
-        assertThat(capturedOutput.getOut()).contains(TestMessenger.MESSAGE);
+        assertThat(capturedOutput.getOut()).contains(THREW_AN_EXCEPTION);
         verify(methodResultAspectLog, times(1)).onFailed(any(JoinPoint.class), any());
     }
 
     @Test
     void call_WithoutAnnotation_ShouldNotLogException(CapturedOutput capturedOutput) {
         Assertions.assertThrows(RuntimeException.class, () -> testMessenger.throwExceptionWithoutAspect());
-        assertThat(capturedOutput.getOut()).doesNotContain(TestMessenger.MESSAGE);
+        assertThat(capturedOutput.getOut()).doesNotContain(THREW_AN_EXCEPTION);
         verifyNoInteractions(methodResultAspectLog);
     }
 }

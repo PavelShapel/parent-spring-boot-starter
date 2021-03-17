@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TestMessenger {
-    public static final String MESSAGE = "success";
+    public static final String MESSAGE = "test message";
 
     @LogMethodResult
     @LogMethodDuration
