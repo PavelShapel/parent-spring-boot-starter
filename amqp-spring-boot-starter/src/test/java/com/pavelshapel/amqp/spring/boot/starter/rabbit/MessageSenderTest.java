@@ -19,7 +19,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
-@ContextConfiguration(initializers = MessageSenderTest.Initializer.class,
+@ContextConfiguration(initializers = MessageSenderTest.RabbitMQInitializer.class,
         classes = {
                 StarterAutoConfiguration.class
         })
@@ -27,14 +27,15 @@ import static org.mockito.Mockito.verify;
 class MessageSenderTest {
 
     @Container
-    private static final RabbitMQContainer rabbit = new RabbitMQContainer(DockerImageName.parse("rabbitmq:management"));
+    private static final RabbitMQContainer RABBIT_MQ_CONTAINER =
+            new RabbitMQContainer(DockerImageName.parse("rabbitmq:management"));
 
     @MockBean
     private MessageSender amqpMessageSender;
 
     @Test
     void init() {
-        assertThat(rabbit).isNotNull();
+        assertThat(RABBIT_MQ_CONTAINER).isNotNull();
         assertThat(amqpMessageSender).isNotNull();
     }
 
@@ -44,14 +45,14 @@ class MessageSenderTest {
         verify(amqpMessageSender, times(1)).send(any());
     }
 
-    public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+    public static class RabbitMQInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
             TestPropertyValues.of(
-                    "spring.rabbitmq.host=" + rabbit.getHost(),
-                    "spring.rabbitmq.port=" + rabbit.getMappedPort(5672),
-                    "spring.rabbitmq.username=" + rabbit.getAdminUsername(),
-                    "spring.rabbitmq.password=guest" + rabbit.getAdminPassword()
+                    "spring.rabbitmq.host=" + RABBIT_MQ_CONTAINER.getHost(),
+                    "spring.rabbitmq.port=" + RABBIT_MQ_CONTAINER.getMappedPort(5672),
+                    "spring.rabbitmq.username=" + RABBIT_MQ_CONTAINER.getAdminUsername(),
+                    "spring.rabbitmq.password=guest" + RABBIT_MQ_CONTAINER.getAdminPassword()
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
     }
