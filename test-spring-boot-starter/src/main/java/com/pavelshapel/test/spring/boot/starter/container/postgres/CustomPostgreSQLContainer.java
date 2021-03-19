@@ -3,6 +3,7 @@ package com.pavelshapel.test.spring.boot.starter.container.postgres;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.util.StringUtils;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 public class CustomPostgreSQLContainer extends PostgreSQLContainer<CustomPostgreSQLContainer> {
@@ -13,11 +14,18 @@ public class CustomPostgreSQLContainer extends PostgreSQLContainer<CustomPostgre
         super(POSTGRES_IMAGE);
     }
 
-    public static CustomPostgreSQLContainer getInstance() {
+    public static CustomPostgreSQLContainer getInstance(String initScript) {
         if (container == null) {
             container = new CustomPostgreSQLContainer();
         }
-        return container;
+
+        return StringUtils.hasLength(initScript)
+                ? container.withInitScript(initScript)
+                : container;
+    }
+
+    public static CustomPostgreSQLContainer getInstance() {
+        return getInstance(null);
     }
 
     public static class PostgreSQLInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
