@@ -12,9 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import static com.pavelshapel.random.spring.boot.starter.StarterAutoConfiguration.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(properties = {
-        PREFIX + "." + PROPERTY_NAME + "=" + TRUE
-})
+@SpringBootTest
 @ContextConfiguration(classes = {
         StarterAutoConfiguration.class,
         StreamUtils.class
