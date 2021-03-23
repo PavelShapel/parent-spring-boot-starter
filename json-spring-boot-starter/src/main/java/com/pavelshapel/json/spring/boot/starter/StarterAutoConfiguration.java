@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.pavelshapel.json.spring.boot.starter.converter.jackson.JacksonJsonConverter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -15,12 +13,8 @@ import org.springframework.context.annotation.Primary;
 import java.text.SimpleDateFormat;
 
 @Configuration
-@EnableConfigurationProperties(JsonProperties.class)
 public class StarterAutoConfiguration {
     public static final String TYPE = "json";
-    public static final String PREFIX = "spring.pavelshapel." + TYPE;
-    public static final String PROPERTY_NAME = "json-converter";
-    public static final String TRUE = "true";
 
     @Bean
     public JsonContextRefreshedListener jsonContextRefreshedListener() {
@@ -28,7 +22,6 @@ public class StarterAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = PREFIX, name = PROPERTY_NAME, havingValue = TRUE)
     @ConditionalOnClass(ObjectMapper.class)
     public JacksonJsonConverter jacksonJsonConverter(ObjectMapper objectMapper) {
         return new JacksonJsonConverter(objectMapper);
@@ -36,8 +29,6 @@ public class StarterAutoConfiguration {
 
     @Primary
     @Bean
-    @ConditionalOnProperty(prefix = PREFIX, name = PROPERTY_NAME, havingValue = TRUE)
-    @ConditionalOnClass(ObjectMapper.class)
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
 
