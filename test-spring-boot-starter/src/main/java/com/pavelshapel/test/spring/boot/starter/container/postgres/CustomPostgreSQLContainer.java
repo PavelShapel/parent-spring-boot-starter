@@ -6,8 +6,6 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import java.util.Objects;
-
 public class CustomPostgreSQLContainer extends PostgreSQLContainer<CustomPostgreSQLContainer> {
     private static final String POSTGRES_IMAGE = "postgres:9.6.21";
     private static CustomPostgreSQLContainer container;
@@ -19,18 +17,11 @@ public class CustomPostgreSQLContainer extends PostgreSQLContainer<CustomPostgre
     public static CustomPostgreSQLContainer getInstance(Level loggerLevel) {
         container = new CustomPostgreSQLContainer();
 
-        return setLoggerLevel(loggerLevel);
-    }
-
-    private static CustomPostgreSQLContainer setLoggerLevel(Level loggerLevel) {
-        final String key = "loggerLevel";
-        return Objects.isNull(loggerLevel)
-                ? container.withUrlParam(key, Level.DEBUG.toString())
-                : container.withUrlParam(key, loggerLevel.toString());
+        return container.withUrlParam("loggerLevel", loggerLevel.toString());
     }
 
     public static CustomPostgreSQLContainer getInstance() {
-        return getInstance(null);
+        return getInstance(Level.DEBUG);
     }
 
     public static class PostgreSQLInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

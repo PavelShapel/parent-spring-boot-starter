@@ -15,17 +15,13 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 
-import static com.pavelshapel.aop.spring.boot.starter.StarterAutoConfiguration.PREFIX;
-import static com.pavelshapel.aop.spring.boot.starter.StarterAutoConfiguration.TRUE;
 import static com.pavelshapel.aop.spring.boot.starter.log.AbstractAspectLog.SUCCESS_RESULT;
 import static com.pavelshapel.aop.spring.boot.starter.log.AbstractAspectLog.THREW_AN_EXCEPTION;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(properties = {
-        PREFIX + ".log-method-result=" + TRUE
-})
+@SpringBootTest
 @ContextConfiguration(classes = {
         StarterAutoConfiguration.class,
         TestMessenger.class
