@@ -13,4 +13,12 @@
 
     <artifactId>web-spring-boot-starter</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.pavelshapel</groupId>
+            <artifactId>json-spring-boot-starter</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
