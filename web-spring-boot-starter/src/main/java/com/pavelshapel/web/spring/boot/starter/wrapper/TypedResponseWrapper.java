@@ -1,8 +1,12 @@
 package com.pavelshapel.web.spring.boot.starter.wrapper;
 
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TypedResponseWrapper {
     Object value;
     String type;

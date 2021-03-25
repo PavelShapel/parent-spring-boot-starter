@@ -1,18 +1,17 @@
 package com.pavelshapel.web.spring.boot.starter;
 
 import com.pavelshapel.web.spring.boot.starter.wrapper.TypedResponseWrapperRestControllerAdvice;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
-@EnableConfigurationProperties(WebProperties.class)
-public class StarterAutoConfiguration {
+public class StarterAutoConfiguration implements WebMvcConfigurer {
     public static final String TYPE = "web";
-    public static final String PREFIX = "spring.pavelshapel." + TYPE;
-    public static final String PROPERTY_NAME = "wrappers";
-    public static final String TRUE = "true";
 
     @Bean
     public WebContextRefreshedListener webContextRefreshedListener() {
@@ -20,8 +19,12 @@ public class StarterAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = PREFIX, name = PROPERTY_NAME, havingValue = TRUE)
     public TypedResponseWrapperRestControllerAdvice typedResponseWrapperRestControllerAdvice() {
         return new TypedResponseWrapperRestControllerAdvice();
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(0, new MappingJackson2HttpMessageConverter());
     }
 }
