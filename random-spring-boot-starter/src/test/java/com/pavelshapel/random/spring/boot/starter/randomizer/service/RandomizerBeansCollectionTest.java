@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-import static com.pavelshapel.random.spring.boot.starter.StarterAutoConfiguration.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -24,8 +23,13 @@ class RandomizerBeansCollectionTest {
     private BoundedTypeBeansCollection boundedTypeBeansCollection;
 
     @Test
-    void getBeans_WithoutParams_ShouldReturnBeansCollection() {
+    void initialization() {
+        Assertions.assertThat(boundedTypeBeansCollection).isNotNull();
         Assertions.assertThat(randomizerBeansCollection).isNotNull();
+    }
+
+    @Test
+    void getBeans_WithoutParams_ShouldReturnBeansCollection() {
         Assertions.assertThat(randomizerBeansCollection.getBeans())
                 .isNotEmpty()
                 .hasSameSizeAs(boundedTypeBeansCollection.getBeans());

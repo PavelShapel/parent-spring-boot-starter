@@ -4,6 +4,7 @@ import com.pavelshapel.random.spring.boot.starter.StarterAutoConfiguration;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.RandomizerBeansCollection;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.Randomizer;
 import com.pavelshapel.stream.spring.boot.starter.util.StreamUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +23,12 @@ class GenericRandomizerFactoryTest {
     @Autowired
     private GenericRandomizerFactory genericRandomizerFactory;
 
+
+    @Test
+    void initialization() {
+        Assertions.assertThat(genericRandomizerFactory).isNotNull();
+        Assertions.assertThat(randomizerBeansCollection).isNotNull();
+    }
 
     @Test
     void getRandomizer_SpecificationAsParam_ShouldReturnRandomizer() {

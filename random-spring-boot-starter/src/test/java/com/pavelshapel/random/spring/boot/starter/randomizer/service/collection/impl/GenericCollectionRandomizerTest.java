@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.pavelshapel.random.spring.boot.starter.StarterAutoConfiguration.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -33,6 +32,12 @@ class GenericCollectionRandomizerTest {
     @Autowired
     private RandomizerBeansCollection randomizerBeansCollection;
 
+    @Test
+    void initialization() {
+        assertThat(genericCollectionRandomizer).isNotNull();
+        assertThat(boundedTypeBeansCollection).isNotNull();
+        assertThat(randomizerBeansCollection).isNotNull();
+    }
 
     @Test
     void randomize_ListAsParam_ShouldReturnCollection() {
@@ -40,8 +45,10 @@ class GenericCollectionRandomizerTest {
                 .map(Randomizer::createDefaultSpecification)
                 .collect(Collectors.toList());
 
+
         final Collection<Object> randomizedCollection = genericCollectionRandomizer
                 .randomize(specifications);
+
 
         assertThat(randomizedCollection).hasSameSizeAs(boundedTypeBeansCollection.getBeans().values());
     }
@@ -55,7 +62,9 @@ class GenericCollectionRandomizerTest {
                         specification -> specification)
                 );
 
+
         Map<String, Object> randomizedMap = genericCollectionRandomizer.randomize(new Entity(map));
+
 
         assertThat(randomizedMap).hasSameSizeAs(boundedTypeBeansCollection.getBeans());
     }
