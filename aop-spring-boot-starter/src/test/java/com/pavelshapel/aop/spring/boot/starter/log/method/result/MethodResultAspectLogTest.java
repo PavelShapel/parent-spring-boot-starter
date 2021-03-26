@@ -35,8 +35,15 @@ class MethodResultAspectLogTest {
     private TestMessenger testMessenger;
 
     @Test
+    void initialization() {
+        assertThat(testMessenger).isNotNull();
+        assertThat(methodResultAspectLog).isNotNull();
+    }
+
+    @Test
     void call_WithAnnotation_ShouldLogResult(CapturedOutput capturedOutput) {
         testMessenger.sendMessageWithAspect();
+
 
         assertThat(capturedOutput.getOut()).contains(SUCCESS_RESULT).contains(TestMessenger.MESSAGE);
         verify(methodResultAspectLog, times(1)).onSuccess(any(JoinPoint.class), any());
@@ -45,6 +52,7 @@ class MethodResultAspectLogTest {
     @Test
     void call_WithoutAnnotation_ShouldNotLogResult(CapturedOutput capturedOutput) {
         testMessenger.sendMessageWithoutAspect();
+
 
         assertThat(capturedOutput.getOut()).doesNotContain(SUCCESS_RESULT);
         verifyNoInteractions(methodResultAspectLog);
