@@ -1,4 +1,4 @@
-package com.pavelshapel.web.spring.boot.starter.wrapper.controller;
+package com.pavelshapel.web.spring.boot.starter.wrapper.provider;
 
 
 import lombok.Getter;

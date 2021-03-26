@@ -1,5 +1,6 @@
 package com.pavelshapel.web.spring.boot.starter.wrapper.controller;
 
+import com.pavelshapel.web.spring.boot.starter.wrapper.provider.TestTypes;
 import com.pavelshapel.web.spring.boot.starter.wrapper.TypedResponseWrapperRestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
