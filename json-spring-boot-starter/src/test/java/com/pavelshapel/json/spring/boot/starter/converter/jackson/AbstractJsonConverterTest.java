@@ -28,12 +28,14 @@ abstract class AbstractJsonConverterTest {
         Optional<String> optionalJson = jsonConverter.pojoToJson(createTesterPojo());
         final String json = optionalJson.orElseThrow(IllegalArgumentException::new);
 
+
         assertThat(json).isEqualTo(JSON_TESTER);
     }
 
     @Test
     void pojoToJson_NullAsParam_ShouldReturnOptionalEmpty() {
         final Optional<String> optionalJson = jsonConverter.pojoToJson(null);
+
 
         assertThat(optionalJson).isEmpty();
     }
@@ -43,6 +45,7 @@ abstract class AbstractJsonConverterTest {
         final Optional<String> optionalJson =
                 jsonConverter.pojoToJson(getInvalidJson());
 
+
         assertThat(optionalJson).isEmpty();
     }
 
@@ -51,12 +54,14 @@ abstract class AbstractJsonConverterTest {
         Optional<JsonTester> optionalTester = jsonConverter.jsonToPojo(JSON_TESTER, JsonTester.class);
         final JsonTester jsonTester = optionalTester.orElseThrow(IllegalArgumentException::new);
 
+
         assertThat(jsonTester).isEqualTo(createTesterPojo());
     }
 
     @Test
     void jsonToPojo_InvalidStringAsParam_ShouldReturnOptionalEmpty() {
         final Optional<JsonTester> optionalTester = jsonConverter.jsonToPojo(getInvalidJson(), JsonTester.class);
+
 
         AssertionsForClassTypes.assertThat(optionalTester).isEmpty();
     }
@@ -65,12 +70,14 @@ abstract class AbstractJsonConverterTest {
     void jsonToPojo_NullStringAsParam_ShouldReturnOptionalEmpty() {
         final Optional<JsonTester> optionalTester = jsonConverter.jsonToPojo(null, JsonTester.class);
 
+
         AssertionsForClassTypes.assertThat(optionalTester).isEmpty();
     }
 
     @Test
     void jsonToPojo_NullClassAsParam_ShouldReturnOptionalEmpty() {
         final Optional<JsonTester> optionalTester = jsonConverter.jsonToPojo(JSON_TESTER, null);
+
 
         AssertionsForClassTypes.assertThat(optionalTester).isEmpty();
     }
@@ -81,6 +88,7 @@ abstract class AbstractJsonConverterTest {
         Optional<Map<String, Object>> optionalMap = jsonConverter.pojoToMap(jsonTester);
         final Map<String, Object> map = optionalMap.orElseThrow(IllegalArgumentException::new);
 
+
         assertThat(map.get("id")).isSameAs(jsonTester.getId());
         assertThat(map.get("name")).isSameAs(jsonTester.getName());
     }
@@ -89,12 +97,14 @@ abstract class AbstractJsonConverterTest {
     void pojoToMap_NullAsParam_ShouldReturnOptionalEmpty() {
         Optional<Map<String, Object>> optionalMap = jsonConverter.pojoToMap(null);
 
+
         assertThat(optionalMap).isEmpty();
     }
 
     @Test
     void pojoToMap_InvalidPojoAsParam_ShouldReturnOptionalEmpty() {
         Optional<Map<String, Object>> optionalMap = jsonConverter.pojoToMap(getInvalidJson());
+
 
         assertThat(optionalMap).isEmpty();
     }
@@ -103,8 +113,10 @@ abstract class AbstractJsonConverterTest {
     void mapToPojo_ValidMapAsParam_ShouldReturnPojo() {
         Map<String, Object> map = createTesterMap();
 
+
         Optional<JsonTester> optionalTester = jsonConverter.mapToPojo(map, JsonTester.class);
         final JsonTester jsonTester = optionalTester.orElseThrow(IllegalArgumentException::new);
+
 
         assertThat(jsonTester.getId()).isEqualTo(map.get("id"));
         assertThat(jsonTester.getName()).isEqualTo(map.get("name"));
@@ -114,6 +126,7 @@ abstract class AbstractJsonConverterTest {
     void mapToPojo_NullMapAsParam_ShouldReturnPojo() {
         Optional<JsonTester> optionalTester = jsonConverter.mapToPojo(null, JsonTester.class);
 
+
         AssertionsForClassTypes.assertThat(optionalTester).isEmpty();
     }
 
@@ -121,12 +134,14 @@ abstract class AbstractJsonConverterTest {
     void mapToPojo_NullClassAsParam_ShouldReturnPojo() {
         Optional<JsonTester> optionalTester = jsonConverter.mapToPojo(createTesterMap(), null);
 
+
         AssertionsForClassTypes.assertThat(optionalTester).isEmpty();
     }
 
     @Test
     void isValidJson_ValidParam_ShouldReturnTrue() {
         final boolean isValidJson = jsonConverter.isValidJson(JSON_TESTER);
+
 
         assertThat(isValidJson).isTrue();
     }
@@ -136,8 +151,10 @@ abstract class AbstractJsonConverterTest {
     void isValidJson_InvalidParam_ShouldReturnFalse(String json) {
         final boolean isValidJson = jsonConverter.isValidJson(json);
 
+
         assertThat(isValidJson).isFalse();
     }
+
 
     private String getInvalidJson() {
         return "invalidJson";
