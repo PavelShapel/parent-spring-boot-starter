@@ -24,6 +24,11 @@ abstract class AbstractJsonConverterTest {
     }
 
     @Test
+    void initialization() {
+        assertThat(jsonConverter).isNotNull();
+    }
+
+    @Test
     void pojoToJson_ValidPojoAsParam_ShouldReturnJson() {
         Optional<String> optionalJson = jsonConverter.pojoToJson(createTesterPojo());
         final String json = optionalJson.orElseThrow(IllegalArgumentException::new);
