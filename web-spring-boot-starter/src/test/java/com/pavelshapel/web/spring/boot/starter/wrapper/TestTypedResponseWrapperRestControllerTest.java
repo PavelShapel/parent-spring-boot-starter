@@ -40,7 +40,7 @@ class TestTypedResponseWrapperRestControllerTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestTypesProvider.class)
-    void test_TestRestController_ShouldReturnHttpServletRequest(String testTypes) throws Exception {
+    void test_TestRestController_ShouldReturnWrappedRequest(String testTypes) throws Exception {
         MvcResult mvcResult = mockMvc
                 .perform(MockMvcRequestBuilders
                         .get("/{testTypes}", testTypes))
