@@ -31,7 +31,6 @@ public class StarterAutoConfiguration implements WebMvcConfigurer {
         return new TypedResponseWrapperRestControllerAdvice();
     }
 
-
     //override to represent date/string correctly
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
