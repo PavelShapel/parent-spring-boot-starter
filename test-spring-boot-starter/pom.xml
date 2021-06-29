@@ -30,6 +30,18 @@
             <artifactId>postgresql</artifactId>
             <version>${testcontainers.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.pavelshapel</groupId>
+            <artifactId>core-spring-boot-starter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.pavelshapel</groupId>
+            <artifactId>random-spring-boot-starter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

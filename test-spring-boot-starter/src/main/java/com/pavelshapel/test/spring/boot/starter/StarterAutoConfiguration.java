@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class StarterAutoConfiguration {
-    public static final String TYPE = "stream";
+    public static final String TYPE = "test";
 
     @Bean
     public TestContextRefreshedListener testContextRefreshedListener() {
