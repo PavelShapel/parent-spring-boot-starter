@@ -1,7 +1,7 @@
 package com.pavelshapel.aop.spring.boot.starter.log.method.duration;
 
 import com.pavelshapel.aop.spring.boot.starter.StarterAutoConfiguration;
-import com.pavelshapel.aop.spring.boot.starter.log.TestMessenger;
+import com.pavelshapel.aop.spring.boot.starter.log.AspectTester;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @ContextConfiguration(classes = {
         StarterAutoConfiguration.class,
-        TestMessenger.class
+        AspectTester.class
 })
 @Import(AnnotationAwareAspectJAutoProxyCreator.class)
 @ExtendWith(OutputCaptureExtension.class)
@@ -30,11 +30,11 @@ class MethodDurationAspectLogTest {
     @SpyBean
     private MethodDurationAspectLog methodDurationAspectLog;
     @Autowired
-    private TestMessenger testMessenger;
+    private AspectTester aspectTester;
 
     @Test
     void call_WithAnnotation_ShouldLogDuration(CapturedOutput capturedOutput) {
-        testMessenger.sendMessageWithAspect();
+        aspectTester.sendMessageWithAspect();
 
         assertThat(capturedOutput.getOut()).contains(SUCCESS_DURATION);
         verify(methodDurationAspectLog, times(1)).callLogMethodDuration(any());
@@ -42,7 +42,7 @@ class MethodDurationAspectLogTest {
 
     @Test
     void call_WithoutAnnotation_ShouldNotLogDuration(CapturedOutput capturedOutput) {
-        testMessenger.sendMessageWithoutAspect();
+        aspectTester.sendMessageWithoutAspect();
 
         assertThat(capturedOutput.getOut()).doesNotContain(SUCCESS_DURATION);
         verifyNoInteractions(methodDurationAspectLog);
@@ -50,13 +50,13 @@ class MethodDurationAspectLogTest {
 
     @Test
     void call_WithAnnotation_ShouldNotLogException() {
-        Assertions.assertThrows(RuntimeException.class, () -> testMessenger.throwExceptionWithAspect());
+        Assertions.assertThrows(RuntimeException.class, () -> aspectTester.throwExceptionWithAspect());
         verify(methodDurationAspectLog, times(1)).callLogMethodDuration(any());
     }
 
     @Test
     void call_WithoutAnnotation_ShouldNotLogException() {
-        Assertions.assertThrows(RuntimeException.class, () -> testMessenger.throwExceptionWithoutAspect());
+        Assertions.assertThrows(RuntimeException.class, () -> aspectTester.throwExceptionWithoutAspect());
         verifyNoInteractions(methodDurationAspectLog);
     }
 }

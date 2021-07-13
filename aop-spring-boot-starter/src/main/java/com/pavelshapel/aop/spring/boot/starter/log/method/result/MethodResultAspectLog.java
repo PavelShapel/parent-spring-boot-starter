@@ -24,14 +24,12 @@ public class MethodResultAspectLog extends AbstractAspectLog {
     @AfterReturning(pointcut = "callLogMethodResult()", returning = "result")
     public void onSuccess(JoinPoint joinPoint, Object result) {
         initializeMethodSpecification(joinPoint);
-
         logSuccess(result);
     }
 
     @AfterThrowing(pointcut = "callLogMethodResult()", throwing = "throwable")
     public void onFailed(JoinPoint joinPoint, Throwable throwable) {
         initializeMethodSpecification(joinPoint);
-
         logException(throwable);
     }
 
@@ -40,7 +38,7 @@ public class MethodResultAspectLog extends AbstractAspectLog {
     }
 
     private void logSuccess(Object result) {
-        if (!logResponseEntityError(result)) {
+        if (isResponseEntityErrorNotLogged(result)) {
             final Level level = Level.toLevel(methodSpecification.getLogSpecification().level().toString());
             log.log(level,
                     LOG_PATTERN,
@@ -52,20 +50,19 @@ public class MethodResultAspectLog extends AbstractAspectLog {
         }
     }
 
-    private boolean logResponseEntityError(Object result) {
+    private boolean isResponseEntityErrorNotLogged(Object result) {
         if (result instanceof ResponseEntity) {
             final ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
-
             if (responseEntity.getStatusCode().isError()) {
                 log.error(LOG_PATTERN,
                         methodSpecification.getMethodDeclaringClassName(),
                         methodSpecification.getMethodName(),
                         methodSpecification.getLogSpecification().exceptionPrefix(),
                         getVerifiedLogResult(responseEntity));
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private void logException(Throwable throwable) {

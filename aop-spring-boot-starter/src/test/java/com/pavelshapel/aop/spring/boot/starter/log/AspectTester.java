@@ -5,7 +5,7 @@ import com.pavelshapel.aop.spring.boot.starter.log.method.result.LogMethodResult
 import org.springframework.stereotype.Component;
 
 @Component
-public class TestMessenger {
+public class AspectTester {
     public static final String MESSAGE = "test message";
 
     @LogMethodResult
@@ -21,10 +21,14 @@ public class TestMessenger {
     @LogMethodResult
     @LogMethodDuration
     public void throwExceptionWithAspect() {
-        throw new RuntimeException(MESSAGE);
+        throw throwException();
     }
 
     public void throwExceptionWithoutAspect() {
-        throw new RuntimeException(MESSAGE);
+        throw throwException();
+    }
+
+    private RuntimeException throwException() {
+        return new RuntimeException(MESSAGE);
     }
 }

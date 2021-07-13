@@ -11,6 +11,6 @@ public abstract class AbstractAspectLog {
     public static final String SUCCESS_DURATION ="executed in";
 
     protected String getVerifiedLogResult(Object result) {
-        return Objects.isNull(result) || result.toString().length() == 0 ? NOTHING_TO_LOG : result.toString();
+        return Objects.isNull(result) || result.toString().isEmpty() ? NOTHING_TO_LOG : result.toString();
     }
 }
