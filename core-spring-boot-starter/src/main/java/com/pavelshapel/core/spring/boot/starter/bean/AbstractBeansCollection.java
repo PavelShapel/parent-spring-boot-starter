@@ -18,8 +18,7 @@ public abstract class AbstractBeansCollection<T> implements BeansCollection<T> {
 
     @Override
     public Optional<T> getBean(Class<?> beanClass) {
-        final String beanName = StringUtils.uncapitalize(beanClass.getSimpleName());
-
+        String beanName = StringUtils.uncapitalize(beanClass.getSimpleName());
         return getBean(beanName);
     }
 
