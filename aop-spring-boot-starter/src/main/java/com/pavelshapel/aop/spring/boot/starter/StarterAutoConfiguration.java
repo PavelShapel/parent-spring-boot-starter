@@ -1,7 +1,6 @@
 package com.pavelshapel.aop.spring.boot.starter;
 
-import com.pavelshapel.aop.spring.boot.starter.log.method.duration.MethodDurationAspectLog;
-import com.pavelshapel.aop.spring.boot.starter.log.method.result.MethodResultAspectLog;
+import com.pavelshapel.aop.spring.boot.starter.log.method.LoggableAspect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,12 +14,7 @@ public class StarterAutoConfiguration {
     }
 
     @Bean
-    public MethodResultAspectLog methodResultAspectLog() {
-        return new MethodResultAspectLog();
-    }
-
-    @Bean
-    public MethodDurationAspectLog methodDurationAspectLog() {
-        return new MethodDurationAspectLog();
+    public LoggableAspect loggableAspect() {
+        return new LoggableAspect();
     }
 }

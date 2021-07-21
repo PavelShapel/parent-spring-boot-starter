@@ -4,7 +4,6 @@ import lombok.NonNull;
 import lombok.Value;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.reflect.Method;
 
@@ -13,13 +12,13 @@ public class MethodSpecification {
     Method method;
     String methodDeclaringClassName;
     String methodName;
-    LogSpecification logSpecification;
+    Loggable loggable;
 
-    public MethodSpecification(@NonNull JoinPoint joinPoint, Class<?> annotationClass) {
+    public MethodSpecification(@NonNull JoinPoint joinPoint) {
         this.method = getMethod(joinPoint);
         this.methodDeclaringClassName = method.getDeclaringClass().getSimpleName();
         this.methodName = method.getName();
-        this.logSpecification = AnnotationUtils.findAnnotation(annotationClass, LogSpecification.class);
+        this.loggable = method.getAnnotation(Loggable.class);
     }
 
     private Method getMethod(JoinPoint joinPoint) {
