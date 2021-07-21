@@ -21,7 +21,7 @@ public class JacksonJsonConverter implements JsonConverter {
     @Override
     public Optional<String> pojoToJson(Object object) {
         try {
-            final String json = objectMapper.writeValueAsString(object);
+            String json = objectMapper.writeValueAsString(object);
             return isValidJson(json) ? Optional.ofNullable(json) : Optional.empty();
         } catch (Exception exception) {
             return Optional.empty();
@@ -68,5 +68,15 @@ public class JacksonJsonConverter implements JsonConverter {
             }
         }
         return true;
+    }
+
+    @Override
+    public Optional<String> pojoToPrettyJson(Object object) {
+        try {
+            String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+            return isValidJson(json) ? Optional.ofNullable(json) : Optional.empty();
+        } catch (Exception exception) {
+            return Optional.empty();
+        }
     }
 }

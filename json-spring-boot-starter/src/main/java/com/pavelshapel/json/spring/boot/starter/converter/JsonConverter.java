@@ -13,4 +13,6 @@ public interface JsonConverter {
     <T> Optional<T> mapToPojo(Map<String, Object> map, Class<? extends T> targetClass);
 
     boolean isValidJson(String json);
+
+    Optional<String> pojoToPrettyJson(Object object);
 }
