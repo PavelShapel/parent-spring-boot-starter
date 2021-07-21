@@ -9,7 +9,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @Component
 public class JpaDecorateAnnotationBeanPostProcessor implements BeanPostProcessor {
@@ -44,16 +43,14 @@ public class JpaDecorateAnnotationBeanPostProcessor implements BeanPostProcessor
 
     private Object iterateDecorationsInAnnotation(Object wrapped, JpaDecorate annotation) {
         for (Class<? extends JpaService<?>> decorationClass : annotation.decorations()) {
-            Optional<JpaService<?>> decoratingBean = getDecoratingBean(decorationClass);
-            if (decoratingBean.isPresent()) {
-                wrapped = getWrappedWithDecoration(decoratingBean.get(), wrapped);
-            }
+            JpaService<?> decoratingBean = getDecoratingBean(decorationClass);
+            wrapped = getWrappedWithDecoration(decoratingBean, wrapped);
         }
         return wrapped;
     }
 
-    private Optional<JpaService<?>> getDecoratingBean(Class<?> decorationClass) {
-        return Optional.of((JpaService<?>) context.getBean(decorationClass));
+    private JpaService<?> getDecoratingBean(Class<?> decorationClass) {
+        return (JpaService<?>) context.getBean(decorationClass);
     }
 
     private JpaService<?> getWrappedWithDecoration(JpaService<?> decoratingBean, Object wrapped) {
