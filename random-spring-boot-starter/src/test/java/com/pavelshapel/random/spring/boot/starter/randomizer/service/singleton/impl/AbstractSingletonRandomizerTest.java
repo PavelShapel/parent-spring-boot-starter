@@ -1,16 +1,15 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.impl;
 
 import com.pavelshapel.random.spring.boot.starter.StarterAutoConfiguration;
-import com.pavelshapel.random.spring.boot.starter.provider.Long2Provider;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.Randomizer;
 import com.pavelshapel.stream.spring.boot.starter.util.StreamUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -32,15 +31,14 @@ abstract class AbstractSingletonRandomizerTest<T> {
     void randomize_WithoutParams_ShouldReturnRandomizedValue() {
         final T randomizedValue = randomizer.randomize();
 
-
         assertThat(randomizedValue).isNotNull();
     }
 
-    @ParameterizedTest
-    @ArgumentsSource(Long2Provider.class)
-    void randomize_WithLongParams_ShouldReturnRandomizedValue(long min, long max) {
+    @Test
+    void randomize_WithLongParams_ShouldReturnRandomizedValue() {
+        long min = ThreadLocalRandom.current().nextLong();
+        long max = ThreadLocalRandom.current().nextLong();
         final T randomizedValue = randomizer.randomize(min, max);
-
 
         assertThat(randomizedValue).isNotNull();
     }

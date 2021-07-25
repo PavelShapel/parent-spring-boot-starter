@@ -3,13 +3,13 @@ package com.pavelshapel.random.spring.boot.starter.randomizer.service.verifier;
 import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Specification;
 import com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded.BoundedType;
 import com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded.BoundedTypeBeansCollection;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.function.Predicate;
 
-@Log4j2
+@Slf4j
 public class SpecificationVerifier implements Verifier<Specification> {
     @Autowired
     private BoundedTypeBeansCollection boundedTypeBeansCollection;
