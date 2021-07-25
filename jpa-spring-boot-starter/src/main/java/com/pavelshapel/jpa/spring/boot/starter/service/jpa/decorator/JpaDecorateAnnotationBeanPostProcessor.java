@@ -6,11 +6,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-@Component
 public class JpaDecorateAnnotationBeanPostProcessor implements BeanPostProcessor {
     @Autowired
     private ApplicationContext context;
