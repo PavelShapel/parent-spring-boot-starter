@@ -9,10 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Objects;
 
-import static org.springframework.util.ReflectionUtils.COPYABLE_FIELDS;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
 public abstract class AbstractJpaService<T extends AbstractEntity> implements JpaService<T> {
@@ -102,7 +102,10 @@ public abstract class AbstractJpaService<T extends AbstractEntity> implements Jp
                             field.set(destination, srcValue);
                         }
                     },
-                    COPYABLE_FIELDS
+                    field -> !Modifier.isStatic(field.getModifiers()) &&
+                            !Modifier.isFinal(field.getModifiers()) &&
+                            !Modifier.isTransient(field.getModifiers())
+
             );
         }
     }
