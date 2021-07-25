@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -16,9 +17,8 @@ import java.net.URI;
 import java.util.List;
 
 public abstract class AbstractJpaRestController<T extends AbstractEntity> {
-    public static final String ID_PATH = "/{id:[\\d]+}";
-    public static final String NAME_PATH = "/{name:[.]+}";
-    public static final String PAGING_PATH = "/page";
+    private static final String ID_PATH = "/{id:[\\d]+}";
+    private static final String PAGING_PATH = "/page";
 
     @Getter(AccessLevel.PROTECTED)
     @Autowired
@@ -45,7 +45,7 @@ public abstract class AbstractJpaRestController<T extends AbstractEntity> {
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping(ID_PATH)
     public ResponseEntity<T> get(@PathVariable Long id) {
         return ResponseEntity.ok(jpaService.findById(id));
     }
@@ -56,7 +56,7 @@ public abstract class AbstractJpaRestController<T extends AbstractEntity> {
     }
 
     @GetMapping(PAGING_PATH)
-    public ResponseEntity<Page<T>> get(Pageable pageable) {
+    public ResponseEntity<Page<T>> get(@PageableDefault Pageable pageable) {
         return ResponseEntity.ok(jpaService.findAll(pageable));
     }
 
