@@ -18,13 +18,13 @@ import java.util.Date;
 @MappedSuperclass
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
-public abstract class AbstractAuditableVersionEntity<T> extends AbstractEntity {
+public abstract class AbstractAuditableVersionEntity extends AbstractEntity {
     @CreatedBy
     @Column(nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private T createdBy;
+    private String createdBy;
 
     @CreatedDate
     @Column(nullable = false)
@@ -38,7 +38,7 @@ public abstract class AbstractAuditableVersionEntity<T> extends AbstractEntity {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private T lastModifiedBy;
+    private String lastModifiedBy;
 
     @LastModifiedDate
     @Column(nullable = false)
