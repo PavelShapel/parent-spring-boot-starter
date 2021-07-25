@@ -97,9 +97,9 @@ public abstract class AbstractJpaService<T extends AbstractEntity> implements Jp
             ReflectionUtils.doWithFields(source.getClass(),
                     field -> {
                         makeAccessible(field);
-                        Object srcValue = field.get(source);
-                        if (Objects.nonNull(srcValue)) {
-                            field.set(destination, srcValue);
+                        Object value = field.get(source);
+                        if (Objects.nonNull(value)) {
+                            field.set(destination, value);
                         }
                     },
                     field -> !Modifier.isStatic(field.getModifiers()) &&
