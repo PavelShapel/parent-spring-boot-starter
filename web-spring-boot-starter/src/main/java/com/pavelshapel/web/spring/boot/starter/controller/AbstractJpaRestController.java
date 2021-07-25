@@ -4,7 +4,6 @@ import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
 import com.pavelshapel.jpa.spring.boot.starter.service.jpa.JpaService;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,8 +20,11 @@ public abstract class AbstractJpaRestController<T extends AbstractEntity> {
     private static final String PAGING_PATH = "/page";
 
     @Getter(AccessLevel.PROTECTED)
-    @Autowired
-    private JpaService<T> jpaService;
+    private final JpaService<T> jpaService;
+
+    protected AbstractJpaRestController(JpaService<T> jpaService) {
+        this.jpaService = jpaService;
+    }
 
     @PostMapping
     public ResponseEntity<T> post(@RequestBody @Valid T entity) {
