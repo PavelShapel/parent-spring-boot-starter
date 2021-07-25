@@ -5,7 +5,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
@@ -13,9 +12,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-@Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public abstract class ThrowableDecoratorJpaService extends AbstractDecoratorJpaService<AbstractEntity> {
+public class ThrowableDecoratorJpaService extends AbstractDecoratorJpaService<AbstractEntity> {
 
     @Override
     public AbstractEntity findById(Long id) {
