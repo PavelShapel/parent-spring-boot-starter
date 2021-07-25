@@ -19,5 +19,10 @@
             <artifactId>json-spring-boot-starter</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.pavelshapel</groupId>
+            <artifactId>jpa-spring-boot-starter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
