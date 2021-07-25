@@ -36,10 +36,9 @@ public abstract class AbstractJpaRestController<T extends AbstractEntity> {
 
     @PutMapping(ID_PATH)
     public ResponseEntity<T> put(@PathVariable Long id, @RequestBody @Valid T entity) {
-        if (jpaService.existsById(id)) {
-            return ResponseEntity.ok(jpaService.update(id, entity));
-        }
-        return ResponseEntity.notFound().build();
+        return jpaService.existsById(id)
+                ? ResponseEntity.ok(jpaService.update(id, entity))
+                : ResponseEntity.notFound().build();
     }
 
 
