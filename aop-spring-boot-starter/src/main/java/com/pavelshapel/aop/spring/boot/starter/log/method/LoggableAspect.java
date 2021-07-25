@@ -17,7 +17,6 @@ public class LoggableAspect {
     private static final String LOG_PATTERN = "[{}.{}] {}: {}";
     private static final String NOTHING_TO_LOG = "nothing to log";
     private static final String POINTCUT = "execution(* *(..)) && (annotatedMethod() || annotatedClass())";
-    private MethodSpecification methodSpecification;
 
     @Pointcut("@annotation(com.pavelshapel.aop.spring.boot.starter.log.method.Loggable)")
     public void annotatedMethod() {
@@ -31,14 +30,14 @@ public class LoggableAspect {
 
     @AfterReturning(pointcut = POINTCUT, returning = "result")
     public void onSuccess(JoinPoint joinPoint, Object result) {
-        initializeMethodSpecification(joinPoint);
-        if (isContainingLoggableType(LoggableType.METHOD_RESULT)) {
-            logSuccess(result);
+        MethodSpecification methodSpecification = new MethodSpecification(joinPoint);
+        if (isContainingLoggableType(methodSpecification, LoggableType.METHOD_RESULT)) {
+            logSuccess(methodSpecification, result);
         }
     }
 
-    private void logSuccess(Object result) {
-        if (isResponseEntityErrorNotLogged(result)) {
+    private void logSuccess(MethodSpecification methodSpecification, Object result) {
+        if (isResponseEntityErrorNotLogged(methodSpecification, result)) {
             Level level = Level.toLevel(methodSpecification.getLoggable().level().toString());
             log.log(level,
                     LOG_PATTERN,
@@ -50,7 +49,7 @@ public class LoggableAspect {
         }
     }
 
-    private boolean isResponseEntityErrorNotLogged(Object result) {
+    private boolean isResponseEntityErrorNotLogged(MethodSpecification methodSpecification, Object result) {
         if (result instanceof ResponseEntity) {
             final ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
             if (responseEntity.getStatusCode().isError()) {
@@ -67,13 +66,13 @@ public class LoggableAspect {
 
     @AfterThrowing(pointcut = POINTCUT, throwing = "throwable")
     public void onFailed(JoinPoint joinPoint, Throwable throwable) {
-        initializeMethodSpecification(joinPoint);
-        if (isContainingLoggableType(LoggableType.METHOD_EXCEPTION)) {
-            logException(throwable);
+        MethodSpecification methodSpecification = new MethodSpecification(joinPoint);
+        if (isContainingLoggableType(methodSpecification, LoggableType.METHOD_EXCEPTION)) {
+            logException(methodSpecification, throwable);
         }
     }
 
-    private void logException(Throwable throwable) {
+    private void logException(MethodSpecification methodSpecification, Throwable throwable) {
         log.error(
                 LOG_PATTERN,
                 methodSpecification.getMethodDeclaringClassName(),
@@ -89,14 +88,14 @@ public class LoggableAspect {
         long startTimeMillis = System.currentTimeMillis();
         Object proceed = joinPoint.proceed();
         long duration = System.currentTimeMillis() - startTimeMillis;
-        initializeMethodSpecification(joinPoint);
-        if (isContainingLoggableType(LoggableType.METHOD_DURATION)) {
-            logDuration(duration);
+        MethodSpecification methodSpecification = new MethodSpecification(joinPoint);
+        if (isContainingLoggableType(methodSpecification, LoggableType.METHOD_DURATION)) {
+            logDuration(methodSpecification, duration);
         }
         return proceed;
     }
 
-    private void logDuration(long duration) {
+    private void logDuration(MethodSpecification methodSpecification, long duration) {
         Level level = Level.toLevel(methodSpecification.getLoggable().level().toString());
         log.log(level,
                 LOG_PATTERN,
@@ -107,11 +106,7 @@ public class LoggableAspect {
         );
     }
 
-    private void initializeMethodSpecification(JoinPoint joinPoint) {
-        this.methodSpecification = new MethodSpecification(joinPoint);
-    }
-
-    private boolean isContainingLoggableType(LoggableType loggableType) {
+    private boolean isContainingLoggableType(MethodSpecification methodSpecification, LoggableType loggableType) {
         return Arrays.asList(methodSpecification.getLoggable().value())
                 .contains(loggableType);
     }
