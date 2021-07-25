@@ -10,7 +10,7 @@ public class StarterAutoConfiguration {
     public static final String TYPE = "jpa";
 
     @Bean
-    public JpaContextRefreshedListener jsonContextRefreshedListener() {
+    public JpaContextRefreshedListener jpaContextRefreshedListener() {
         return new JpaContextRefreshedListener();
     }
 
