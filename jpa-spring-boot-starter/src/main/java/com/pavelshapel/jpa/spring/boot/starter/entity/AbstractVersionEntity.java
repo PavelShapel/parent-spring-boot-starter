@@ -14,5 +14,5 @@ public abstract class AbstractVersionEntity extends AbstractEntity {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private transient Long version;
+    private Long version;
 }
