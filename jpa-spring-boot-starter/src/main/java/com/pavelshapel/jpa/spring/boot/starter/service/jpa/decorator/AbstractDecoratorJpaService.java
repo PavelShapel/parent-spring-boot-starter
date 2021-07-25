@@ -32,6 +32,11 @@ public abstract class AbstractDecoratorJpaService<T extends AbstractEntity> impl
     }
 
     @Override
+    public T update(Long id, T entity) {
+        return wrapped.update(id, entity);
+    }
+
+    @Override
     public List<T> saveAll(Iterable<T> entities) {
         return wrapped.saveAll(entities);
     }

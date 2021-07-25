@@ -7,8 +7,13 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.ReflectionUtils;
 
 import java.util.List;
+import java.util.Objects;
+
+import static org.springframework.util.ReflectionUtils.COPYABLE_FIELDS;
+import static org.springframework.util.ReflectionUtils.makeAccessible;
 
 public abstract class AbstractJpaService<T extends AbstractEntity> implements JpaService<T> {
     @Getter(AccessLevel.PROTECTED)
@@ -17,12 +22,19 @@ public abstract class AbstractJpaService<T extends AbstractEntity> implements Jp
 
     @Override
     public T createAndSave() {
-        return jpaRepository.save(create());
+        return save(create());
     }
 
     @Override
     public T save(T entity) {
         return jpaRepository.save(entity);
+    }
+
+    @Override
+    public T update(Long id, T entity) {
+        T entityFromDatabase = findById(id);
+        copyFields(entity, entityFromDatabase);
+        return jpaRepository.save(entityFromDatabase);
     }
 
     @Override
@@ -71,5 +83,27 @@ public abstract class AbstractJpaService<T extends AbstractEntity> implements Jp
     @Override
     public long getCount() {
         return jpaRepository.count();
+    }
+
+    private void copyFields(Object source, Object destination) {
+        if (!source.getClass().isAssignableFrom(destination.getClass())) {
+            throw new IllegalArgumentException(
+                    String.format("Destination class [%s] must be same or subclass as source class [%s]",
+                            destination.getClass().getName(),
+                            source.getClass().getName()
+                    )
+            );
+        } else {
+            ReflectionUtils.doWithFields(source.getClass(),
+                    field -> {
+                        makeAccessible(field);
+                        Object srcValue = field.get(source);
+                        if (Objects.nonNull(srcValue)) {
+                            field.set(destination, srcValue);
+                        }
+                    },
+                    COPYABLE_FIELDS
+            );
+        }
     }
 }

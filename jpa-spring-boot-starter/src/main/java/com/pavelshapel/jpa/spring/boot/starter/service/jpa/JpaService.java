@@ -13,6 +13,8 @@ public interface JpaService<T extends AbstractEntity> {
 
     T save(T entity);
 
+    T update(Long id, T entity);
+
     List<T> saveAll(Iterable<T> entities);
 
 

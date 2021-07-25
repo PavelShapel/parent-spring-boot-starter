@@ -16,6 +16,12 @@ import java.util.stream.StreamSupport;
 public class ThrowableDecoratorJpaService extends AbstractDecoratorJpaService<AbstractEntity> {
 
     @Override
+    public AbstractEntity update(Long id, AbstractEntity entity) {
+        verifyId(id);
+        return super.update(id, entity);
+    }
+
+    @Override
     public AbstractEntity findById(Long id) {
         verifyId(id);
         return super.findById(id);
