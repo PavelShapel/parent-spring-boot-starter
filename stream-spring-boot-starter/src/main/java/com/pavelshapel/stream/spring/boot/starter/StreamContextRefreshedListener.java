@@ -1,12 +1,12 @@
 package com.pavelshapel.stream.spring.boot.starter;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import static com.pavelshapel.stream.spring.boot.starter.StarterAutoConfiguration.TYPE;
 
-@Log4j2
+@Slf4j
 public class StreamContextRefreshedListener implements ApplicationListener<ContextRefreshedEvent> {
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
