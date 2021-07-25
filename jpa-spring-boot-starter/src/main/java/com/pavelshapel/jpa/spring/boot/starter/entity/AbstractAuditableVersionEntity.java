@@ -24,26 +24,26 @@ public abstract class AbstractAuditableVersionEntity extends AbstractVersionEnti
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private String createdBy;
+    private transient String createdBy;
 
     @CreatedDate
     @Column(nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private Date createdDate;
+    private transient Date createdDate;
 
     @LastModifiedBy
     @Column(nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private String lastModifiedBy;
+    private transient String lastModifiedBy;
 
     @LastModifiedDate
     @Column(nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private Date lastModifiedDate;
+    private transient Date lastModifiedDate;
 }
