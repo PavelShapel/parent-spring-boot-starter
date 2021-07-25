@@ -55,13 +55,6 @@ public class ThrowableDecoratorJpaService extends AbstractDecoratorJpaService<Ab
         super.deleteAll();
     }
 
-    @Override
-    public boolean existsById(Long id) {
-        verifyId(id);
-        return super.existsById(id);
-    }
-
-
     private void verifyId(Long id) {
         if (!super.existsById(id)) {
             throw createEntityNotFoundException(Collections.singletonList(id));
