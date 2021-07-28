@@ -27,14 +27,14 @@ public abstract class ThrowableDecoratorJpaService<T extends AbstractEntity> ext
     @Override
     public List<T> findAllById(Iterable<Long> ids) {
         List<T> entities = super.findAllById(ids);
-        verifyAllId(entities, ids);
+        verifyCollection(entities, ids);
         return entities;
     }
 
     @Override
     public List<T> findAll() {
         List<T> entities = super.findAll();
-        verifyAllId(entities);
+        verifyCollection(entities);
         return entities;
     }
 
@@ -64,14 +64,14 @@ public abstract class ThrowableDecoratorJpaService<T extends AbstractEntity> ext
         }
     }
 
-    protected void verifyAllId(List<T> entities, Iterable<Long> ids) {
+    protected void verifyCollection(List<T> entities, Iterable<Long> ids) {
         if (entities.isEmpty()) {
             throw createEntityNotFoundException(ids);
         }
     }
 
-    protected void verifyAllId(List<T> entities) {
-        verifyAllId(entities, Collections.emptyList());
+    protected void verifyCollection(List<T> entities) {
+        verifyCollection(entities, Collections.emptyList());
     }
 
     protected void verifyCount(Long count) {
