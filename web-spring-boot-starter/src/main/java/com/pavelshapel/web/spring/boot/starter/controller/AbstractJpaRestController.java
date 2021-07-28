@@ -16,8 +16,9 @@ import java.net.URI;
 import java.util.List;
 
 public abstract class AbstractJpaRestController<T extends AbstractEntity> {
-    private static final String ID_PATH = "/{id:[\\d]+}";
-    private static final String PAGING_PATH = "/page";
+    public static final String ID_PATH = "/{id}";
+    public static final String PAGING_PATH = "/page";
+    public static final String NAME_PATH = "/name/{name}";
 
     @Getter(AccessLevel.PROTECTED)
     private final JpaService<T> jpaService;
@@ -38,9 +39,7 @@ public abstract class AbstractJpaRestController<T extends AbstractEntity> {
 
     @PutMapping(ID_PATH)
     public ResponseEntity<T> put(@PathVariable Long id, @RequestBody @Valid T entity) {
-        return jpaService.existsById(id)
-                ? ResponseEntity.ok(jpaService.update(id, entity))
-                : ResponseEntity.notFound().build();
+        return ResponseEntity.ok(jpaService.update(id, entity));
     }
 
 
