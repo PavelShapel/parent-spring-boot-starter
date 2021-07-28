@@ -1,8 +1,6 @@
 package com.pavelshapel.jpa.spring.boot.starter.service.jpa.decorator;
 
 import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ThrowableDecoratorJpaService extends AbstractDecoratorJpaService<AbstractEntity> {
 
     @Override
