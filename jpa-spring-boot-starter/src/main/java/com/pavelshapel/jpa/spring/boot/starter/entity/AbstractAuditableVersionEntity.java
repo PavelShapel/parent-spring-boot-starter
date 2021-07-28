@@ -20,28 +20,28 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 public abstract class AbstractAuditableVersionEntity extends AbstractVersionEntity {
     @CreatedBy
-    @Column(nullable = false)
+    @Column
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
     private String createdBy;
 
     @CreatedDate
-    @Column(nullable = false)
+    @Column
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
     private Date createdDate;
 
     @LastModifiedBy
-    @Column(nullable = false)
+    @Column
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
     private String lastModifiedBy;
 
     @LastModifiedDate
-    @Column(nullable = false)
+    @Column
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore

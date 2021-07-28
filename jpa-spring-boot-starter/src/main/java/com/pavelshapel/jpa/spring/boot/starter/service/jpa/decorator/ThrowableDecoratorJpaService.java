@@ -10,37 +10,37 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class ThrowableDecoratorJpaService extends AbstractDecoratorJpaService<AbstractEntity> {
+public abstract class ThrowableDecoratorJpaService<T extends AbstractEntity> extends AbstractDecoratorJpaService<T> {
 
     @Override
-    public AbstractEntity update(Long id, AbstractEntity entity) {
+    public T update(Long id, T entity) {
         verifyId(id);
         return super.update(id, entity);
     }
 
     @Override
-    public AbstractEntity findById(Long id) {
+    public T findById(Long id) {
         verifyId(id);
         return super.findById(id);
     }
 
     @Override
-    public List<AbstractEntity> findAllById(Iterable<Long> ids) {
-        List<AbstractEntity> entities = super.findAllById(ids);
+    public List<T> findAllById(Iterable<Long> ids) {
+        List<T> entities = super.findAllById(ids);
         verifyAllId(entities, ids);
         return entities;
     }
 
     @Override
-    public List<AbstractEntity> findAll() {
-        List<AbstractEntity> entities = super.findAll();
+    public List<T> findAll() {
+        List<T> entities = super.findAll();
         verifyAllId(entities);
         return entities;
     }
 
     @Override
-    public Page<AbstractEntity> findAll(Pageable pageable) {
-        Page<AbstractEntity> entities = super.findAll(pageable);
+    public Page<T> findAll(Pageable pageable) {
+        Page<T> entities = super.findAll(pageable);
         verifyCount(entities.getTotalElements());
         return entities;
     }
@@ -58,29 +58,29 @@ public class ThrowableDecoratorJpaService extends AbstractDecoratorJpaService<Ab
         super.deleteAll();
     }
 
-    private void verifyId(Long id) {
+    protected void verifyId(Long id) {
         if (!super.existsById(id)) {
             throw createEntityNotFoundException(Collections.singletonList(id));
         }
     }
 
-    private void verifyAllId(List<AbstractEntity> entities, Iterable<Long> ids) {
+    protected void verifyAllId(List<T> entities, Iterable<Long> ids) {
         if (entities.isEmpty()) {
             throw createEntityNotFoundException(ids);
         }
     }
 
-    private void verifyAllId(List<AbstractEntity> entities) {
+    protected void verifyAllId(List<T> entities) {
         verifyAllId(entities, Collections.emptyList());
     }
 
-    private void verifyCount(Long count) {
+    protected void verifyCount(Long count) {
         if (count == 0) {
             throw createEntityNotFoundException(Collections.emptyList());
         }
     }
 
-    private RuntimeException createEntityNotFoundException(Iterable<Long> ids) {
+    protected RuntimeException createEntityNotFoundException(Iterable<Long> ids) {
         String stringOfIds = StreamSupport.stream(ids.spliterator(), false)
                 .map(String::valueOf)
                 .collect(Collectors.joining(", "));

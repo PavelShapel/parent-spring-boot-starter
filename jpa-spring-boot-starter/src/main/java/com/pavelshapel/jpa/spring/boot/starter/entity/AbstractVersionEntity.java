@@ -10,7 +10,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = false)
 public abstract class AbstractVersionEntity extends AbstractEntity {
     @Version
-    @Column(nullable = false)
+    @Column
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
