@@ -1,6 +1,7 @@
 package com.pavelshapel.web.spring.boot.starter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pavelshapel.web.spring.boot.starter.controller.RestResponseEntityExceptionHandler;
 import com.pavelshapel.web.spring.boot.starter.wrapper.TypedResponseWrapperRestControllerAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -29,6 +30,11 @@ public class StarterAutoConfiguration implements WebMvcConfigurer {
     @Bean
     public TypedResponseWrapperRestControllerAdvice typedResponseWrapperRestControllerAdvice() {
         return new TypedResponseWrapperRestControllerAdvice();
+    }
+
+    @Bean
+    public RestResponseEntityExceptionHandler restResponseEntityExceptionHandler() {
+        return new RestResponseEntityExceptionHandler();
     }
 
     //override to represent date/string correctly

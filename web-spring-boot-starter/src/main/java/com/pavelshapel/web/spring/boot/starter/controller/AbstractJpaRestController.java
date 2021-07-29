@@ -19,6 +19,7 @@ public abstract class AbstractJpaRestController<T extends AbstractEntity> {
     public static final String ID_PATH = "/{id}";
     public static final String PAGING_PATH = "/page";
     public static final String NAME_PATH = "/name/{name}";
+    public static final String SEQUENCE_PATH = "/sequence" + ID_PATH;
 
     @Getter(AccessLevel.PROTECTED)
     private final JpaService<T> jpaService;
