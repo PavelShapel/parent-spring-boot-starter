@@ -89,7 +89,7 @@ public abstract class ThrowableDecoratorJpaService<T extends AbstractEntity> ext
                 String.format(
                         "service: [%s]; ids: [%s]",
                         getClass().getSimpleName(),
-                        stringOfIds.isEmpty() ? "empty list" : stringOfIds
+                        stringOfIds.isEmpty() ? "empty collection" : stringOfIds
                 )
         );
     }
