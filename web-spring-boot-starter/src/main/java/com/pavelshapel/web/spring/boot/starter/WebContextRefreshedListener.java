@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-import static com.pavelshapel.web.spring.boot.starter.StarterAutoConfiguration.TYPE;
+import static com.pavelshapel.web.spring.boot.starter.WebStarterAutoConfiguration.TYPE;
 
 @Slf4j
 public class WebContextRefreshedListener implements ApplicationListener<ContextRefreshedEvent> {

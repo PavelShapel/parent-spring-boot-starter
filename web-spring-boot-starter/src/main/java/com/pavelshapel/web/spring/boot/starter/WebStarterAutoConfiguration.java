@@ -1,7 +1,7 @@
 package com.pavelshapel.web.spring.boot.starter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pavelshapel.web.spring.boot.starter.controller.RestResponseEntityExceptionHandler;
+import com.pavelshapel.web.spring.boot.starter.controller.exception.handler.RestResponseEntityExceptionHandler;
 import com.pavelshapel.web.spring.boot.starter.wrapper.TypedResponseWrapperRestControllerAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Configuration
 @ConditionalOnWebApplication
-public class StarterAutoConfiguration implements WebMvcConfigurer {
+public class WebStarterAutoConfiguration implements WebMvcConfigurer {
     public static final String TYPE = "web";
 
     //inject custom objectMapper to represent date/string correctly

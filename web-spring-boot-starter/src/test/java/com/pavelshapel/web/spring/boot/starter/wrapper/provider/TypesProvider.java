@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.Date;
 
 @Getter
-public enum TestTypes {
+public enum TypesProvider {
     STRING("test"),
     DATE(new Date()),
     BOOLEAN(true),
@@ -15,7 +15,7 @@ public enum TestTypes {
 
     private final Object value;
 
-    TestTypes(Object value) {
+    TypesProvider(Object value) {
         this.value = value;
     }
 }
