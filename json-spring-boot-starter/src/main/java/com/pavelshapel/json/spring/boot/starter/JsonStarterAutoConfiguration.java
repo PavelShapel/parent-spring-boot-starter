@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Primary;
 import java.text.SimpleDateFormat;
 
 @Configuration
-public class StarterAutoConfiguration {
+public class JsonStarterAutoConfiguration {
     public static final String TYPE = "json";
 
     @Bean
