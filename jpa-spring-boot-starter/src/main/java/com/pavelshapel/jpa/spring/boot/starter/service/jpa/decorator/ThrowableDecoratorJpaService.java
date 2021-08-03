@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static java.util.Objects.isNull;
+
 public abstract class ThrowableDecoratorJpaService<T extends AbstractEntity> extends AbstractDecoratorJpaService<T> {
 
     @Override
@@ -73,8 +75,15 @@ public abstract class ThrowableDecoratorJpaService<T extends AbstractEntity> ext
         return entities;
     }
 
+    @Override
+    public List<T> getParentage(Long id) {
+        List<T> entities = super.getParentage(id);
+        verifyCollection(entities);
+        return entities;
+    }
+
     protected void verifyId(Long id) {
-        if (!super.existsById(id)) {
+        if (isNull(id) || !super.existsById(id)) {
             throw createEntityNotFoundException(Collections.singletonList(id));
         }
     }
