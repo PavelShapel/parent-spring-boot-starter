@@ -3,6 +3,7 @@ package com.pavelshapel.jpa.spring.boot.starter.service.jpa.decorator;
 import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
@@ -56,6 +57,20 @@ public abstract class ThrowableDecoratorJpaService<T extends AbstractEntity> ext
     public void deleteAll() {
         verifyCount(super.getCount());
         super.deleteAll();
+    }
+
+    @Override
+    public List<T> findAll(Specification<T> specification) {
+        List<T> entities = super.findAll(specification);
+        verifyCollection(entities);
+        return entities;
+    }
+
+    @Override
+    public Page<T> findAll(Specification<T> specification, Pageable pageable) {
+        Page<T> entities = super.findAll(specification, pageable);
+        verifyCount(entities.getTotalElements());
+        return entities;
     }
 
     protected void verifyId(Long id) {

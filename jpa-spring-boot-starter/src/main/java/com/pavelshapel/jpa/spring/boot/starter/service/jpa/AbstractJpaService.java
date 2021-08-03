@@ -7,12 +7,13 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.Objects;
 
+import static java.util.Objects.nonNull;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
 public abstract class AbstractJpaService<T extends AbstractEntity> implements JpaService<T> {
@@ -85,6 +86,21 @@ public abstract class AbstractJpaService<T extends AbstractEntity> implements Jp
         return jpaRepository.count();
     }
 
+    @Override
+    public List<T> findAll(Specification<T> specification) {
+        return jpaRepository.findAll(specification);
+    }
+
+    @Override
+    public Page<T> findAll(Specification<T> specification, Pageable pageable) {
+        return jpaRepository.findAll(specification, pageable);
+    }
+
+    @Override
+    public long getCount(Specification<T> specification) {
+        return jpaRepository.count(specification);
+    }
+
     private void copyFields(Object source, Object destination) {
         if (!source.getClass().isAssignableFrom(destination.getClass())) {
             throw new IllegalArgumentException(
@@ -98,7 +114,7 @@ public abstract class AbstractJpaService<T extends AbstractEntity> implements Jp
                     field -> {
                         makeAccessible(field);
                         Object value = field.get(source);
-                        if (Objects.nonNull(value)) {
+                        if (nonNull(value)) {
                             field.set(destination, value);
                         }
                     },

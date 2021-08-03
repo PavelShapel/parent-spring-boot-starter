@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
@@ -81,6 +82,21 @@ public abstract class AbstractDecoratorJpaService<T extends AbstractEntity> impl
 
     @Override
     public long getCount() {
+        return wrapped.getCount();
+    }
+
+    @Override
+    public List<T> findAll(Specification<T> specification) {
+        return wrapped.findAll(specification);
+    }
+
+    @Override
+    public Page<T> findAll(Specification<T> specification, Pageable pageable) {
+        return wrapped.findAll(specification,pageable);
+    }
+
+    @Override
+    public long getCount(Specification<T> specification) {
         return wrapped.getCount();
     }
 }
