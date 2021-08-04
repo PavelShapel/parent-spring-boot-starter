@@ -4,6 +4,7 @@ import com.pavelshapel.stream.spring.boot.starter.StarterAutoConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Arrays;
@@ -18,6 +19,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
         StarterAutoConfiguration.class
 })
 class StreamUtilsTest {
+    public static final String COLLECTION_ELEMENT = "collection element";
+
     @Autowired
     private StreamUtils streamUtils;
 
@@ -28,37 +31,42 @@ class StreamUtilsTest {
 
     @Test
     void toSingleton_WithSingleCollection_ShouldReturnResult() {
-        String message = "singleton";
-        final List<Object> list = Collections.singletonList(message);
+        List<Object> list = Collections.singletonList(COLLECTION_ELEMENT);
 
+        Optional<Object> singleton = list.stream().collect(streamUtils.toSingleton());
 
-        final Optional<Object> singleton = list.stream().collect(streamUtils.toSingleton());
-
-
-        assertThat(singleton).isNotEmpty();
-        assertThat(singleton).hasValue(message);
+        assertThat(singleton)
+                .isNotEmpty()
+                .hasValue(COLLECTION_ELEMENT);
     }
 
     @Test
     void toSingleton_WithEmptyCollection_ShouldReturnOptionalEmpty() {
-        final List<Object> list = Collections.emptyList();
+        List<Object> list = Collections.emptyList();
 
-
-        final Optional<Object> singleton = list.stream().collect(streamUtils.toSingleton());
-
+        Optional<Object> singleton = list.stream().collect(streamUtils.toSingleton());
 
         assertThat(singleton).isEmpty();
     }
 
     @Test
     void toSingleton_WithMultiCollection_ShouldReturnOptionalEmpty() {
-        String message = "multi";
-        List<Object> list = Arrays.asList(message, message);
+        List<Object> list = Arrays.asList(COLLECTION_ELEMENT, COLLECTION_ELEMENT);
 
-
-        final Optional<Object> singleton = list.stream().collect(streamUtils.toSingleton());
-
+        Optional<Object> singleton = list.stream().collect(streamUtils.toSingleton());
 
         assertThat(singleton).isEmpty();
+    }
+
+    @Test
+    void toResponseEntityList_WithCollection_ShouldReturnResult() {
+        List<String> list = Collections.singletonList(COLLECTION_ELEMENT);
+
+        ResponseEntity<List<String>> responseEntity = list.stream().collect(streamUtils.toResponseEntityList());
+
+        assertThat(responseEntity.getBody())
+                .asList()
+                .isNotEmpty()
+                .isEqualTo(list);
     }
 }

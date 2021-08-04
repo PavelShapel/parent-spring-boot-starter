@@ -10,6 +10,6 @@ import static com.pavelshapel.stream.spring.boot.starter.StarterAutoConfiguratio
 public class StreamContextRefreshedListener implements ApplicationListener<ContextRefreshedEvent> {
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        log.info(String.format("%s-spring-boot-starter was applied", TYPE));
+        log.info("{}-spring-boot-starter was applied", TYPE);
     }
 }
