@@ -43,4 +43,9 @@ public interface JpaService<T extends AbstractEntity> {
     Page<T> findAll(Specification<T> specification, Pageable pageable);
 
     long getCount(Specification<T> specification);
+
+
+    T getParent(T entity);
+
+    List<T> getParentage(Long id);
 }

@@ -99,4 +99,14 @@ public abstract class AbstractDecoratorJpaService<T extends AbstractEntity> impl
     public long getCount(Specification<T> specification) {
         return wrapped.getCount();
     }
+
+    @Override
+    public T getParent(T entity) {
+        return wrapped.getParent(entity);
+    }
+
+    @Override
+    public List<T> getParentage(Long id) {
+        return wrapped.getParentage(id);
+    }
 }

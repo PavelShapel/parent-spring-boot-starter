@@ -1,6 +1,5 @@
 package com.pavelshapel.jpa.spring.boot.starter;
 
-import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchCriteria;
 import com.pavelshapel.jpa.spring.boot.starter.service.jpa.decorator.JpaDecorateAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,10 +16,5 @@ public class JpaStarterAutoConfiguration {
     @Bean
     public JpaDecorateAnnotationBeanPostProcessor jpaDecorateAnnotationBeanPostProcessor() {
         return new JpaDecorateAnnotationBeanPostProcessor();
-    }
-
-    @Bean
-    public SearchCriteria searchCriteria(){
-        return new SearchCriteria();
     }
 }

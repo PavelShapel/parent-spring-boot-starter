@@ -4,22 +4,23 @@ import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
 import com.pavelshapel.jpa.spring.boot.starter.repository.AbstractJpaRepository;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
+@RequiredArgsConstructor
 public abstract class AbstractJpaService<T extends AbstractEntity> implements JpaService<T> {
     @Getter(AccessLevel.PROTECTED)
-    @Autowired
-    private AbstractJpaRepository<T> jpaRepository;
+    private final AbstractJpaRepository<T> abstractJpaRepository;
 
     @Override
     public T createAndSave() {
@@ -28,83 +29,96 @@ public abstract class AbstractJpaService<T extends AbstractEntity> implements Jp
 
     @Override
     public T save(T entity) {
-        return jpaRepository.save(entity);
+        return abstractJpaRepository.save(entity);
     }
 
     @Override
     public T update(Long id, T entity) {
         T entityFromDatabase = findById(id);
         copyFields(entity, entityFromDatabase);
-        return jpaRepository.save(entityFromDatabase);
+        return abstractJpaRepository.save(entityFromDatabase);
     }
 
     @Override
     public List<T> saveAll(Iterable<T> entities) {
-        return jpaRepository.saveAll(entities);
+        return abstractJpaRepository.saveAll(entities);
     }
 
 
     @Override
     public T findById(Long id) {
-        return jpaRepository.findById(id).get();
+        return abstractJpaRepository.findById(id).get();
     }
 
     @Override
     public List<T> findAllById(Iterable<Long> ids) {
-        return jpaRepository.findAllById(ids);
+        return abstractJpaRepository.findAllById(ids);
     }
 
     @Override
     public List<T> findAll() {
-        return jpaRepository.findAll();
+        return abstractJpaRepository.findAll();
     }
 
     @Override
     public Page<T> findAll(Pageable pageable) {
-        return jpaRepository.findAll(pageable);
+        return abstractJpaRepository.findAll(pageable);
     }
 
 
     @Override
     public void deleteById(Long id) {
-        jpaRepository.deleteById(id);
+        abstractJpaRepository.deleteById(id);
     }
 
     @Override
     public void deleteAll() {
-        jpaRepository.deleteAll();
+        abstractJpaRepository.deleteAll();
     }
 
 
     @Override
     public boolean existsById(Long id) {
-        return jpaRepository.existsById(id);
+        return abstractJpaRepository.existsById(id);
     }
 
     @Override
     public long getCount() {
-        return jpaRepository.count();
+        return abstractJpaRepository.count();
     }
 
     @Override
     public List<T> findAll(Specification<T> specification) {
-        return jpaRepository.findAll(specification);
+        return abstractJpaRepository.findAll(specification);
     }
 
     @Override
     public Page<T> findAll(Specification<T> specification, Pageable pageable) {
-        return jpaRepository.findAll(specification, pageable);
+        return abstractJpaRepository.findAll(specification, pageable);
     }
 
     @Override
     public long getCount(Specification<T> specification) {
-        return jpaRepository.count(specification);
+        return abstractJpaRepository.count(specification);
+    }
+
+    @Override
+    public List<T> getParentage(Long id) {
+        T child = findById(id);
+        T parent;
+        List<T> result = new ArrayList<>();
+        do {
+            result.add(child);
+            parent = getParent(child);
+            child = parent;
+        } while (nonNull(parent));
+        return result;
     }
 
     private void copyFields(Object source, Object destination) {
         if (!source.getClass().isAssignableFrom(destination.getClass())) {
             throw new IllegalArgumentException(
-                    String.format("Destination class [%s] must be same or subclass as source class [%s]",
+                    String.format("destination class [%s] must be same or subclass as source class [%s]",
                             destination.getClass().getName(),
                             source.getClass().getName()
                     )

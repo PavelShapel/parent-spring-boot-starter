@@ -1,12 +1,13 @@
 package com.pavelshapel.jpa.spring.boot.starter.repository.search;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
 
 @Data
-@NoArgsConstructor
 public class SearchCriteria {
-    private String key;
+    @NotBlank
+    private String field;
     private Object value;
-    private SearchOperation operation;
+    private SearchOperation operation = SearchOperation.EQUAL;
 }
