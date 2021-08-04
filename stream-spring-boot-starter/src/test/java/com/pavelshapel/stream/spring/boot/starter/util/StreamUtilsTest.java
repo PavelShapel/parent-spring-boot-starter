@@ -1,6 +1,6 @@
 package com.pavelshapel.stream.spring.boot.starter.util;
 
-import com.pavelshapel.stream.spring.boot.starter.StarterAutoConfiguration;
+import com.pavelshapel.stream.spring.boot.starter.StreamStarterAutoConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,18 +16,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @ContextConfiguration(classes = {
-        StarterAutoConfiguration.class
+        StreamStarterAutoConfiguration.class
 })
 class StreamUtilsTest {
     public static final String COLLECTION_ELEMENT = "collection element";
 
     @Autowired
     private StreamUtils streamUtils;
-
-    @Test
-    void initialization() {
-        assertThat(streamUtils).isNotNull();
-    }
 
     @Test
     void toSingleton_WithSingleCollection_ShouldReturnResult() {

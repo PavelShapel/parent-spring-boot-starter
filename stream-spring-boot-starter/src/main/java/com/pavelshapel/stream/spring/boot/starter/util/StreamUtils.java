@@ -11,12 +11,7 @@ public class StreamUtils {
     public <T> Collector<T, ?, Optional<T>> toSingleton() {
         return Collectors.collectingAndThen(
                 Collectors.toList(),
-                list -> {
-                    if (list.size() != 1) {
-                        return Optional.empty();
-                    }
-                    return Optional.of(list.get(0));
-                }
+                list -> list.size() == 1 ? Optional.of(list.get(0)) : Optional.empty()
         );
     }
 

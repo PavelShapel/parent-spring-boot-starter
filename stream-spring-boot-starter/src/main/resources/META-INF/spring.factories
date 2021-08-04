@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.pavelshapel.stream.spring.boot.starter.StarterAutoConfiguration
+com.pavelshapel.stream.spring.boot.starter.StreamStarterAutoConfiguration

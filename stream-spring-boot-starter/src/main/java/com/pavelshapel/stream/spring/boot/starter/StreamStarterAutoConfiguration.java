@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class StarterAutoConfiguration {
+public class StreamStarterAutoConfiguration {
     public static final String TYPE = "stream";
 
     @Bean
