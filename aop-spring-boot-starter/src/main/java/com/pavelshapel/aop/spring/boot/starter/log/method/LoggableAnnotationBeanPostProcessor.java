@@ -1,39 +1,72 @@
 //package com.pavelshapel.aop.spring.boot.starter.log.method;
 //
-//import lombok.SneakyThrows;
+//import javafx.util.Pair;
 //import lombok.extern.log4j.Log4j2;
 //import org.apache.logging.log4j.Level;
-//import org.aspectj.lang.JoinPoint;
-//import org.aspectj.lang.ProceedingJoinPoint;
-//import org.aspectj.lang.annotation.*;
-//import org.springframework.http.ResponseEntity;
+//import org.springframework.beans.BeansException;
+//import org.springframework.beans.factory.config.BeanPostProcessor;
 //
-//import java.util.Arrays;
-//import java.util.Objects;
+//import java.lang.reflect.Method;
+//import java.lang.reflect.Proxy;
+//import java.util.*;
+//import java.util.stream.Collectors;
 //
-//@Aspect
 //@Log4j2
-//public class LoggableAspect {
+//public class LoggableAnnotationBeanPostProcessor implements BeanPostProcessor {
 //    private static final String LOG_PATTERN = "[{}.{}] {}: {}";
 //    private static final String NOTHING_TO_LOG = "nothing to log";
-//    private static final String POINTCUT = "execution(* *(..)) && (annotatedMethod() || annotatedClass())";
+//    private final Map<String, Pair<Class<?>, List<Method>>> loggableBeans = new HashMap<>();
 //
-//    @Pointcut("@annotation(com.pavelshapel.aop.spring.boot.starter.log.method.Loggable)")
-//    public void annotatedMethod() {
-//        //pointcut
+//    @Override
+//    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+//        storeLoggableBeans(bean, beanName);
+//        return bean;
 //    }
 //
-//    @Pointcut("@within(com.pavelshapel.aop.spring.boot.starter.log.method.Loggable)")
-//    public void annotatedClass() {
-//        //pointcut
-//    }
-//
-//    @AfterReturning(pointcut = POINTCUT, returning = "result")
-//    public void onSuccess(JoinPoint joinPoint, Object result) {
-//        LoggableMethodSpecification loggableMethodSpecification = new LoggableMethodSpecification(joinPoint);
-//        if (isContainingLoggableType(loggableMethodSpecification, LoggableType.METHOD_RESULT)) {
-//            logSuccess(loggableMethodSpecification, result);
+//    private void storeLoggableBeans(Object bean, String beanName) {
+//        Class<?> beanClass = bean.getClass();
+//        List<Method> loggableMethods = getLoggableMethods(beanClass);
+//        if (loggableMethods.isEmpty()) {
+//            storeLoggableClass(beanName, beanClass);
+//        } else {
+//            storeLoggableMethods(beanName, beanClass, loggableMethods);
 //        }
+//    }
+//
+//    private void storeLoggableClass(String beanName, Class<?> beanClass) {
+//        Optional.ofNullable(beanClass.getAnnotation(Loggable.class))
+//                .ifPresent(loggable -> storeLoggableMethods(beanName, beanClass, Collections.emptyList()));
+//    }
+//
+//    private void storeLoggableMethods(String beanName, Class<?> beanClass, List<Method> loggableMethods) {
+//        loggableBeans.put(beanName, new Pair<>(beanClass, loggableMethods));
+//    }
+//
+//    private List<Method> getLoggableMethods(Class<?> beanClass) {
+//        return Arrays.stream(beanClass.getMethods())
+//                .filter(method -> method.isAnnotationPresent(Loggable.class))
+//                .collect(Collectors.toList());
+//    }
+//
+//    @Override
+//    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+//        return loggableBeans.containsKey(beanName)
+//                ? createProxy(bean, beanName)
+//                : bean;
+//    }
+//
+//    private Object createProxy(Object bean, String beanName) {
+//        Class<?> beanClass = bean.getClass();
+//        return Proxy.newProxyInstance(beanClass.getClassLoader(), beanClass.getInterfaces(), (proxy, method, args) -> {
+//            long startTimeMillis = System.currentTimeMillis();
+//            Object result = method.invoke(bean, args);
+//            long duration = System.currentTimeMillis() - startTimeMillis;
+//            LoggableMethodSpecification loggableMethodSpecification = new LoggableMethodSpecification(method);
+//            if (isContainingLoggableType(loggableMethodSpecification, LoggableType.METHOD_DURATION)) {
+//                logDuration(loggableMethodSpecification, duration);
+//            }
+//            return result;
+//        });
 //    }
 //
 //    private void logSuccess(LoggableMethodSpecification loggableMethodSpecification, Object result) {
@@ -64,14 +97,6 @@
 //        return true;
 //    }
 //
-//    @AfterThrowing(pointcut = POINTCUT, throwing = "throwable")
-//    public void onFailed(JoinPoint joinPoint, Throwable throwable) {
-//        LoggableMethodSpecification loggableMethodSpecification = new LoggableMethodSpecification(joinPoint);
-//        if (isContainingLoggableType(loggableMethodSpecification, LoggableType.METHOD_EXCEPTION)) {
-//            logException(loggableMethodSpecification, throwable);
-//        }
-//    }
-//
 //    private void logException(LoggableMethodSpecification loggableMethodSpecification, Throwable throwable) {
 //        log.error(
 //                LOG_PATTERN,
@@ -80,19 +105,6 @@
 //                LoggableType.METHOD_EXCEPTION.getPrefix(),
 //                getVerifiedLogResult(throwable.getMessage())
 //        );
-//    }
-//
-//    @SneakyThrows
-//    @Around(POINTCUT)
-//    public Object onDuration(ProceedingJoinPoint joinPoint) {
-//        long startTimeMillis = System.currentTimeMillis();
-//        Object proceed = joinPoint.proceed();
-//        long duration = System.currentTimeMillis() - startTimeMillis;
-//        LoggableMethodSpecification loggableMethodSpecification = new LoggableMethodSpecification(joinPoint);
-//        if (isContainingLoggableType(loggableMethodSpecification, LoggableType.METHOD_DURATION)) {
-//            logDuration(loggableMethodSpecification, duration);
-//        }
-//        return proceed;
 //    }
 //
 //    private void logDuration(LoggableMethodSpecification loggableMethodSpecification, long duration) {

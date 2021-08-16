@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 public @interface Loggable {
-    LoggableType[] value() default {LoggableType.METHOD_RESULT, LoggableType.METHOD_DURATION};
+    LoggableType[] value() default {LoggableType.METHOD_RESULT, LoggableType.METHOD_EXCEPTION};
 
     Level level() default Level.INFO;
 }
