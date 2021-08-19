@@ -43,7 +43,7 @@ public abstract class SearchSpecification<T extends AbstractEntity> implements S
             case IS_NOT_NULL:
                 return builder.isNotNull(root.get(field));
             default:
-                throw new IllegalArgumentException(String.format("search criteria operation [%s] not implemented", searchCriteria.getOperation()));
+                throw new UnsupportedOperationException(String.format("search criteria operation [%s] not implemented", searchCriteria.getOperation()));
         }
     }
 }
