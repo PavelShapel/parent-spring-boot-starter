@@ -20,6 +20,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return createErrorResponseEntity(exception, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
+    @Override
+    @ExceptionHandler({Exception.class})
+    protected ResponseEntity<Object> handleExceptionInternal(Exception exception, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return createErrorResponseEntity(exception, headers, HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
     private ResponseEntity<Object> createErrorResponseEntity(Exception exception, HttpHeaders headers, HttpStatus status, WebRequest request) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(status.toString())

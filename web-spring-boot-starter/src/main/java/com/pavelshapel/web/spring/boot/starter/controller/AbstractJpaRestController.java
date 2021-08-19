@@ -92,10 +92,12 @@ public abstract class AbstractJpaRestController<T extends AbstractEntity> {
     }
 
     @GetMapping(PARENTAGE_PATH)
-    public ResponseEntity<List<T>> getParentage(@PathVariable Long id) {
-        return jpaService.getParentage(id).stream()
+    public ResponseEntity<List<T>> getParentage(@RequestParam(required = false, defaultValue = "false") Boolean reverse,
+                                                @PathVariable Long id) {
+        List<T> dto = jpaService.getParentage(id).stream()
                 .map(toDtoConverter::convert)
-                .collect(streamUtils.toResponseEntityList());
+                .collect(streamUtils.toList(reverse));
+        return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping(ID_PATH)

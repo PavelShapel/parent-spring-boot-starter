@@ -17,9 +17,9 @@ public class Response {
     @Builder.Default
     private String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     @NonNull
+    private String path;
+    @NonNull
     private String status;
     @NonNull
     private String message;
-    @NonNull
-    private String path;
 }
