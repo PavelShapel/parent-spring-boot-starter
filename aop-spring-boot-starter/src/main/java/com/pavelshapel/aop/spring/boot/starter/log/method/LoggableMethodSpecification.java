@@ -29,10 +29,11 @@ public class LoggableMethodSpecification {
     }
 
     private void initializeMethodSpecification() {
-        this.methodDeclaringClassName = this.method.getDeclaringClass().getSimpleName();
+        Class<?> declaringClass = this.method.getDeclaringClass();
+        this.methodDeclaringClassName = declaringClass.getSimpleName();
         this.methodName = this.method.getName();
         this.loggable = Optional.ofNullable(this.method.getAnnotation(Loggable.class))
-                .orElse(this.method.getDeclaringClass().getAnnotation(Loggable.class));
+                .orElse(declaringClass.getAnnotation(Loggable.class));
     }
 
     private Method getMethod(JoinPoint joinPoint) {

@@ -13,7 +13,7 @@
 //
 //@Log4j2
 //public class LoggableAnnotationBeanPostProcessor implements BeanPostProcessor {
-//    private static final String LOG_PATTERN = "[{}.{}] {}: {}";
+//    private static final String LOG_PATTERN = "[{}.{}] {} -> {}";
 //    private static final String NOTHING_TO_LOG = "nothing to log";
 //    private final Map<String, Pair<Class<?>, List<Method>>> loggableBeans = new HashMap<>();
 //
@@ -69,33 +69,33 @@
 //        });
 //    }
 //
-//    private void logSuccess(LoggableMethodSpecification loggableMethodSpecification, Object result) {
-//        if (isResponseEntityErrorNotLogged(loggableMethodSpecification, result)) {
-//            Level level = Level.toLevel(loggableMethodSpecification.getLoggable().level().toString());
-//            log.log(level,
-//                    LOG_PATTERN,
-//                    loggableMethodSpecification.getMethodDeclaringClassName(),
-//                    loggableMethodSpecification.getMethodName(),
-//                    LoggableType.METHOD_RESULT.getPrefix(),
-//                    getVerifiedLogResult(result)
-//            );
-//        }
-//    }
+////    private void logSuccess(LoggableMethodSpecification loggableMethodSpecification, Object result) {
+////        if (isResponseEntityErrorNotLogged(loggableMethodSpecification, result)) {
+////            Level level = Level.toLevel(loggableMethodSpecification.getLoggable().level().toString());
+////            log.log(level,
+////                    LOG_PATTERN,
+////                    loggableMethodSpecification.getMethodDeclaringClassName(),
+////                    loggableMethodSpecification.getMethodName(),
+////                    LoggableType.METHOD_RESULT.getPrefix(),
+////                    getVerifiedLogResult(result)
+////            );
+////        }
+////    }
 //
-//    private boolean isResponseEntityErrorNotLogged(LoggableMethodSpecification loggableMethodSpecification, Object result) {
-//        if (result instanceof ResponseEntity) {
-//            final ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
-//            if (responseEntity.getStatusCode().isError()) {
-//                log.error(LOG_PATTERN,
-//                        loggableMethodSpecification.getMethodDeclaringClassName(),
-//                        loggableMethodSpecification.getMethodName(),
-//                        LoggableType.METHOD_EXCEPTION.getPrefix(),
-//                        getVerifiedLogResult(responseEntity));
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
+////    private boolean isResponseEntityErrorNotLogged(LoggableMethodSpecification loggableMethodSpecification, Object result) {
+////        if (result instanceof ResponseEntity) {
+////            final ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
+////            if (responseEntity.getStatusCode().isError()) {
+////                log.error(LOG_PATTERN,
+////                        loggableMethodSpecification.getMethodDeclaringClassName(),
+////                        loggableMethodSpecification.getMethodName(),
+////                        LoggableType.METHOD_EXCEPTION.getPrefix(),
+////                        getVerifiedLogResult(responseEntity));
+////                return false;
+////            }
+////        }
+////        return true;
+////    }
 //
 //    private void logException(LoggableMethodSpecification loggableMethodSpecification, Throwable throwable) {
 //        log.error(
@@ -103,7 +103,7 @@
 //                loggableMethodSpecification.getMethodDeclaringClassName(),
 //                loggableMethodSpecification.getMethodName(),
 //                LoggableType.METHOD_EXCEPTION.getPrefix(),
-//                getVerifiedLogResult(throwable.getMessage())
+//                getVerifiedLogResult(throwable)
 //        );
 //    }
 //
