@@ -5,6 +5,7 @@ import com.pavelshapel.jpa.spring.boot.starter.repository.AbstractJpaRepository;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,10 +18,11 @@ import java.util.List;
 import static java.util.Objects.nonNull;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter(AccessLevel.PROTECTED)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public abstract class AbstractJpaService<T extends AbstractEntity> implements JpaService<T> {
-    @Getter(AccessLevel.PROTECTED)
-    private final AbstractJpaRepository<T> abstractJpaRepository;
+    AbstractJpaRepository<T> abstractJpaRepository;
 
     @Override
     public T createAndSave() {

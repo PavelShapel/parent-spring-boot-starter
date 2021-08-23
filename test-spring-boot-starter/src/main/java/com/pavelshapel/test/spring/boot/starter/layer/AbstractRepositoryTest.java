@@ -6,35 +6,30 @@ import com.pavelshapel.jpa.spring.boot.starter.repository.AbstractJpaRepository;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchCriteria;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchOperation;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchSpecification;
-import com.pavelshapel.test.spring.boot.starter.container.postgres.PostgreSQLExtension;
+import com.pavelshapel.test.spring.boot.starter.annotation.StartPostgreSQLContainer;
+import lombok.AccessLevel;
 import lombok.Getter;
-import org.junit.jupiter.api.extension.ExtendWith;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ContextConfiguration;
-
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 
 @DataJpaTest
 @ContextConfiguration(classes = {
         JpaAuditingConfiguration.class
 })
-@AutoConfigureTestDatabase(replace = NONE)
-@ExtendWith(PostgreSQLExtension.class)
-@Getter
+@StartPostgreSQLContainer
+@Getter(AccessLevel.PROTECTED)
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractRepositoryTest<T extends AbstractEntity> {
+
+    private final AbstractJpaRepository<T> jpaRepository;
+    private final SearchSpecification<T> searchSpecification;
 
     @Autowired
     private TestEntityManager testEntityManager;
-
-    @Autowired
-    private AbstractJpaRepository<T> jpaRepository;
-
-    @Autowired
-    private SearchSpecification<T> searchSpecification;
 
     protected T saveAndRetrieve(T entity) {
         return testEntityManager.persistFlushFind(entity);
