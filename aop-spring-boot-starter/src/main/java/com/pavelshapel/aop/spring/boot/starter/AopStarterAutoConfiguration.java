@@ -17,9 +17,4 @@ public class AopStarterAutoConfiguration {
     public LoggableAspect loggableAspect() {
         return new LoggableAspect();
     }
-
-//    @Bean
-//    public LoggableAnnotationBeanPostProcessor loggableAnnotationBeanPostProcessor(){
-//        return new LoggableAnnotationBeanPostProcessor();
-//    }
 }
