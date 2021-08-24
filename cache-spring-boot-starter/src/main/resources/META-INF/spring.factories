@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.pavelshapel.cache.spring.boot.starter.CacheStarterAutoConfiguration
