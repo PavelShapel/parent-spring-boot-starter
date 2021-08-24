@@ -1,5 +1,6 @@
 package com.pavelshapel.web.spring.boot.starter.controller;
 
+import com.pavelshapel.aop.spring.boot.starter.log.method.Loggable;
 import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchCriteria;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchSpecification;
@@ -24,8 +25,9 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter(AccessLevel.PROTECTED)
-@RequiredArgsConstructor
+@Loggable
 public abstract class AbstractJpaRestController<T extends AbstractEntity> {
     public static final String ID_PATH = "/{id}" + StringUtils.EMPTY;
     public static final String PAGING_PATH = "/page" + StringUtils.EMPTY;
