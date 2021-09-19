@@ -1,6 +1,6 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.service.collection.impl;
 
-import com.pavelshapel.random.spring.boot.starter.StarterAutoConfiguration;
+import com.pavelshapel.random.spring.boot.starter.RandomStarterAutoConfiguration;
 import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Entity;
 import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Specification;
 import com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded.BoundedTypeBeansCollection;
@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ContextConfiguration(classes = {
-        StarterAutoConfiguration.class,
+        RandomStarterAutoConfiguration.class,
         StreamUtils.class
 })
 class GenericCollectionRandomizerTest {
@@ -41,30 +41,26 @@ class GenericCollectionRandomizerTest {
 
     @Test
     void randomize_ListAsParam_ShouldReturnCollection() {
-        final List<Specification> specifications = randomizerBeansCollection.getBeans().values().stream()
+        List<Specification> specifications = randomizerBeansCollection.getBeans().values().stream()
                 .map(Randomizer::createDefaultSpecification)
                 .collect(Collectors.toList());
 
-
-        final Collection<Object> randomizedCollection = genericCollectionRandomizer
+        Collection<Object> randomizedCollection = genericCollectionRandomizer
                 .randomize(specifications);
-
 
         assertThat(randomizedCollection).hasSameSizeAs(boundedTypeBeansCollection.getBeans().values());
     }
 
     @Test
     void randomize_MapAsParam_ShouldReturnCollection() {
-        final Map<String, Specification> map = randomizerBeansCollection.getBeans().values().stream()
+        Map<String, Specification> map = randomizerBeansCollection.getBeans().values().stream()
                 .map(Randomizer::createDefaultSpecification)
                 .collect(Collectors.toMap(
                         Object::toString,
                         specification -> specification)
                 );
 
-
         Map<String, Object> randomizedMap = genericCollectionRandomizer.randomize(new Entity(map));
-
 
         assertThat(randomizedMap).hasSameSizeAs(boundedTypeBeansCollection.getBeans());
     }

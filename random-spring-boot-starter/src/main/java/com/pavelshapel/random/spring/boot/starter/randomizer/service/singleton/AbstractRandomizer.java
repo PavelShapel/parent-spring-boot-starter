@@ -9,7 +9,7 @@ public abstract class AbstractRandomizer<T> implements Randomizer<T> {
     @Autowired
     private BoundedType<T> boundedType;
     @Autowired
-    private SpecificationVerifier verifier;
+    private SpecificationVerifier specificationVerifier;
 
     @Override
     public T randomize() {
@@ -38,6 +38,6 @@ public abstract class AbstractRandomizer<T> implements Randomizer<T> {
                 .max(maxValue)
                 .build();
 
-        return verifier.verify(specification);
+        return specificationVerifier.verify(specification);
     }
 }

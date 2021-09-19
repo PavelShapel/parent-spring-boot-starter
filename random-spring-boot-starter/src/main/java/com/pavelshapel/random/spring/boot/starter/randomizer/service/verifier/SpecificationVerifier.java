@@ -16,11 +16,11 @@ public class SpecificationVerifier implements Verifier<Specification> {
 
     @Override
     public Specification verify(Specification specification) {
-        final BoundedType<?> boundedType = getBoundedType(specification);
+        BoundedType<?> boundedType = getBoundedType(specification);
 
         try {
-            final Range<Long> range = Range.between(specification.getMin(), specification.getMax());
-            final Range<Long> intersection = boundedType.getRange().intersectionWith(range);
+            Range<Long> range = Range.between(specification.getMin(), specification.getMax());
+            Range<Long> intersection = boundedType.getRange().intersectionWith(range);
 
             return Specification.builder()
                     .type(specification.getType())
@@ -28,7 +28,7 @@ public class SpecificationVerifier implements Verifier<Specification> {
                     .max(intersection.getMaximum())
                     .build();
         } catch (Exception exception) {
-            log.warn("implemented default range on exception [{}]", exception.toString());
+            log.warn("Implemented default range on exception [{}]", exception.toString());
 
             return Specification.builder()
                     .type(specification.getType())
@@ -39,11 +39,11 @@ public class SpecificationVerifier implements Verifier<Specification> {
     }
 
     private BoundedType<?> getBoundedType(Specification specification) {
-        return boundedTypeBeansCollection.getBean(getPredicate(specification))
+        return boundedTypeBeansCollection.getBean(isSpecificationTypeEqualsBoundedType(specification))
                 .orElseThrow(() -> new IllegalArgumentException(specification.toString()));
     }
 
-    private Predicate<BoundedType<?>> getPredicate(Specification specification) {
-        return boundedType -> boundedType.getType().getSimpleName().equalsIgnoreCase(specification.getType());
+    private Predicate<BoundedType<?>> isSpecificationTypeEqualsBoundedType(Specification specification) {
+        return boundedType -> specification.getType().equalsIgnoreCase(boundedType.getType().getSimpleName());
     }
 }

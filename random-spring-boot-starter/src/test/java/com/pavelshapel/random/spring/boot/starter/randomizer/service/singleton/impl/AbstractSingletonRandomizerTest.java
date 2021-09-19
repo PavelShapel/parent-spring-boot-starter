@@ -1,6 +1,6 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.impl;
 
-import com.pavelshapel.random.spring.boot.starter.StarterAutoConfiguration;
+import com.pavelshapel.random.spring.boot.starter.RandomStarterAutoConfiguration;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.Randomizer;
 import com.pavelshapel.stream.spring.boot.starter.util.StreamUtils;
 import org.assertj.core.api.Assertions;
@@ -15,7 +15,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @ContextConfiguration(classes = {
-        StarterAutoConfiguration.class,
+        RandomStarterAutoConfiguration.class,
         StreamUtils.class
 })
 abstract class AbstractSingletonRandomizerTest<T> {

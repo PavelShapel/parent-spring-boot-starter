@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class StarterAutoConfiguration {
+public class RandomStarterAutoConfiguration {
     public static final String TYPE = "random";
 
     @Bean

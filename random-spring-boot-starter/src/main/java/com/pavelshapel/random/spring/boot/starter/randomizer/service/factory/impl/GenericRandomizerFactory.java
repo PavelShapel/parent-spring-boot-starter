@@ -19,11 +19,11 @@ public class GenericRandomizerFactory implements RandomizerFactory {
 
     @Override
     public Randomizer<?> getRandomizer(String type) {
-        return randomizerBeansCollection.getBean(getPredicate(type))
+        return randomizerBeansCollection.getBean(isSpecificationTypeEqualsType(type))
                 .orElseThrow(() -> new IllegalArgumentException(type));
     }
 
-    private Predicate<Randomizer<?>> getPredicate(String type) {
+    private Predicate<Randomizer<?>> isSpecificationTypeEqualsType(String type) {
         return randomizer -> randomizer.createDefaultSpecification().getType().equalsIgnoreCase(type);
     }
 }

@@ -1,6 +1,6 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.service.verifier;
 
-import com.pavelshapel.random.spring.boot.starter.StarterAutoConfiguration;
+import com.pavelshapel.random.spring.boot.starter.RandomStarterAutoConfiguration;
 import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Specification;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.RandomizerBeansCollection;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.Randomizer;
@@ -10,12 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-import static com.pavelshapel.random.spring.boot.starter.StarterAutoConfiguration.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @ContextConfiguration(classes = {
-        StarterAutoConfiguration.class,
+        RandomStarterAutoConfiguration.class,
         StreamUtils.class
 })
 class SpecificationVerifierTest {
