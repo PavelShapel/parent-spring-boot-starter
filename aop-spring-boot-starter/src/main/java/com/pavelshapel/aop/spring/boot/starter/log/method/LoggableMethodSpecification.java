@@ -1,7 +1,7 @@
 package com.pavelshapel.aop.spring.boot.starter.log.method;
 
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import org.aspectj.lang.JoinPoint;
@@ -10,8 +10,8 @@ import org.aspectj.lang.reflect.MethodSignature;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-@Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Getter
 public class LoggableMethodSpecification {
     Method method;
     String methodDeclaringClassName;
@@ -20,15 +20,6 @@ public class LoggableMethodSpecification {
 
     public LoggableMethodSpecification(@NonNull JoinPoint joinPoint) {
         this.method = getMethod(joinPoint);
-        initializeMethodSpecification();
-    }
-
-    public LoggableMethodSpecification(@NonNull Method method) {
-        this.method = method;
-        initializeMethodSpecification();
-    }
-
-    private void initializeMethodSpecification() {
         Class<?> declaringClass = this.method.getDeclaringClass();
         this.methodDeclaringClassName = declaringClass.getSimpleName();
         this.methodName = this.method.getName();

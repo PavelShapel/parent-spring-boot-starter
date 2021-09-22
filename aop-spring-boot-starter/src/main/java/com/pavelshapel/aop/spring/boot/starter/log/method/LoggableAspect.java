@@ -51,7 +51,7 @@ public class LoggableAspect {
 
     private boolean isResponseEntityErrorNotLogged(LoggableMethodSpecification loggableMethodSpecification, Object result) {
         if (result instanceof ResponseEntity) {
-            final ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
+            ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
             if (responseEntity.getStatusCode().isError()) {
                 log.error(LOG_PATTERN,
                         loggableMethodSpecification.getMethodDeclaringClassName(),
