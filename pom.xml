@@ -20,7 +20,6 @@
     <modules>
         <module>aop-spring-boot-starter</module>
         <module>json-spring-boot-starter</module>
-        <module>stream-spring-boot-starter</module>
         <module>test-spring-boot-starter</module>
         <module>random-spring-boot-starter</module>
         <module>web-spring-boot-starter</module>
@@ -28,6 +27,7 @@
         <module>amqp-spring-boot-starter</module>
         <module>jpa-spring-boot-starter</module>
         <module>jms-spring-boot-starter</module>
+        <module>cache-spring-boot-starter</module>
     </modules>
 
     <dependencyManagement>
@@ -57,6 +57,31 @@
                 <version>${testcontainers.version}</version>
                 <scope>test</scope>
             </dependency>
+
+            <!--com.pavelshapel-->
+            <dependency>
+                <groupId>com.pavelshapel</groupId>
+                <artifactId>json-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>com.pavelshapel</groupId>
+                <artifactId>jpa-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>com.pavelshapel</groupId>
+                <artifactId>aop-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.pavelshapel</groupId>
+                <artifactId>core-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+                <optional>true</optional>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -70,19 +95,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
