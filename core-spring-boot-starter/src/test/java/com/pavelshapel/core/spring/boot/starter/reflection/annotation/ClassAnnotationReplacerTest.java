@@ -4,16 +4,12 @@ import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.lang.annotation.Annotation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ContextConfiguration(classes = {
-        CoreStarterAutoConfiguration.class
-})
+@SpringBootTest(classes = {CoreStarterAutoConfiguration.class})
 class ClassAnnotationReplacerTest {
     public static final String MESSAGE = "message";
     public static final String NEW_MESSAGE = "new message";

@@ -1,6 +1,6 @@
 package com.pavelshapel.core.spring.boot.starter.bean;
 
-import com.pavelshapel.stream.spring.boot.starter.util.StreamUtils;
+import com.pavelshapel.core.spring.boot.starter.util.StreamUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 

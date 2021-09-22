@@ -2,6 +2,7 @@ package com.pavelshapel.core.spring.boot.starter;
 
 import com.pavelshapel.core.spring.boot.starter.reflection.annotation.AnnotationReplacer;
 import com.pavelshapel.core.spring.boot.starter.reflection.annotation.ClassAnnotationReplacer;
+import com.pavelshapel.core.spring.boot.starter.util.StreamUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,5 +18,10 @@ public class CoreStarterAutoConfiguration {
     @Bean
     public AnnotationReplacer annotationReplacer() {
         return new ClassAnnotationReplacer();
+    }
+
+    @Bean
+    public StreamUtils streamUtils() {
+        return new StreamUtils();
     }
 }
