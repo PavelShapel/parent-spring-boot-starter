@@ -30,8 +30,7 @@ public abstract class AbstractProvider implements ArgumentsProvider {
     }
 
     private Stream<Arguments> provideGenericArguments() {
-        return Stream.generate(() -> arguments(getArguments()))
-                .limit(this.iterationsCount);
+        return Stream.generate(() -> arguments(getArguments())).limit(this.iterationsCount);
     }
 
     private Object[] getArguments() {
