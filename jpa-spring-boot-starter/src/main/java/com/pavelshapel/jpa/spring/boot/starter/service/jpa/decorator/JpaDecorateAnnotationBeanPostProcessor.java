@@ -1,19 +1,23 @@
 package com.pavelshapel.jpa.spring.boot.starter.service.jpa.decorator;
 
 import com.pavelshapel.jpa.spring.boot.starter.service.jpa.JpaService;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class JpaDecorateAnnotationBeanPostProcessor implements BeanPostProcessor {
-    @Autowired
-    private ApplicationContext context;
-
-    private final Map<String, Class<?>> jpaDecorateBeans = new HashMap<>();
+    ApplicationContext applicationContext;
+    Map<String, Class<?>> jpaDecorateBeans = new HashMap<>();
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -42,18 +46,18 @@ public class JpaDecorateAnnotationBeanPostProcessor implements BeanPostProcessor
         JpaDecorate annotation = jpaDecorateBeans.get(wrappedName).getAnnotation(JpaDecorate.class);
         for (Class<? extends JpaService<?>> decorationClass : annotation.decorations()) {
             JpaService<?> wrapper = getWrapper(decorationClass);
-            wrapped = getWrappedWithDecoration(wrapper, wrappedName);
+            wrapped = getWrappedWithDecoration(wrapper, wrapped);
         }
         return wrapped;
     }
 
     private JpaService<?> getWrapper(Class<?> decorationClass) {
-        return (JpaService<?>) context.getBean(decorationClass);
+        return (JpaService<?>) applicationContext.getBean(decorationClass);
     }
 
-    private Object getWrappedWithDecoration(JpaService<?> decoratingBean, String wrappedName) {
-        AbstractDecoratorJpaService<?> decorator = (AbstractDecoratorJpaService<?>) decoratingBean;
-        decorator.setWrapped((JpaService) context.getBean(wrappedName));
+    private Object getWrappedWithDecoration(Object wrapper, Object wrapped) {
+        AbstractDecoratorJpaService<?> decorator = (AbstractDecoratorJpaService<?>) wrapper;
+        decorator.setWrapped((JpaService) applicationContext.getBean(wrapped.getClass()));
         return decorator;
     }
 }
