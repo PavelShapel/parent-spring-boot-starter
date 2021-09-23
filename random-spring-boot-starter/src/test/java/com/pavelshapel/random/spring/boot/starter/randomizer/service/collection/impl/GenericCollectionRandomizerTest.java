@@ -6,11 +6,9 @@ import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Specificatio
 import com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded.BoundedTypeBeansCollection;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.RandomizerBeansCollection;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.Randomizer;
-import com.pavelshapel.stream.spring.boot.starter.util.StreamUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,11 +17,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ContextConfiguration(classes = {
-        RandomStarterAutoConfiguration.class,
-        StreamUtils.class
-})
+@SpringBootTest(classes = RandomStarterAutoConfiguration.class)
 class GenericCollectionRandomizerTest {
     @Autowired
     private GenericCollectionRandomizer genericCollectionRandomizer;
