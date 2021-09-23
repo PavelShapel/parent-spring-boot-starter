@@ -1,8 +1,6 @@
 package com.pavelshapel.test.spring.boot.starter.layer;
 
 import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
-import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchCriteria;
-import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchOperation;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchSpecification;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,12 +17,4 @@ public abstract class AbstractJpaServiceTest<T extends AbstractEntity> {
 
     @Autowired
     private SearchSpecification<T> searchSpecification;
-
-    protected SearchCriteria getSearchCriteria(String value, String field, SearchOperation searchOperation) {
-        SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setField(field);
-        searchCriteria.setValue(value);
-        searchCriteria.setOperation(searchOperation);
-        return searchCriteria;
-    }
 }
