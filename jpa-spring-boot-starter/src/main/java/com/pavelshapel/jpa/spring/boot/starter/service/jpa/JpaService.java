@@ -48,4 +48,6 @@ public interface JpaService<T extends AbstractEntity> {
     T getParent(T entity);
 
     List<T> getParentage(Long id);
+
+    Class<T> getEntityClass();
 }

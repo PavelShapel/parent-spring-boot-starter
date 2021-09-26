@@ -6,11 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 
 public abstract class ThrowableDecoratorJpaService<T extends AbstractEntity> extends AbstractDecoratorJpaService<T> {
@@ -84,7 +85,7 @@ public abstract class ThrowableDecoratorJpaService<T extends AbstractEntity> ext
 
     protected void verifyId(Long id) {
         if (isNull(id) || !super.existsById(id)) {
-            throw createEntityNotFoundException(Collections.singletonList(id));
+            throw createEntityNotFoundException(singletonList(id));
         }
     }
 
@@ -95,12 +96,12 @@ public abstract class ThrowableDecoratorJpaService<T extends AbstractEntity> ext
     }
 
     protected void verifyCollection(List<T> entities) {
-        verifyCollection(entities, Collections.emptyList());
+        verifyCollection(entities, emptyList());
     }
 
     protected void verifyCount(Long count) {
         if (count == 0) {
-            throw createEntityNotFoundException(Collections.emptyList());
+            throw createEntityNotFoundException(emptyList());
         }
     }
 

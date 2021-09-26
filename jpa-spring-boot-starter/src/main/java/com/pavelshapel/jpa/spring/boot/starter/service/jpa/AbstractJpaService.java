@@ -117,6 +117,11 @@ public abstract class AbstractJpaService<T extends AbstractEntity> implements Jp
         return result;
     }
 
+    @Override
+    public Class<T> getEntityClass() {
+        return (Class<T>) create().getClass();
+    }
+
     private void copyFields(Object source, Object destination) {
         if (!source.getClass().isAssignableFrom(destination.getClass())) {
             throw new IllegalArgumentException(

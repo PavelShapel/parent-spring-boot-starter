@@ -109,4 +109,9 @@ public abstract class AbstractDecoratorJpaService<T extends AbstractEntity> impl
     public List<T> getParentage(Long id) {
         return wrapped.getParentage(id);
     }
+
+    @Override
+    public Class<T> getEntityClass() {
+        return wrapped.getEntityClass();
+    }
 }
