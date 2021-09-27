@@ -8,6 +8,8 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.*;
+
 public class StreamUtils {
     public <T> Collector<T, ?, Optional<T>> toSingleton() {
         return Collectors.collectingAndThen(
@@ -27,7 +29,7 @@ public class StreamUtils {
         return Collectors.collectingAndThen(
                 Collectors.toList(), list -> {
                     if (reverse) {
-                        Collections.reverse(list);
+                        reverse(list);
                     }
                     return list;
                 });

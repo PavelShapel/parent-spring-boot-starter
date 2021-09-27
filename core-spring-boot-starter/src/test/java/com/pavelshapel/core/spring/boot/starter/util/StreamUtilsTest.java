@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static java.util.Collections.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(classes = {CoreStarterAutoConfiguration.class})
@@ -22,7 +23,7 @@ class StreamUtilsTest {
 
     @Test
     void toSingleton_WithSingleCollection_ShouldReturnResult() {
-        List<Object> list = Collections.singletonList(COLLECTION_ELEMENT);
+        List<Object> list = singletonList(COLLECTION_ELEMENT);
 
         Optional<Object> singleton = list.stream().collect(streamUtils.toSingleton());
 
@@ -33,7 +34,7 @@ class StreamUtilsTest {
 
     @Test
     void toSingleton_WithEmptyCollection_ShouldReturnOptionalEmpty() {
-        List<Object> list = Collections.emptyList();
+        List<Object> list = emptyList();
 
         Optional<Object> singleton = list.stream().collect(streamUtils.toSingleton());
 
@@ -51,7 +52,7 @@ class StreamUtilsTest {
 
     @Test
     void toResponseEntityList_WithCollection_ShouldReturnResult() {
-        List<String> list = Collections.singletonList(COLLECTION_ELEMENT);
+        List<String> list = singletonList(COLLECTION_ELEMENT);
 
         ResponseEntity<List<String>> responseEntity = list.stream().collect(streamUtils.toResponseEntityList());
 
