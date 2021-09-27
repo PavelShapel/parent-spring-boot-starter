@@ -1,17 +1,18 @@
 package com.pavelshapel.web.spring.boot.starter.controller;
 
 import com.pavelshapel.aop.spring.boot.starter.log.method.Loggable;
+import com.pavelshapel.core.spring.boot.starter.util.StreamUtils;
 import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchCriteria;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchSpecification;
 import com.pavelshapel.jpa.spring.boot.starter.service.jpa.JpaService;
-import com.pavelshapel.stream.spring.boot.starter.util.StreamUtils;
 import com.pavelshapel.web.spring.boot.starter.controller.converter.FromDtoConverter;
 import com.pavelshapel.web.spring.boot.starter.controller.converter.ToDtoConverter;
+import com.pavelshapel.web.spring.boot.starter.html.element.table.TableHtml;
+import com.pavelshapel.web.spring.boot.starter.html.factory.impl.HtmlFactories;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
@@ -25,14 +26,18 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter(AccessLevel.PROTECTED)
 @Loggable
 public abstract class AbstractJpaRestController<T extends AbstractEntity> {
-    public static final String ID_PATH = "/{id}" + StringUtils.EMPTY;
-    public static final String PAGING_PATH = "/page" + StringUtils.EMPTY;
-    public static final String SEARCH_PATH = "/search" + StringUtils.EMPTY;
+    public static final String ID_PATH = "/{id}" + EMPTY;
+    public static final String PAGING_PATH = "/page" + EMPTY;
+    public static final String SEARCH_PATH = "/search" + EMPTY;
     public static final String PARENTAGE_PATH = "/parentage" + ID_PATH;
+    public static final String FORM_PATH = ID_PATH + "/form";
+    public static final String TABLE_PATH = "/table" + EMPTY;
 
     private final JpaService<T> jpaService;
     private final SearchSpecification<T> searchSpecification;
@@ -41,6 +46,8 @@ public abstract class AbstractJpaRestController<T extends AbstractEntity> {
 
     @Autowired
     private StreamUtils streamUtils;
+    @Autowired
+    private HtmlFactories htmlFactories;
 
     @PostMapping
     public ResponseEntity<T> save(@RequestBody @Valid T entity) {
@@ -106,5 +113,12 @@ public abstract class AbstractJpaRestController<T extends AbstractEntity> {
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         jpaService.deleteById(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(TABLE_PATH)
+    public ResponseEntity<String> getTable(@Valid SearchCriteria searchCriteria, @PageableDefault Pageable pageable) {
+        return ResponseEntity.ok(htmlFactories.getFactory(TableHtml.class)
+                .create(jpaService.getEntityClass(), findAll(searchCriteria, pageable).getBody())
+                .toString());
     }
 }
