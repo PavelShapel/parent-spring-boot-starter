@@ -6,8 +6,11 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class SearchCriteria {
+    public static final String DEFAULT_FIELD = "id";
+    public static final Integer DEFAULT_VALUE = 0;
+
     @NotBlank
-    private String field;
-    private Object value;
-    private SearchOperation operation = SearchOperation.EQUALS;
+    private String field = DEFAULT_FIELD;
+    private Object value = DEFAULT_VALUE;
+    private SearchOperation operation = SearchOperation.GREATER_THAN_OR_EQUAL_TO;
 }
