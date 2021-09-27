@@ -1,8 +1,8 @@
 package com.pavelshapel.jpa.spring.boot.starter.repository.search;
 
 public enum SearchOperation {
-    EQUAL,
-    NOT_EQUAL,
+    EQUALS,
+    NOT_EQUALS,
     GREATER_THAN,
     GREATER_THAN_OR_EQUAL_TO,
     LESS_THAN,

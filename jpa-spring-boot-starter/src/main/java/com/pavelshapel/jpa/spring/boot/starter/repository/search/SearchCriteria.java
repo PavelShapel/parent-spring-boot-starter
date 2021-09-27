@@ -9,5 +9,5 @@ public class SearchCriteria {
     @NotBlank
     private String field;
     private Object value;
-    private SearchOperation operation = SearchOperation.EQUAL;
+    private SearchOperation operation = SearchOperation.EQUALS;
 }

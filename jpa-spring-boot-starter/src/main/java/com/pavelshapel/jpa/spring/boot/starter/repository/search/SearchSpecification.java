@@ -18,9 +18,9 @@ public abstract class SearchSpecification<T extends AbstractEntity> implements S
         String field = searchCriteria.getField();
         Object value = searchCriteria.getValue();
         switch (searchCriteria.getOperation()) {
-            case EQUAL:
+            case EQUALS:
                 return builder.equal(root.get(field), value);
-            case NOT_EQUAL:
+            case NOT_EQUALS:
                 return builder.notEqual(root.get(field), value);
             case GREATER_THAN:
                 return builder.greaterThan(root.get(field), value.toString());

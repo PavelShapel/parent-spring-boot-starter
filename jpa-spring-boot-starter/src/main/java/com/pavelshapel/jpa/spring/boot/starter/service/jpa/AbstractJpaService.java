@@ -5,7 +5,7 @@ import com.pavelshapel.jpa.spring.boot.starter.repository.AbstractJpaRepository;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,9 +20,11 @@ import static org.springframework.util.ReflectionUtils.makeAccessible;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter(AccessLevel.PROTECTED)
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public abstract class AbstractJpaService<T extends AbstractEntity> implements JpaService<T> {
-    AbstractJpaRepository<T> abstractJpaRepository;
+    @Autowired
+    private AbstractJpaRepository<T> abstractJpaRepository;
+
+    private final Class<T> entityClass;
 
     @Override
     public T createAndSave() {
@@ -119,8 +121,10 @@ public abstract class AbstractJpaService<T extends AbstractEntity> implements Jp
 
     @Override
     public Class<T> getEntityClass() {
-        return (Class<T>) create().getClass();
+        return entityClass;
     }
+
+
 
     private void copyFields(Object source, Object destination) {
         if (!source.getClass().isAssignableFrom(destination.getClass())) {
