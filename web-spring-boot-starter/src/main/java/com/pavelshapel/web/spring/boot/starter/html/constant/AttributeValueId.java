@@ -11,9 +11,9 @@ public enum AttributeValueId {
     RIGHT("right"),
 
     //BUTTON
-    BUTTON("button"),
-    SUBMIT("submit"),
-    RESET("reset"),
+    SIMPLE_BUTTON("button"),
+    SUBMIT_BUTTON("submit"),
+    RESET_BUTTON("reset"),
 
     //CRUD
     CRUD_INSERT("INS"),
@@ -31,6 +31,7 @@ public enum AttributeValueId {
     INT_5("5"),
 
     //WIDTH
+    WIDTH_10_PERCENT("10%"),
     WIDTH_80_PERCENT("80%");
 
     @Getter

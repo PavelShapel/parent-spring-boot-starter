@@ -3,11 +3,10 @@ package com.pavelshapel.web.spring.boot.starter.html.element.table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
-import com.pavelshapel.web.spring.boot.starter.html.constant.TagId;
+import com.pavelshapel.web.spring.boot.starter.html.constant.AttributeValueId;
 import com.pavelshapel.web.spring.boot.starter.html.element.AbstractHtml;
 import com.pavelshapel.web.spring.boot.starter.html.element.Html;
 import com.pavelshapel.web.spring.boot.starter.html.element.simple.AttributeHtml;
-import com.pavelshapel.web.spring.boot.starter.html.element.simple.StringHtml;
 import com.pavelshapel.web.spring.boot.starter.html.element.simple.TagHtml;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
@@ -38,12 +37,9 @@ public class TableHtml extends AbstractHtml {
 
     @Override
     public String toString() {
-        return getTemplateHtmlFactory().create(
-                Stream.of(
-                        createH1TagHtml(),
-                        createTableTagHtml())
-                        .collect(Collectors.toList()))
-                .toString();
+        List<Html> bodies = Stream.of(createH1TagHtml(), createTableTagHtml())
+                .collect(Collectors.toList());
+        return createTemplateHtml(bodies).toString();
     }
 
     private TagHtml createH1TagHtml() {
@@ -51,45 +47,44 @@ public class TableHtml extends AbstractHtml {
     }
 
     private TagHtml createTableTagHtml() {
-        AttributeHtml borderAttributeHtml = getAttributeHtmlFactory().create(BORDER.toString(), singleton(INT_1.toString()));
-        AttributeHtml widthAttributeHtml = getAttributeHtmlFactory().create(WIDTH.toString(), singleton(WIDTH_80_PERCENT.toString()));
-        AttributeHtml cellPaddingAttributeHtml = getAttributeHtmlFactory().create(CELLPADDING.toString(), singleton(INT_5.toString()));
-        TagHtml tableTHeadTagHtml = createTHeadTagHtml(singletonList(createTableHeaderTagHtml(getEntityFields())));
-        TagHtml tableTBodyTagHtml = createTBodyTagHtml(createTableBodyTagHtml());
-        return getTagHtmlFactory().create(
-                TABLE.toString(),
-                Stream.of(
-                        borderAttributeHtml,
-                        widthAttributeHtml,
-                        cellPaddingAttributeHtml,
-                        createAlignCenterAttributeHtml()
-                ).collect(Collectors.toSet()),
+        Set<AttributeHtml> attributes = Stream.of(
+                createAttributeHtml(BORDER, singleton(INT_1)),
+                createAttributeHtml(WIDTH, singleton(WIDTH_80_PERCENT)),
+                createAttributeHtml(CELLPADDING, singleton(INT_5)),
+                createAlignCenterAttributeHtml()
+        ).collect(Collectors.toSet());
+        List<Html> bodies = Stream.of(
+                createTHeadTagHtml(singletonList(createTableHeaderTagHtml(getEntityFields()))),
+                createTBodyTagHtml(createTableBodyTagHtml())
+        ).collect(Collectors.toList());
+        return createTagHtml(
+                TABLE,
+                attributes,
                 emptySet(),
-                Stream.of(
-                        tableTHeadTagHtml,
-                        tableTBodyTagHtml
-                ).collect(Collectors.toList())
+                bodies
         );
     }
 
     private TagHtml createTableHeaderTagHtml(Set<Field> entityFields) {
-        StringHtml emptyStringHtml = getStringHtmlFactory().create(EMPTY);
         List<TagHtml> thTagHtmlList = entityFields.stream()
                 .sorted(reorderIdFieldAsFirst())
                 .map(Field::getName)
-                .map(name -> getStringHtmlFactory().create(name))
+                .map(this::createStringHtml)
                 .map(Collections::singletonList)
                 .map(this::createThTagHtml)
                 .collect(Collectors.toList());
-        thTagHtmlList.add(thTagHtmlList.size(), createThTagHtml(singletonList(emptyStringHtml)));
+        thTagHtmlList.add(createThTagHtml(singletonList(createStringHtml(EMPTY))));
         return createTrTagHtml(thTagHtmlList);
     }
 
     private List<TagHtml> createTableBodyTagHtml() {
+        List<TagHtml> crudButtonTagHtmlList = Stream.of(
+                createSimpleButtonTagHtml(CRUD_UPDATE.toString()),
+                createSimpleButtonTagHtml(CRUD_DELETE.toString())
+        ).collect(Collectors.toList());
         return entities.stream()
                 .map(this::convertEntityToTdTagHtmlList)
-                .peek(tagHtmlList ->
-                        tagHtmlList.add(tagHtmlList.size(), createTdTagHtml(Stream.of(createSimpleButtonTagHtml(CRUD_UPDATE.toString()), createSimpleButtonTagHtml(CRUD_DELETE.toString())).collect(Collectors.toList()))))
+                .peek(tagHtmlList -> tagHtmlList.add(createTdTagHtml(WIDTH_10_PERCENT, crudButtonTagHtmlList)))
                 .map(this::createTrTagHtml)
                 .collect(Collectors.toList());
     }
@@ -97,7 +92,8 @@ public class TableHtml extends AbstractHtml {
     private List<TagHtml> convertEntityToTdTagHtmlList(AbstractEntity entity) {
         return getEntityFields().stream()
                 .sorted(reorderIdFieldAsFirst())
-                .map(field -> getStringHtmlFactory().create(getFieldValue(entity, field)))
+                .map(field -> getFieldValue(entity, field))
+                .map(this::createStringHtml)
                 .map(Collections::singletonList)
                 .map(this::createTdTagHtml)
                 .collect(Collectors.toList());
@@ -132,31 +128,27 @@ public class TableHtml extends AbstractHtml {
         return createTagHtml(TR, htmlList);
     }
 
-    private <T extends Html> TagHtml createTagHtml(TagId tagId, List<T> htmlList) {
-        return getTagHtmlFactory().create(
-                tagId.toString(),
-                emptySet(),
-                emptySet(),
-                htmlList);
+    private <T extends Html> TagHtml createThTagHtml(List<T> htmlList) {
+        return createTagHtml(TH, singleton(createBackGroundGrayAttributeHtml()), htmlList);
+    }
+
+    private <T extends Html> TagHtml createTdTagHtml(AttributeValueId width, List<T> htmlList) {
+        Set<AttributeHtml> attributes = Stream.of(
+                createAttributeHtml(WIDTH, singleton(width)),
+                createAlignAttributeHtmlByType(htmlList)
+        ).collect(Collectors.toSet());
+        return createTdTagHtml(attributes, htmlList);
+    }
+
+    private <T extends Html> TagHtml createTdTagHtml(List<T> htmlList) {
+        return createTdTagHtml(singleton(createAlignAttributeHtmlByType(htmlList)), htmlList);
+    }
+
+    private <T extends Html> TagHtml createTdTagHtml(Set<AttributeHtml> attributeHtmlSet, List<T> htmlList) {
+        return createTagHtml(TD, attributeHtmlSet, htmlList);
     }
 
     private Comparator<Field> reorderIdFieldAsFirst() {
         return Comparator.comparing(Field::getName, Comparator.comparing(name -> !ID.equals(name)));
-    }
-
-    private <T extends Html> TagHtml createThTagHtml(List<T> htmlList) {
-        return createTableCellTagHtml(TH, singleton(createBackGroundGrayAttributeHtml()), htmlList);
-    }
-
-    private <T extends Html> TagHtml createTdTagHtml(List<T> htmlList) {
-        return createTableCellTagHtml(TD, singleton(createAlignAttributeHtmlByType(htmlList)), htmlList);
-    }
-
-    private <T extends Html> TagHtml createTableCellTagHtml(TagId tagId, Set<AttributeHtml> attributeHtmlSet, List<T> htmlList) {
-        return getTagHtmlFactory().create(
-                tagId.toString(),
-                attributeHtmlSet,
-                emptySet(),
-                htmlList);
     }
 }

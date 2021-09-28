@@ -25,13 +25,13 @@ public class TemplateHtml extends AbstractHtml {
 
     @Override
     public String toString() {
-        StringHtml headTitleStringHtml = getStringHtmlFactory().create(getApplicationName());
-        TagHtml titleTagHtml = getTagHtmlFactory().create(TITLE.toString(), emptySet(), emptySet(), singletonList(headTitleStringHtml));
-        AttributeHtml charsetAttributeHtml = getAttributeHtmlFactory().create(CHARSET.toString(), singleton(UTF_8.toString()));
-        TagHtml metaTagHtml = getTagHtmlFactory().create(META.toString(), singleton(charsetAttributeHtml), emptySet(), emptyList());
-        TagHtml headTagHtml = getTagHtmlFactory().create(HEAD.toString(), emptySet(), emptySet(), Stream.of(metaTagHtml, titleTagHtml).collect(Collectors.toList()));
-        TagHtml bodyTagHtml = getTagHtmlFactory().create(BODY.toString(), emptySet(), emptySet(), bodies);
-        TagHtml htmlTagHtml = getTagHtmlFactory().create(HTML.toString(), emptySet(), emptySet(), Stream.of(headTagHtml, bodyTagHtml).collect(Collectors.toList()));
+        StringHtml headTitleStringHtml = createStringHtml(getApplicationName());
+        TagHtml titleTagHtml = createTagHtml(TITLE, emptySet(), emptySet(), singletonList(headTitleStringHtml));
+        AttributeHtml charsetAttributeHtml = createAttributeHtml(CHARSET, singleton(UTF_8));
+        TagHtml metaTagHtml = createTagHtml(META, singleton(charsetAttributeHtml), emptySet(), emptyList());
+        TagHtml headTagHtml = createTagHtml(HEAD, emptySet(), emptySet(), Stream.of(metaTagHtml, titleTagHtml).collect(Collectors.toList()));
+        TagHtml bodyTagHtml = createTagHtml(BODY, emptySet(), emptySet(), bodies);
+        TagHtml htmlTagHtml = createTagHtml(HTML, emptySet(), emptySet(), Stream.of(headTagHtml, bodyTagHtml).collect(Collectors.toList()));
         return String.format("%s%s", DOC_TYPE_HTML, htmlTagHtml.toString());
     }
 }
