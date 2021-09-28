@@ -113,8 +113,8 @@ public class WebStarterAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @Scope(SCOPE_PROTOTYPE)
-    public TagHtml tagHtml(String tag, List<Html> body, Set<AttributeHtml> attributes, Set<StringHtml> modifiers) {
-        return new TagHtml(tag, body, attributes, modifiers);
+    public TagHtml tagHtml(String tag, Set<AttributeHtml> attributes, Set<StringHtml> modifiers, List<Html> bodies) {
+        return new TagHtml(tag, attributes, modifiers, bodies);
     }
 
     @Bean

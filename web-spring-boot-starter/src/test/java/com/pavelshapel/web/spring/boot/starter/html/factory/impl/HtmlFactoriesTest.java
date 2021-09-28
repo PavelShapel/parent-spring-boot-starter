@@ -67,7 +67,7 @@ class HtmlFactoriesTest {
         AttributeHtml attributeHtml = new AttributeHtml(attributeKey, singleton(attributeValue));
         StringHtml modifierStringHtml = new StringHtml(modifier);
         String actualTagHtml = htmlFactories.getFactory(TagHtml.class)
-                .create(tag, singletonList(bodyStringHtml), singleton(attributeHtml), singleton(modifierStringHtml))
+                .create(tag, singleton(attributeHtml), singleton(modifierStringHtml), singletonList(bodyStringHtml))
                 .toString();
         String expectedTagHtml = String.format("<%1$s %2$s=\"%3$s\" %4$s>%5$s</%1$s>", tag, attributeKey, attributeValue, modifier, body);
 

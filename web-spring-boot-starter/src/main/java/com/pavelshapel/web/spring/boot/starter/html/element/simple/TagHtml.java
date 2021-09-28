@@ -12,9 +12,9 @@ import static org.apache.commons.lang3.StringUtils.SPACE;
 @Value
 public class TagHtml implements Html {
     String tag;
-    List<Html> bodies;
     Set<AttributeHtml> attributes;
     Set<StringHtml> modifiers;
+    List<Html> bodies;
 
     @Override
     public String toString() {
