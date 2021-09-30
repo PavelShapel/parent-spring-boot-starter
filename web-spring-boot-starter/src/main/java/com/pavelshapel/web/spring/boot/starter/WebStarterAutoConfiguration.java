@@ -12,6 +12,7 @@ import com.pavelshapel.web.spring.boot.starter.html.element.template.TemplateHtm
 import com.pavelshapel.web.spring.boot.starter.html.factory.impl.*;
 import com.pavelshapel.web.spring.boot.starter.wrapper.TypedResponseWrapperRestControllerAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.List;
 import java.util.Set;
@@ -34,6 +42,10 @@ public class WebStarterAutoConfiguration implements WebMvcConfigurer {
     //inject custom objectMapper to represent date/string correctly
     @Autowired
     private ObjectMapper objectMapper;
+    @Value("${spring.application.name:[spring.application.name] property not set}")
+    private String applicationName;
+    @Value("${spring.application.description:[spring.application.description] property not set}")
+    private String applicationDescription;
 
     @Bean
     public WebContextRefreshedListener webContextRefreshedListener() {
@@ -61,6 +73,23 @@ public class WebStarterAutoConfiguration implements WebMvcConfigurer {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setObjectMapper(objectMapper);
         return converter;
+    }
+
+    @Bean
+    public Docket docket() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
+                .paths(PathSelectors.any())
+                .build()
+                .apiInfo(metadata());
+    }
+
+    private ApiInfo metadata() {
+        return new ApiInfoBuilder()
+                .title(applicationName)
+                .description(applicationDescription)
+                .build();
     }
 
     //html

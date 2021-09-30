@@ -29,6 +29,8 @@ public enum AttributeValueId {
     //NUMBER
     INT_1("1"),
     INT_5("5"),
+    INT_10("10"),
+    INT_25("25"),
 
     //WIDTH
     WIDTH_10_PERCENT("10%"),

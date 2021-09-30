@@ -62,9 +62,9 @@ public abstract class AbstractHtml implements Html {
         return stringHtmlFactory.create(value);
     }
 
-    protected final AttributeHtml createAttributeHtml(AttributeId key, Set<AttributeValueId> attributeValueIds) {
-        Set<String> stringValues = attributeValueIds.stream()
-                .map(AttributeValueId::toString)
+    protected final <T> AttributeHtml createAttributeHtml(AttributeId key, Set<T> values) {
+        Set<String> stringValues = values.stream()
+                .map(Object::toString)
                 .collect(Collectors.toSet());
         return attributeHtmlFactory.create(key.toString(), stringValues);
     }

@@ -37,8 +37,10 @@ public class TableHtml extends AbstractHtml {
 
     @Override
     public String toString() {
-        List<Html> bodies = Stream.of(createH1TagHtml(), createTableTagHtml())
-                .collect(Collectors.toList());
+        List<Html> bodies = Stream.of(
+                createH1TagHtml(),
+                createTableTagHtml()
+        ).collect(Collectors.toList());
         return createTemplateHtml(bodies).toString();
     }
 
@@ -53,9 +55,11 @@ public class TableHtml extends AbstractHtml {
                 createAttributeHtml(CELLPADDING, singleton(INT_5)),
                 createAlignCenterAttributeHtml()
         ).collect(Collectors.toSet());
+        LinkedHashSet<Field> entityFields = getEntityFields();
         List<Html> bodies = Stream.of(
-                createTHeadTagHtml(singletonList(createTableHeaderTagHtml(getEntityFields()))),
-                createTBodyTagHtml(createTableBodyTagHtml())
+                createTHeadTagHtml(createTableHeaderTagHtml(entityFields)),
+                createTBodyTagHtml(createTableBodyTagHtml()),
+                createTFootTagHtml(createTableFooterTagHtml(entityFields))
         ).collect(Collectors.toList());
         return createTagHtml(
                 TABLE,
@@ -65,7 +69,7 @@ public class TableHtml extends AbstractHtml {
         );
     }
 
-    private TagHtml createTableHeaderTagHtml(Set<Field> entityFields) {
+    private List<TagHtml> createTableHeaderTagHtml(Set<Field> entityFields) {
         List<TagHtml> thTagHtmlList = entityFields.stream()
                 .sorted(reorderIdFieldAsFirst())
                 .map(Field::getName)
@@ -74,7 +78,7 @@ public class TableHtml extends AbstractHtml {
                 .map(this::createThTagHtml)
                 .collect(Collectors.toList());
         thTagHtmlList.add(createThTagHtml(singletonList(createStringHtml(EMPTY))));
-        return createTrTagHtml(thTagHtmlList);
+        return singletonList(createTrTagHtml(thTagHtmlList));
     }
 
     private List<TagHtml> createTableBodyTagHtml() {
@@ -87,6 +91,13 @@ public class TableHtml extends AbstractHtml {
                 .peek(tagHtmlList -> tagHtmlList.add(createTdTagHtml(WIDTH_10_PERCENT, crudButtonTagHtmlList)))
                 .map(this::createTrTagHtml)
                 .collect(Collectors.toList());
+    }
+
+    private List<TagHtml> createTableFooterTagHtml(Set<Field> entityFields) {
+        String colSpan = Integer.toString(entityFields.size() + 1);
+        AttributeHtml colSpanAttributeHtml = createAttributeHtml(COLSPAN, singleton(colSpan));
+        TagHtml tdTagHtml = createTdTagHtml(singleton(colSpanAttributeHtml), singletonList(createStringHtml("test")));
+        return singletonList(createTrTagHtml(singletonList(tdTagHtml)));
     }
 
     private List<TagHtml> convertEntityToTdTagHtmlList(AbstractEntity entity) {
@@ -122,6 +133,10 @@ public class TableHtml extends AbstractHtml {
 
     private <T extends Html> TagHtml createTBodyTagHtml(List<T> htmlList) {
         return createTagHtml(TBODY, htmlList);
+    }
+
+    private <T extends Html> TagHtml createTFootTagHtml(List<T> htmlList) {
+        return createTagHtml(TFOOT, htmlList);
     }
 
     private <T extends Html> TagHtml createTrTagHtml(List<T> htmlList) {

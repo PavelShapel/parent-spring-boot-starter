@@ -7,6 +7,7 @@ public enum AttributeId {
     BORDER,
     CELLPADDING,
     CHARSET,
+    COLSPAN,
     WIDTH,
     TYPE;
 
