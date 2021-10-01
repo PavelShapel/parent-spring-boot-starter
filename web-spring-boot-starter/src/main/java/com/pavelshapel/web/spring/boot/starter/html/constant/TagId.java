@@ -1,6 +1,8 @@
 package com.pavelshapel.web.spring.boot.starter.html.constant;
 
-public enum TagId {
+import com.pavelshapel.web.spring.boot.starter.html.element.Html;
+
+public enum TagId implements Html {
     BODY,
     TITLE,
     META,

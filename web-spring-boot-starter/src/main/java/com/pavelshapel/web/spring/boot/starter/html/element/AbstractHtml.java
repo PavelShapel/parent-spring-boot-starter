@@ -22,11 +22,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.pavelshapel.web.spring.boot.starter.html.constant.AttributeId.*;
 import static com.pavelshapel.web.spring.boot.starter.html.constant.AttributeValueId.*;
-import static com.pavelshapel.web.spring.boot.starter.html.constant.TagId.H1;
 import static com.pavelshapel.web.spring.boot.starter.html.constant.TagId.BUTTON;
+import static com.pavelshapel.web.spring.boot.starter.html.constant.TagId.H1;
 import static java.util.Collections.*;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -62,15 +63,14 @@ public abstract class AbstractHtml implements Html {
         return stringHtmlFactory.create(value);
     }
 
-    protected final <T> AttributeHtml createAttributeHtml(AttributeId key, Set<T> values) {
+    protected final <T extends Html> AttributeHtml createAttributeHtml(AttributeId key, Set<T> values) {
         Set<String> stringValues = values.stream()
-                .map(Object::toString)
+                .map(Html::toString)
                 .collect(Collectors.toSet());
         return attributeHtmlFactory.create(key.toString(), stringValues);
     }
 
-    protected final <T extends Html> TagHtml createTagHtml(TagId tag,
-                                                           List<T> bodies) {
+    protected final <T extends Html> TagHtml createTagHtml(TagId tag, List<T> bodies) {
         return createTagHtml(tag, emptySet(), bodies);
     }
 
@@ -126,20 +126,37 @@ public abstract class AbstractHtml implements Html {
         return createAttributeHtml(BGCOLOR, singleton(color));
     }
 
-    protected final TagHtml createSimpleButtonTagHtml(String caption) {
-        return createButtonTagHtml(singleton(createSimpleButtonAttributeHtml()), caption);
+    protected final <T extends Html> TagHtml createSimpleButtonTagHtml(T caption) {
+        return createButtonTagHtml(singleton(createSimpleButtonAttributeHtml()), caption.toString());
+    }
+
+    protected final <T extends Html> TagHtml createSimpleButtonTagHtml(T href, T caption) {
+        Set<AttributeHtml> attributeHtmlSet = Stream.of(
+                createSimpleButtonAttributeHtml(),
+                createHrefButtonAttributeHtml(href.toString())
+        ).collect(Collectors.toSet());
+        return createButtonTagHtml(attributeHtmlSet, caption.toString());
+    }
+
+    protected final AttributeHtml createHrefButtonAttributeHtml(String href) {
+        String buttonHref = String.format(WINDOW_LOCATION_HREF.toString(), href);
+        return createAttributeHtml(ONCLICK, singleton(createStringHtml(buttonHref)));
     }
 
     protected final AttributeHtml createSimpleButtonAttributeHtml() {
-        return createAttributeHtml(TYPE, singleton(SIMPLE_BUTTON));
+        return createButtonAttributeHtml(SIMPLE_BUTTON);
     }
 
     protected final AttributeHtml createSubmitButtonAttributeHtml() {
-        return createAttributeHtml(TYPE, singleton(SUBMIT_BUTTON));
+        return createButtonAttributeHtml(SUBMIT_BUTTON);
     }
 
     protected final AttributeHtml createResetButtonAttributeHtml() {
-        return createAttributeHtml(TYPE, singleton(RESET_BUTTON));
+        return createButtonAttributeHtml(RESET_BUTTON);
+    }
+
+    protected final AttributeHtml createButtonAttributeHtml(AttributeValueId attributeValueId) {
+        return createAttributeHtml(TYPE, singleton(attributeValueId));
     }
 
     private TagHtml createButtonTagHtml(Set<AttributeHtml> typeAttributeHtmlSet, String caption) {

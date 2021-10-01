@@ -1,10 +1,11 @@
 package com.pavelshapel.web.spring.boot.starter.html.constant;
 
+import com.pavelshapel.web.spring.boot.starter.html.element.Html;
 import lombok.Getter;
 
 import java.nio.charset.StandardCharsets;
 
-public enum AttributeValueId {
+public enum AttributeValueId implements Html {
     //ALIGN
     LEFT("left"),
     CENTER("center"),
@@ -20,6 +21,12 @@ public enum AttributeValueId {
     CRUD_UPDATE("UPD"),
     CRUD_DELETE("DEL"),
 
+    //PAGINATION
+    FIRST("<<"),
+    PREVIOUS("<"),
+    NEXT(">"),
+    LAST(">>"),
+
     //COLOR
     GRAY("gray"),
 
@@ -34,7 +41,9 @@ public enum AttributeValueId {
 
     //WIDTH
     WIDTH_10_PERCENT("10%"),
-    WIDTH_80_PERCENT("80%");
+    WIDTH_80_PERCENT("80%"),
+
+    WINDOW_LOCATION_HREF("window.location.href='%s'");
 
     @Getter
     private final String value;

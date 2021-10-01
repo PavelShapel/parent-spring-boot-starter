@@ -1,13 +1,16 @@
 package com.pavelshapel.web.spring.boot.starter.html.constant;
 
 
-public enum AttributeId {
+import com.pavelshapel.web.spring.boot.starter.html.element.Html;
+
+public enum AttributeId implements Html {
     ALIGN,
     BGCOLOR,
     BORDER,
     CELLPADDING,
     CHARSET,
     COLSPAN,
+    ONCLICK,
     WIDTH,
     TYPE;
 

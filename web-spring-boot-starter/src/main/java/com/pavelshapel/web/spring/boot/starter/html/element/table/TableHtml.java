@@ -7,6 +7,7 @@ import com.pavelshapel.web.spring.boot.starter.html.constant.AttributeValueId;
 import com.pavelshapel.web.spring.boot.starter.html.element.AbstractHtml;
 import com.pavelshapel.web.spring.boot.starter.html.element.Html;
 import com.pavelshapel.web.spring.boot.starter.html.element.simple.AttributeHtml;
+import com.pavelshapel.web.spring.boot.starter.html.element.simple.StringHtml;
 import com.pavelshapel.web.spring.boot.starter.html.element.simple.TagHtml;
 import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
@@ -24,7 +25,6 @@ import static com.pavelshapel.web.spring.boot.starter.html.constant.AttributeId.
 import static com.pavelshapel.web.spring.boot.starter.html.constant.AttributeValueId.*;
 import static com.pavelshapel.web.spring.boot.starter.html.constant.TagId.*;
 import static java.util.Collections.*;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
 @Value
@@ -77,27 +77,52 @@ public class TableHtml extends AbstractHtml {
                 .map(Collections::singletonList)
                 .map(this::createThTagHtml)
                 .collect(Collectors.toList());
-        thTagHtmlList.add(createThTagHtml(singletonList(createStringHtml(EMPTY))));
+        TagHtml crudButtonTagHtml = createSimpleButtonTagHtml(CRUD_INSERT);
+        thTagHtmlList.add(createThTagHtml(singletonList(crudButtonTagHtml)));
         return singletonList(createTrTagHtml(thTagHtmlList));
     }
 
     private List<TagHtml> createTableBodyTagHtml() {
-        List<TagHtml> crudButtonTagHtmlList = Stream.of(
-                createSimpleButtonTagHtml(CRUD_UPDATE.toString()),
-                createSimpleButtonTagHtml(CRUD_DELETE.toString())
-        ).collect(Collectors.toList());
         return entities.stream()
                 .map(this::convertEntityToTdTagHtmlList)
-                .peek(tagHtmlList -> tagHtmlList.add(createTdTagHtml(WIDTH_10_PERCENT, crudButtonTagHtmlList)))
+                .map(this::addTdTagHtmlWithCrudButtons)
                 .map(this::createTrTagHtml)
                 .collect(Collectors.toList());
     }
 
+    private List<TagHtml> addTdTagHtmlWithCrudButtons(List<TagHtml> tagHtmlList) {
+        List<TagHtml> crudButtonTagHtmlList = Stream.of(
+                createSimpleButtonTagHtml(CRUD_UPDATE),
+                createSimpleButtonTagHtml(CRUD_DELETE)
+        ).collect(Collectors.toList());
+        tagHtmlList.add(createTdTagHtml(WIDTH_10_PERCENT, crudButtonTagHtmlList));
+        return tagHtmlList;
+    }
+
     private List<TagHtml> createTableFooterTagHtml(Set<Field> entityFields) {
         String colSpan = Integer.toString(entityFields.size() + 1);
-        AttributeHtml colSpanAttributeHtml = createAttributeHtml(COLSPAN, singleton(colSpan));
-        TagHtml tdTagHtml = createTdTagHtml(singleton(colSpanAttributeHtml), singletonList(createStringHtml("test")));
-        return singletonList(createTrTagHtml(singletonList(tdTagHtml)));
+        StringHtml colSpanStringHtml = createStringHtml(colSpan);
+        AttributeHtml colSpanAttributeHtml = createAttributeHtml(COLSPAN, singleton(colSpanStringHtml));
+        Set<AttributeHtml> attributeHtmlList = Stream.of(
+                createBackGroundGrayAttributeHtml(),
+                colSpanAttributeHtml
+        ).collect(Collectors.toSet());
+        TagHtml paginationTagHtml = createTdTagHtml(attributeHtmlList, createPaginationTagHtml());
+        return singletonList(createTrTagHtml(singletonList(paginationTagHtml)));
+    }
+
+    private List<TagHtml> createPaginationTagHtml() {
+        TagHtml firstSimpleButtonTagHtml = createSimpleButtonTagHtml(createStringHtml("https://www.google.by/"), FIRST);
+        TagHtml previousSimpleButtonTagHtml = createSimpleButtonTagHtml(createStringHtml("https://www.google.by/"), PREVIOUS);
+        TagHtml nextSimpleButtonTagHtml = createSimpleButtonTagHtml(createStringHtml("https://www.google.by/"), NEXT);
+        TagHtml lastSimpleButtonTagHtml = createSimpleButtonTagHtml(createStringHtml("https://www.google.by/"), LAST);
+        return Stream.of(
+                firstSimpleButtonTagHtml,
+                previousSimpleButtonTagHtml,
+                nextSimpleButtonTagHtml,
+                lastSimpleButtonTagHtml
+        ).collect(Collectors.toList());
+
     }
 
     private List<TagHtml> convertEntityToTdTagHtmlList(AbstractEntity entity) {
@@ -156,10 +181,13 @@ public class TableHtml extends AbstractHtml {
     }
 
     private <T extends Html> TagHtml createTdTagHtml(List<T> htmlList) {
-        return createTdTagHtml(singleton(createAlignAttributeHtmlByType(htmlList)), htmlList);
+        return createTdTagHtml(emptySet(), htmlList);
     }
 
-    private <T extends Html> TagHtml createTdTagHtml(Set<AttributeHtml> attributeHtmlSet, List<T> htmlList) {
+    private <T extends Html> TagHtml createTdTagHtml(Set<AttributeHtml> attributes, List<T> htmlList) {
+        Set<AttributeHtml> attributeHtmlSet = Stream.of(attributes, singleton(createAlignAttributeHtmlByType(htmlList)))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
         return createTagHtml(TD, attributeHtmlSet, htmlList);
     }
 
