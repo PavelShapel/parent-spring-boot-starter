@@ -22,7 +22,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 @AutoConfigureTestDatabase(replace = NONE)
 @ExtendWith(PostgreSQLExtension.class)
 @Getter(AccessLevel.PROTECTED)
-public abstract class AbstractJpaRepositoryTest<T extends AbstractEntity> implements MockSearchCriteria{
+public abstract class AbstractJpaRepositoryTest<T extends AbstractEntity> {
 
     @Autowired
     private AbstractJpaRepository<T> jpaRepository;
