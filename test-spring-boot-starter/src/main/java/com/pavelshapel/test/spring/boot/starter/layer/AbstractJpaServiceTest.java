@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 @ExtendWith(MockitoExtension.class)
-public abstract class AbstractJpaServiceTest<T extends AbstractEntity> {
+public abstract class AbstractJpaServiceTest<T extends AbstractEntity> implements MockSearchCriteria{
 
     @Autowired
     private SearchSpecification<T> searchSpecification;
