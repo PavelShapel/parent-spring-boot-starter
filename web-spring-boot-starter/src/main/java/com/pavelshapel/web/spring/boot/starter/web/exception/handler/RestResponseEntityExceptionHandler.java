@@ -1,6 +1,6 @@
-package com.pavelshapel.web.spring.boot.starter.controller.exception.handler;
+package com.pavelshapel.web.spring.boot.starter.web.exception.handler;
 
-import com.pavelshapel.web.spring.boot.starter.controller.exception.ErrorResponse;
+import com.pavelshapel.web.spring.boot.starter.web.exception.ErrorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

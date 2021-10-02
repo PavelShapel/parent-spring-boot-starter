@@ -1,4 +1,4 @@
-package com.pavelshapel.web.spring.boot.starter.controller.exception;
+package com.pavelshapel.web.spring.boot.starter.web.exception;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;

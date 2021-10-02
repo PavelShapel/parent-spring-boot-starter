@@ -2,7 +2,7 @@ package com.pavelshapel.web.spring.boot.starter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
-import com.pavelshapel.web.spring.boot.starter.controller.exception.handler.RestResponseEntityExceptionHandler;
+import com.pavelshapel.web.spring.boot.starter.web.exception.handler.RestResponseEntityExceptionHandler;
 import com.pavelshapel.web.spring.boot.starter.html.element.Html;
 import com.pavelshapel.web.spring.boot.starter.html.element.simple.AttributeHtml;
 import com.pavelshapel.web.spring.boot.starter.html.element.simple.StringHtml;
