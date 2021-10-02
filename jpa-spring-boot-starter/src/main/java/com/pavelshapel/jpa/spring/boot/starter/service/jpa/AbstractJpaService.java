@@ -38,6 +38,7 @@ public abstract class AbstractJpaService<T extends AbstractEntity> implements Jp
 
     @Override
     public T update(Long id, T entity) {
+        entity.setId(null);
         T entityFromDatabase = findById(id);
         copyFields(entity, entityFromDatabase);
         return abstractJpaRepository.save(entityFromDatabase);
