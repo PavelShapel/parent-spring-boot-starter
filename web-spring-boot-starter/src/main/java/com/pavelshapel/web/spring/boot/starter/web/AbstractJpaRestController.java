@@ -6,10 +6,11 @@ import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchCriteria;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchSpecification;
 import com.pavelshapel.jpa.spring.boot.starter.service.jpa.JpaService;
-import com.pavelshapel.web.spring.boot.starter.web.converter.FromDtoConverter;
-import com.pavelshapel.web.spring.boot.starter.web.converter.ToDtoConverter;
 import com.pavelshapel.web.spring.boot.starter.html.element.table.TableHtml;
 import com.pavelshapel.web.spring.boot.starter.html.factory.impl.HtmlFactories;
+import com.pavelshapel.web.spring.boot.starter.web.converter.AbstractDto;
+import com.pavelshapel.web.spring.boot.starter.web.converter.FromDtoConverter;
+import com.pavelshapel.web.spring.boot.starter.web.converter.ToDtoConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -33,17 +34,17 @@ import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter(AccessLevel.PROTECTED)
 @Loggable
-public abstract class AbstractJpaRestController<T extends AbstractEntity> {
+public abstract class AbstractJpaRestController<E extends AbstractEntity, D extends AbstractDto> {
     public static final String ID_PATH = "/{id}" + EMPTY;
     public static final String SEARCH_PATH = "/search" + EMPTY;
     public static final String PARENTAGE_PATH = ID_PATH + "/parentage";
     public static final String FORM_PATH = ID_PATH + "/form";
     public static final String TABLE_PATH = "/table" + EMPTY;
 
-    private final JpaService<T> jpaService;
-    private final SearchSpecification<T> searchSpecification;
-    private final FromDtoConverter<T> fromDtoConverter;
-    private final ToDtoConverter<T> toDtoConverter;
+    private final JpaService<E> jpaService;
+    private final SearchSpecification<E> searchSpecification;
+    private final FromDtoConverter<D, E> fromDtoConverter;
+    private final ToDtoConverter<E, D> toDtoConverter;
 
     @Autowired
     private StreamUtils streamUtils;
@@ -51,11 +52,11 @@ public abstract class AbstractJpaRestController<T extends AbstractEntity> {
     private HtmlFactories htmlFactories;
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<T> save(@RequestBody @Valid T entity) {
-        T dto = fromDtoConverter
+    public ResponseEntity<D> save(@RequestBody @Valid D dto) {
+        dto = fromDtoConverter
                 .andThen(jpaService::save)
                 .andThen(toDtoConverter)
-                .convert(entity);
+                .convert(dto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path(ID_PATH)
@@ -64,44 +65,43 @@ public abstract class AbstractJpaRestController<T extends AbstractEntity> {
     }
 
     @PutMapping(path = ID_PATH, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<T> update(@PathVariable Long id, @RequestBody @Valid T entity) {
+    public ResponseEntity<D> update(@PathVariable Long id, @RequestBody @Valid D dto) {
         return fromDtoConverter
-                .andThen(pojo -> jpaService.update(id, pojo))
+                .andThen(entity -> jpaService.update(id, entity))
                 .andThen(toDtoConverter)
                 .andThen(ResponseEntity::ok)
-                .convert(entity);
+                .convert(dto);
     }
 
 
     @GetMapping(path = ID_PATH, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<T> findById(@PathVariable Long id) {
-        return ((Converter<Long, T>) jpaService::findById)
+    public ResponseEntity<D> findById(@PathVariable Long id) {
+        return ((Converter<Long, E>) jpaService::findById)
                 .andThen(toDtoConverter)
                 .andThen(ResponseEntity::ok)
                 .convert(id);
     }
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<T>> findAll() {
+    public ResponseEntity<List<D>> findAll() {
         return jpaService.findAll().stream()
                 .map(toDtoConverter::convert)
                 .collect(streamUtils.toResponseEntityList());
     }
 
     @GetMapping(path = SEARCH_PATH, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<T>> findAll(@Valid SearchCriteria searchCriteria, @PageableDefault Pageable pageable) {
+    public ResponseEntity<Page<D>> findAll(@Valid SearchCriteria searchCriteria, @PageableDefault Pageable pageable) {
         searchSpecification.setSearchCriteria(searchCriteria);
-        Page<T> dto = jpaService.findAll(searchSpecification, pageable).map(toDtoConverter::convert);
-        return ResponseEntity.ok(dto);
+        Page<D> page = jpaService.findAll(searchSpecification, pageable).map(toDtoConverter::convert);
+        return ResponseEntity.ok(page);
     }
 
     @GetMapping(path = PARENTAGE_PATH, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<T>> getParentage(@RequestParam(required = false, defaultValue = "false") Boolean reverse,
+    public ResponseEntity<List<D>> getParentage(@RequestParam(required = false, defaultValue = "false") Boolean reverse,
                                                 @PathVariable Long id) {
-        List<T> dto = jpaService.getParentage(id).stream()
+        return jpaService.getParentage(id).stream()
                 .map(toDtoConverter::convert)
-                .collect(streamUtils.toList(reverse));
-        return ResponseEntity.ok(dto);
+                .collect(streamUtils.toResponseEntityList(reverse));
     }
 
     @DeleteMapping(path = ID_PATH, produces = APPLICATION_JSON_VALUE)
