@@ -19,15 +19,24 @@ public class StreamUtils {
     }
 
     public <T> Collector<T, ?, ResponseEntity<List<T>>> toResponseEntityList() {
+        return toResponseEntityList(false);
+    }
+
+    public <T> Collector<T, ?, ResponseEntity<List<T>>> toResponseEntityList(boolean reverse) {
         return Collectors.collectingAndThen(
                 Collectors.toList(),
-                ResponseEntity::ok
-        );
+                list -> {
+                    if (reverse) {
+                        reverse(list);
+                    }
+                    return ResponseEntity.ok(list);
+                });
     }
 
     public <T> Collector<T, ?, List<T>> toList(boolean reverse) {
         return Collectors.collectingAndThen(
-                Collectors.toList(), list -> {
+                Collectors.toList(),
+                list -> {
                     if (reverse) {
                         reverse(list);
                     }

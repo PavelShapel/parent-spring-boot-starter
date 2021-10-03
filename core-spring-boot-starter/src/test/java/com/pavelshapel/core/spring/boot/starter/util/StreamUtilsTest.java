@@ -51,7 +51,7 @@ class StreamUtilsTest {
     }
 
     @Test
-    void toResponseEntityList_WithCollection_ShouldReturnResult() {
+    void toResponseEntityList_ReverseFalse_ShouldReturnResult() {
         List<String> list = singletonList(COLLECTION_ELEMENT);
 
         ResponseEntity<List<String>> responseEntity = list.stream().collect(streamUtils.toResponseEntityList());
@@ -60,6 +60,21 @@ class StreamUtilsTest {
                 .asList()
                 .isNotEmpty()
                 .isEqualTo(list);
+    }
+
+    @Test
+    void toResponseEntityList_ReverseTrue_ShouldReturnResult() {
+        List<String> list = singletonList(COLLECTION_ELEMENT);
+
+        ResponseEntity<List<String>> responseEntity = list.stream().collect(streamUtils.toResponseEntityList(true));
+        List<String> responseBody = responseEntity.getBody();
+
+        assertThat(responseBody)
+                .asList()
+                .isNotEmpty()
+                .isEqualTo(list);
+        assertThat(list.get(0))
+                .isEqualTo(responseBody.get(responseBody.size() - 1));
     }
 
     @Test
