@@ -7,7 +7,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 public class PostgreSQLExtension implements BeforeAllCallback, AfterAllCallback {
-    public static final String DEFAULT_TAG = "9.6.12";
+    private static final String DEFAULT_TAG = "9.6.12";
     private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse("postgres");
 
     private PostgreSQLContainer<?> postgreSQLContainer;
@@ -15,7 +15,6 @@ public class PostgreSQLExtension implements BeforeAllCallback, AfterAllCallback 
     @Override
     public void beforeAll(ExtensionContext context) {
         postgreSQLContainer = new PostgreSQLContainer<>(DEFAULT_IMAGE_NAME.withTag(DEFAULT_TAG));
-
         postgreSQLContainer.start();
         System.setProperty("spring.datasource.url", postgreSQLContainer.getJdbcUrl());
         System.setProperty("spring.datasource.username", postgreSQLContainer.getUsername());
