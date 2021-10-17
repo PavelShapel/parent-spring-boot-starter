@@ -19,9 +19,9 @@ public class MongoDBExtension implements BeforeAllCallback, AfterAllCallback {
 
     @Override
     public void beforeAll(ExtensionContext context) {
-        mongoDBContainer = new MongoDBContainer(DEFAULT_IMAGE_NAME.withTag(DEFAULT_TAG))
-                .withEnv("MONGO_INITDB_ROOT_USERNAME", MONGO_INITDB_ROOT_USERNAME)
-                .withEnv("MONGO_INITDB_ROOT_PASSWORD", MONGO_INITDB_ROOT_PASSWORD);
+        mongoDBContainer = new MongoDBContainer(DEFAULT_IMAGE_NAME.withTag(DEFAULT_TAG));
+        mongoDBContainer.addEnv("MONGO_INITDB_ROOT_USERNAME", MONGO_INITDB_ROOT_USERNAME);
+        mongoDBContainer.addEnv("MONGO_INITDB_ROOT_PASSWORD", MONGO_INITDB_ROOT_PASSWORD);
         mongoDBContainer.start();
         String uri = String.format(
                 MONGO_URI_TEMPLATE,
