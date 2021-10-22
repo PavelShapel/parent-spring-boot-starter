@@ -12,6 +12,8 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public abstract class AbstractProvider implements ArgumentsProvider {
     public static final int DEFAULT_ITERATIONS_COUNT = 10;
+    public static final String ERROR_MESSAGE_PATTERN = "not found implementation for [%s]";
+
     private final int iterationsCount;
     private final Class<?>[] classes;
 
@@ -45,6 +47,6 @@ public abstract class AbstractProvider implements ArgumentsProvider {
                 .map(Supplier::get)
                 .filter(targetClass::isInstance)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(String.format("not found implementation for [%s]", targetClass.getSimpleName())));
+                .orElseThrow(() -> new IllegalArgumentException(String.format(ERROR_MESSAGE_PATTERN, targetClass.getSimpleName())));
     }
 }

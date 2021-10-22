@@ -8,8 +8,10 @@ import static com.pavelshapel.test.spring.boot.starter.TestStarterAutoConfigurat
 
 @Slf4j
 public class TestContextRefreshedListener implements ApplicationListener<ContextRefreshedEvent> {
+    public static final String LOG_PATTERN = "{}-spring-boot-starter was applied";
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        log.info("{}-spring-boot-starter was applied", TYPE);
+        log.info(LOG_PATTERN, TYPE);
     }
 }
