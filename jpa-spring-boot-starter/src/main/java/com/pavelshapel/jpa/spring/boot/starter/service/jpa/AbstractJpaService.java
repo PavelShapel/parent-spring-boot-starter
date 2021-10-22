@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Modifier;
@@ -20,6 +21,7 @@ import static org.springframework.util.ReflectionUtils.makeAccessible;
 
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter(AccessLevel.PROTECTED)
+@Transactional
 public abstract class AbstractJpaService<T extends AbstractEntity> implements JpaService<T> {
     @Autowired
     private AbstractJpaRepository<T> abstractJpaRepository;
@@ -124,7 +126,6 @@ public abstract class AbstractJpaService<T extends AbstractEntity> implements Jp
     public Class<T> getEntityClass() {
         return entityClass;
     }
-
 
 
     private void copyFields(Object source, Object destination) {

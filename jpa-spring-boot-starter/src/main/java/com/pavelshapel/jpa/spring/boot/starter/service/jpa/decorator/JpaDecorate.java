@@ -3,13 +3,12 @@ package com.pavelshapel.jpa.spring.boot.starter.service.jpa.decorator;
 
 import com.pavelshapel.jpa.spring.boot.starter.service.jpa.JpaService;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Documented
+@Inherited
 public @interface JpaDecorate {
     Class<? extends JpaService<?>>[] decorations();
 }
