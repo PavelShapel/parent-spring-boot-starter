@@ -8,8 +8,10 @@ import static com.pavelshapel.aop.spring.boot.starter.AopStarterAutoConfiguratio
 
 @Slf4j
 public class AopContextRefreshedListener implements ApplicationListener<ContextRefreshedEvent> {
+    public static final String LOG_PATTERN = "{}-spring-boot-starter was applied";
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        log.info("{}-spring-boot-starter was applied", TYPE);
+        log.info(LOG_PATTERN, TYPE);
     }
 }

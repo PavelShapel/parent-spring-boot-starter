@@ -31,30 +31,32 @@ class LoggableAspectTest {
 
     @Test
     void call_WithAnnotationWithLoggableType_ShouldLogResult(CapturedOutput capturedOutput) {
-        aspectTester.sendMessageWithAnnotationWithLoggableType();
+        String message = aspectTester.sendMessageWithAnnotationWithLoggableType();
 
         assertThat(capturedOutput.getOut())
-                .contains(LoggableType.METHOD_RESULT.getPrefix(), AspectTester.MESSAGE);
+                .contains(LoggableType.METHOD_RESULT.getPrefix(), message);
         verify(loggableAspect, times(1))
                 .onSuccess(any(JoinPoint.class), any());
     }
 
     @Test
     void call_WithAnnotationWithoutLoggableType_ShouldNotLogResult(CapturedOutput capturedOutput) {
-        aspectTester.sendMessageWithAnnotationWithoutLoggableType();
+        String message = aspectTester.sendMessageWithAnnotationWithoutLoggableType();
 
         assertThat(capturedOutput.getOut())
-                .doesNotContain(LoggableType.METHOD_RESULT.getPrefix());
+                .doesNotContain(LoggableType.METHOD_RESULT.getPrefix())
+                .doesNotContain(message);
         verify(loggableAspect, times(1))
                 .onSuccess(any(JoinPoint.class), any());
     }
 
     @Test
     void call_WithoutAnnotation_ShouldNotLogResult(CapturedOutput capturedOutput) {
-        aspectTester.sendMessageWithoutAnnotation();
+        String message = aspectTester.sendMessageWithoutAnnotation();
 
         assertThat(capturedOutput.getOut())
-                .doesNotContain(LoggableType.METHOD_RESULT.getPrefix());
+                .doesNotContain(LoggableType.METHOD_RESULT.getPrefix())
+                .doesNotContain(message);
         verifyNoInteractions(loggableAspect);
     }
 
