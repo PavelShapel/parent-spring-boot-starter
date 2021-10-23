@@ -10,13 +10,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.pavelshapel.web.spring.boot.starter.html.constant.AttributeId.CHARSET;
 import static com.pavelshapel.web.spring.boot.starter.html.constant.AttributeValueId.UTF_8;
 import static com.pavelshapel.web.spring.boot.starter.html.constant.TagId.*;
-import static java.util.Collections.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
@@ -26,12 +26,12 @@ public class TemplateHtml extends AbstractHtml {
     @Override
     public String toString() {
         StringHtml headTitleStringHtml = createStringHtml(getApplicationName());
-        TagHtml titleTagHtml = createTagHtml(TITLE, emptySet(), emptySet(), singletonList(headTitleStringHtml));
+        TagHtml titleTagHtml = createTagHtml(TITLE, singletonList(headTitleStringHtml));
         AttributeHtml charsetAttributeHtml = createAttributeHtml(CHARSET, singleton(UTF_8));
-        TagHtml metaTagHtml = createTagHtml(META, singleton(charsetAttributeHtml), emptySet(), emptyList());
-        TagHtml headTagHtml = createTagHtml(HEAD, emptySet(), emptySet(), Stream.of(metaTagHtml, titleTagHtml).collect(Collectors.toList()));
-        TagHtml bodyTagHtml = createTagHtml(BODY, emptySet(), emptySet(), bodies);
-        TagHtml htmlTagHtml = createTagHtml(HTML, emptySet(), emptySet(), Stream.of(headTagHtml, bodyTagHtml).collect(Collectors.toList()));
+        TagHtml metaTagHtml = createTagHtml(META, singleton(charsetAttributeHtml));
+        TagHtml headTagHtml = createTagHtml(HEAD, asList(metaTagHtml, titleTagHtml));
+        TagHtml bodyTagHtml = createTagHtml(BODY, bodies);
+        TagHtml htmlTagHtml = createTagHtml(HTML, asList(headTagHtml, bodyTagHtml));
         return String.format("%s%s", DOC_TYPE_HTML, htmlTagHtml.toString());
     }
 }

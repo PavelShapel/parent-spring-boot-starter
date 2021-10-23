@@ -1,5 +1,6 @@
 package com.pavelshapel.web.spring.boot.starter.html.element.simple;
 
+import com.pavelshapel.web.spring.boot.starter.html.constant.TagId;
 import com.pavelshapel.web.spring.boot.starter.html.element.Html;
 import lombok.Value;
 
@@ -11,7 +12,7 @@ import static org.apache.commons.lang3.StringUtils.SPACE;
 
 @Value
 public class TagHtml implements Html {
-    String tag;
+    TagId tagId;
     Set<AttributeHtml> attributes;
     Set<StringHtml> modifiers;
     List<Html> bodies;
@@ -27,6 +28,6 @@ public class TagHtml implements Html {
         String joinedBody = bodies.stream()
                 .map(Html::toString)
                 .collect(Collectors.joining());
-        return String.format("<%1$s %2$s %3$s>%4$s</%1$s>", tag, joinedAttributes, joinedModifiers, joinedBody);
+        return String.format("<%1$s %2$s %3$s>%4$s</%1$s>", tagId.toString(), joinedAttributes, joinedModifiers, joinedBody);
     }
 }

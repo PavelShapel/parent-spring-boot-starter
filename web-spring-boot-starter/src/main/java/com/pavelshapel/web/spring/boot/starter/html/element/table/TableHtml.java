@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import static com.pavelshapel.web.spring.boot.starter.html.constant.AttributeId.*;
 import static com.pavelshapel.web.spring.boot.starter.html.constant.AttributeValueId.*;
 import static com.pavelshapel.web.spring.boot.starter.html.constant.TagId.*;
+import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
@@ -37,10 +38,7 @@ public class TableHtml extends AbstractHtml {
 
     @Override
     public String toString() {
-        List<Html> bodies = Stream.of(
-                createH1TagHtml(),
-                createTableTagHtml()
-        ).collect(Collectors.toList());
+        List<Html> bodies = asList(createH1TagHtml(), createTableTagHtml());
         return createTemplateHtml(bodies).toString();
     }
 

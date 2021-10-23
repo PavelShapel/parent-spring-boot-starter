@@ -2,6 +2,7 @@ package com.pavelshapel.web.spring.boot.starter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
+import com.pavelshapel.web.spring.boot.starter.html.constant.TagId;
 import com.pavelshapel.web.spring.boot.starter.web.exception.handler.RestResponseEntityExceptionHandler;
 import com.pavelshapel.web.spring.boot.starter.html.element.Html;
 import com.pavelshapel.web.spring.boot.starter.html.element.simple.AttributeHtml;
@@ -142,8 +143,8 @@ public class WebStarterAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @Scope(SCOPE_PROTOTYPE)
-    public TagHtml tagHtml(String tag, Set<AttributeHtml> attributes, Set<StringHtml> modifiers, List<Html> bodies) {
-        return new TagHtml(tag, attributes, modifiers, bodies);
+    public TagHtml tagHtml(TagId tagId, Set<AttributeHtml> attributes, Set<StringHtml> modifiers, List<Html> bodies) {
+        return new TagHtml(tagId, attributes, modifiers, bodies);
     }
 
     @Bean

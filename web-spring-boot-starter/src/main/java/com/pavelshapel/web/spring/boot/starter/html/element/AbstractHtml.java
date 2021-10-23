@@ -55,6 +55,22 @@ public abstract class AbstractHtml implements Html {
         templateHtmlFactory = htmlFactories.getFactory(TemplateHtml.class);
     }
 
+    protected final TagHtml createTagHtml(TagId tagId, Set<AttributeHtml> attributes) {
+        return createTagHtml(tagId, attributes, emptyList());
+    }
+
+    protected final <T extends Html> TagHtml createTagHtml(TagId tagId, List<T> bodies) {
+        return createTagHtml(tagId, emptySet(), bodies);
+    }
+
+    protected final <T extends Html> TagHtml createTagHtml(TagId tagId, Set<AttributeHtml> attributes, List<T> bodies) {
+        return createTagHtml(tagId, attributes, emptySet(), bodies);
+    }
+
+    protected final <T extends Html> TagHtml createTagHtml(TagId tagId, Set<AttributeHtml> attributes, Set<StringHtml> modifiers, List<T> bodies) {
+        return tagHtmlFactory.create(tagId, attributes, modifiers, bodies);
+    }
+
     protected final TemplateHtml createTemplateHtml(List<Html> bodies) {
         return templateHtmlFactory.create(bodies);
     }
@@ -68,23 +84,6 @@ public abstract class AbstractHtml implements Html {
                 .map(Html::toString)
                 .collect(Collectors.toSet());
         return attributeHtmlFactory.create(key.toString(), stringValues);
-    }
-
-    protected final <T extends Html> TagHtml createTagHtml(TagId tag, List<T> bodies) {
-        return createTagHtml(tag, emptySet(), bodies);
-    }
-
-    protected final <T extends Html> TagHtml createTagHtml(TagId tag,
-                                                           Set<AttributeHtml> attributes,
-                                                           List<T> bodies) {
-        return createTagHtml(tag, attributes, emptySet(), bodies);
-    }
-
-    protected final <T extends Html> TagHtml createTagHtml(TagId tag,
-                                                           Set<AttributeHtml> attributes,
-                                                           Set<StringHtml> modifiers,
-                                                           List<T> bodies) {
-        return tagHtmlFactory.create(tag.toString(), attributes, modifiers, bodies);
     }
 
     protected final <T extends Html> AttributeHtml createAlignAttributeHtmlByType(List<T> htmlList) {
@@ -126,10 +125,7 @@ public abstract class AbstractHtml implements Html {
         return createAttributeHtml(BGCOLOR, singleton(color));
     }
 
-    protected final <T extends Html> TagHtml createSimpleButtonTagHtml(T caption) {
-        return createButtonTagHtml(singleton(createSimpleButtonAttributeHtml()), caption.toString());
-    }
-
+    //buttons
     protected final <T extends Html> TagHtml createSimpleButtonTagHtml(T href, T caption) {
         Set<AttributeHtml> attributeHtmlSet = Stream.of(
                 createSimpleButtonAttributeHtml(),
@@ -159,20 +155,18 @@ public abstract class AbstractHtml implements Html {
         return createAttributeHtml(TYPE, singleton(attributeValueId));
     }
 
-    private TagHtml createButtonTagHtml(Set<AttributeHtml> typeAttributeHtmlSet, String caption) {
-        StringHtml captionStringHtml = createStringHtml(caption);
-        return createTagHtml(
-                BUTTON,
-                typeAttributeHtmlSet,
-                singletonList(captionStringHtml));
+    protected final <T extends Html> TagHtml createSimpleButtonTagHtml(T caption) {
+        return createButtonTagHtml(singleton(createSimpleButtonAttributeHtml()), caption.toString());
     }
 
+    private TagHtml createButtonTagHtml(Set<AttributeHtml> typeAttributeHtmlSet, String caption) {
+        StringHtml captionStringHtml = createStringHtml(caption);
+        return createTagHtml(BUTTON, typeAttributeHtmlSet, singletonList(captionStringHtml));
+    }
+
+    //headers
     protected final TagHtml createH1TagHtml(String title) {
         StringHtml titleStringHtml = createStringHtml(title);
-        return createTagHtml(
-                H1,
-                singleton(createAlignCenterAttributeHtml()),
-                singletonList(titleStringHtml)
-        );
+        return createTagHtml(H1, singleton(createAlignCenterAttributeHtml()), singletonList(titleStringHtml));
     }
 }

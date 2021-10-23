@@ -112,8 +112,9 @@ public abstract class AbstractJpaRestController<E extends AbstractEntity, D exte
 
     @GetMapping(path = TABLE_PATH, produces = TEXT_HTML_VALUE)
     public ResponseEntity<String> getTable(@Valid SearchCriteria searchCriteria, @PageableDefault Pageable pageable) {
+        searchSpecification.setSearchCriteria(searchCriteria);
+        Page<E> page = jpaService.findAll(searchSpecification, pageable);
         return ResponseEntity.ok(htmlFactories.getFactory(TableHtml.class)
-                .create(jpaService.getEntityClass(), findAll(searchCriteria, pageable).getBody())
-                .toString());
+                .create(jpaService.getEntityClass(), page).toString());
     }
 }
