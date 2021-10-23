@@ -4,7 +4,7 @@ import com.pavelshapel.jpa.spring.boot.starter.JpaAuditingConfiguration;
 import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
 import com.pavelshapel.jpa.spring.boot.starter.repository.AbstractJpaRepository;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchSpecification;
-import com.pavelshapel.test.spring.boot.starter.container.postgres.PostgreSQLExtension;
+import com.pavelshapel.test.spring.boot.starter.container.PostgreSQLExtension;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.junit.jupiter.api.extension.ExtendWith;

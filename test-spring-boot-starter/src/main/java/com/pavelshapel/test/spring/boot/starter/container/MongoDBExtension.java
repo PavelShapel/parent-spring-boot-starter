@@ -1,4 +1,4 @@
-package com.pavelshapel.test.spring.boot.starter.container.mongo;
+package com.pavelshapel.test.spring.boot.starter.container;
 
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
