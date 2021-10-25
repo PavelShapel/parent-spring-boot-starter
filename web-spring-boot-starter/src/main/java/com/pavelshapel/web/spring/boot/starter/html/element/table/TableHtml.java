@@ -13,12 +13,13 @@ import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import lombok.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.pavelshapel.web.spring.boot.starter.html.constant.AttributeId.*;
@@ -26,12 +27,16 @@ import static com.pavelshapel.web.spring.boot.starter.html.constant.AttributeVal
 import static com.pavelshapel.web.spring.boot.starter.html.constant.TagId.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class TableHtml extends AbstractHtml {
     public static final String ID = "id";
+    public static final String ASC = "asc";
+    public static final String SORT_PATTERN = "%s,%s";
 
     Class<? extends AbstractEntity> entityClass;
     Page<? extends AbstractEntity> entities;
@@ -52,19 +57,13 @@ public class TableHtml extends AbstractHtml {
                 createAttributeHtml(WIDTH, singleton(WIDTH_80_PERCENT)),
                 createAttributeHtml(CELLPADDING, singleton(INT_5)),
                 createAlignCenterAttributeHtml()
-        ).collect(Collectors.toSet());
+        ).collect(toSet());
         LinkedHashSet<Field> entityFields = getEntityFields();
-        List<Html> bodies = Stream.of(
+        List<Html> bodies = asList(
                 createTHeadTagHtml(createTableHeaderTagHtml(entityFields)),
                 createTBodyTagHtml(createTableBodyTagHtml()),
-                createTFootTagHtml(createTableFooterTagHtml(entityFields))
-        ).collect(Collectors.toList());
-        return createTagHtml(
-                TABLE,
-                attributes,
-                emptySet(),
-                bodies
-        );
+                createTFootTagHtml(createTableFooterTagHtml(entityFields)));
+        return createTagHtml(TABLE, attributes, bodies);
     }
 
     private List<TagHtml> createTableHeaderTagHtml(Set<Field> entityFields) {
@@ -74,7 +73,7 @@ public class TableHtml extends AbstractHtml {
                 .map(this::createStringHtml)
                 .map(Collections::singletonList)
                 .map(this::createThTagHtml)
-                .collect(Collectors.toList());
+                .collect(toList());
         TagHtml crudButtonTagHtml = createSimpleButtonTagHtml(CRUD_INSERT);
         thTagHtmlList.add(createThTagHtml(singletonList(crudButtonTagHtml)));
         return singletonList(createTrTagHtml(thTagHtmlList));
@@ -85,14 +84,14 @@ public class TableHtml extends AbstractHtml {
                 .map(this::convertEntityToTdTagHtmlList)
                 .map(this::addTdTagHtmlWithCrudButtons)
                 .map(this::createTrTagHtml)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private List<TagHtml> addTdTagHtmlWithCrudButtons(List<TagHtml> tagHtmlList) {
         List<TagHtml> crudButtonTagHtmlList = Stream.of(
                 createSimpleButtonTagHtml(CRUD_UPDATE),
                 createSimpleButtonTagHtml(CRUD_DELETE)
-        ).collect(Collectors.toList());
+        ).collect(toList());
         tagHtmlList.add(createTdTagHtml(WIDTH_10_PERCENT, crudButtonTagHtmlList));
         return tagHtmlList;
     }
@@ -101,10 +100,7 @@ public class TableHtml extends AbstractHtml {
         String colSpan = Integer.toString(entityFields.size() + 1);
         StringHtml colSpanStringHtml = createStringHtml(colSpan);
         AttributeHtml colSpanAttributeHtml = createAttributeHtml(COLSPAN, singleton(colSpanStringHtml));
-        Set<AttributeHtml> attributeHtmlList = Stream.of(
-                createBackGroundGrayAttributeHtml(),
-                colSpanAttributeHtml
-        ).collect(Collectors.toSet());
+        Set<AttributeHtml> attributeHtmlList = Stream.of(createBackGroundGrayAttributeHtml(), colSpanAttributeHtml).collect(toSet());
         TagHtml paginationTagHtml = createTdTagHtml(attributeHtmlList, createPaginationTagHtml());
         return singletonList(createTrTagHtml(singletonList(paginationTagHtml)));
     }
@@ -112,15 +108,30 @@ public class TableHtml extends AbstractHtml {
     private List<TagHtml> createPaginationTagHtml() {
         TagHtml firstSimpleButtonTagHtml = createSimpleButtonTagHtml(createStringHtml("https://www.google.by/"), FIRST);
         TagHtml previousSimpleButtonTagHtml = createSimpleButtonTagHtml(createStringHtml("https://www.google.by/"), PREVIOUS);
-        TagHtml nextSimpleButtonTagHtml = createSimpleButtonTagHtml(createStringHtml("https://www.google.by/"), NEXT);
+        TagHtml nextSimpleButtonTagHtml = createSimpleButtonTagHtml(createStringHtml(pageableToRequestString(entities.nextPageable())), NEXT);
         TagHtml lastSimpleButtonTagHtml = createSimpleButtonTagHtml(createStringHtml("https://www.google.by/"), LAST);
         return Stream.of(
                 firstSimpleButtonTagHtml,
                 previousSimpleButtonTagHtml,
                 nextSimpleButtonTagHtml,
                 lastSimpleButtonTagHtml
-        ).collect(Collectors.toList());
+        ).collect(toList());
 
+    }
+
+    private String pageableToRequestString(Pageable pageable) {
+        return String.format(
+                "page=%d&size=%d&sort=%s",
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                pageable.getSort().stream()
+                        .map(this::orderToRequestParameter)
+                        .collect(getStreamUtils().toSingleton())
+                        .orElseGet(() -> String.format(SORT_PATTERN, ID, ASC)));
+    }
+
+    private String orderToRequestParameter(Sort.Order order) {
+        return String.format(SORT_PATTERN, order.getProperty(), order.getDirection().name());
     }
 
     private List<TagHtml> convertEntityToTdTagHtmlList(AbstractEntity entity) {
@@ -130,7 +141,7 @@ public class TableHtml extends AbstractHtml {
                 .map(this::createStringHtml)
                 .map(Collections::singletonList)
                 .map(this::createTdTagHtml)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @SneakyThrows
@@ -172,9 +183,9 @@ public class TableHtml extends AbstractHtml {
 
     private <T extends Html> TagHtml createTdTagHtml(AttributeValueId width, List<T> htmlList) {
         Set<AttributeHtml> attributes = Stream.of(
-                createAttributeHtml(WIDTH, singleton(width)),
-                createAlignAttributeHtmlByType(htmlList)
-        ).collect(Collectors.toSet());
+                        createAttributeHtml(WIDTH, singleton(width)),
+                        createAlignAttributeHtmlByType(htmlList))
+                .collect(toSet());
         return createTdTagHtml(attributes, htmlList);
     }
 
@@ -185,7 +196,7 @@ public class TableHtml extends AbstractHtml {
     private <T extends Html> TagHtml createTdTagHtml(Set<AttributeHtml> attributes, List<T> htmlList) {
         Set<AttributeHtml> attributeHtmlSet = Stream.of(attributes, singleton(createAlignAttributeHtmlByType(htmlList)))
                 .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+                .collect(toSet());
         return createTagHtml(TD, attributeHtmlSet, htmlList);
     }
 

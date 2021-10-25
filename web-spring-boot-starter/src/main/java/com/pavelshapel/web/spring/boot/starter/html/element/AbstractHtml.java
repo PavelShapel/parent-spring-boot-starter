@@ -21,7 +21,6 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.pavelshapel.web.spring.boot.starter.html.constant.AttributeId.*;
@@ -29,8 +28,10 @@ import static com.pavelshapel.web.spring.boot.starter.html.constant.AttributeVal
 import static com.pavelshapel.web.spring.boot.starter.html.constant.TagId.BUTTON;
 import static com.pavelshapel.web.spring.boot.starter.html.constant.TagId.H1;
 import static java.util.Collections.*;
+import static java.util.stream.Collectors.toSet;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Getter
 public abstract class AbstractHtml implements Html {
     public static final String DOC_TYPE_HTML = "<!doctype html>";
 
@@ -39,7 +40,6 @@ public abstract class AbstractHtml implements Html {
     @Autowired
     StreamUtils streamUtils;
     @Value("${spring.application.name}")
-    @Getter
     String applicationName;
 
     Factory<TemplateHtml> templateHtmlFactory;
@@ -49,12 +49,22 @@ public abstract class AbstractHtml implements Html {
 
     @PostConstruct
     private void postConstruct() {
-        tagHtmlFactory = htmlFactories.getFactory(TagHtml.class);
-        stringHtmlFactory = htmlFactories.getFactory(StringHtml.class);
-        attributeHtmlFactory = htmlFactories.getFactory(AttributeHtml.class);
         templateHtmlFactory = htmlFactories.getFactory(TemplateHtml.class);
+        stringHtmlFactory = htmlFactories.getFactory(StringHtml.class);
+        tagHtmlFactory = htmlFactories.getFactory(TagHtml.class);
+        attributeHtmlFactory = htmlFactories.getFactory(AttributeHtml.class);
+
     }
 
+    protected final TemplateHtml createTemplateHtml(List<Html> bodies) {
+        return templateHtmlFactory.create(bodies);
+    }
+
+    protected final StringHtml createStringHtml(String value) {
+        return stringHtmlFactory.create(value);
+    }
+
+    //tag
     protected final TagHtml createTagHtml(TagId tagId, Set<AttributeHtml> attributes) {
         return createTagHtml(tagId, attributes, emptyList());
     }
@@ -71,21 +81,34 @@ public abstract class AbstractHtml implements Html {
         return tagHtmlFactory.create(tagId, attributes, modifiers, bodies);
     }
 
-    protected final TemplateHtml createTemplateHtml(List<Html> bodies) {
-        return templateHtmlFactory.create(bodies);
+    //tag.button
+    protected final <T extends Html> TagHtml createSimpleButtonTagHtml(T href, T caption) {
+        Set<AttributeHtml> attributeHtmlSet = Stream.of(
+                createSimpleButtonAttributeHtml(),
+                createHrefButtonAttributeHtml(href.toString())
+        ).collect(toSet());
+        return createButtonTagHtml(attributeHtmlSet, caption.toString());
     }
 
-    protected final StringHtml createStringHtml(String value) {
-        return stringHtmlFactory.create(value);
+    protected final <T extends Html> TagHtml createSimpleButtonTagHtml(T caption) {
+        return createButtonTagHtml(singleton(createSimpleButtonAttributeHtml()), caption.toString());
     }
 
+    private TagHtml createButtonTagHtml(Set<AttributeHtml> typeAttributeHtmlSet, String caption) {
+        StringHtml captionStringHtml = createStringHtml(caption);
+        return createTagHtml(BUTTON, typeAttributeHtmlSet, singletonList(captionStringHtml));
+    }
+
+
+    //attribute
     protected final <T extends Html> AttributeHtml createAttributeHtml(AttributeId key, Set<T> values) {
         Set<String> stringValues = values.stream()
                 .map(Html::toString)
-                .collect(Collectors.toSet());
+                .collect(toSet());
         return attributeHtmlFactory.create(key.toString(), stringValues);
     }
 
+    //attribute.align
     protected final <T extends Html> AttributeHtml createAlignAttributeHtmlByType(List<T> htmlList) {
         return htmlList.stream().collect(streamUtils.toSingleton())
                 .map(Html::toString)
@@ -117,6 +140,7 @@ public abstract class AbstractHtml implements Html {
         return createAttributeHtml(ALIGN, singleton(RIGHT));
     }
 
+    //attribute.backGround
     protected final AttributeHtml createBackGroundGrayAttributeHtml() {
         return createBackGroundColorAttributeHtml(GRAY);
     }
@@ -125,15 +149,7 @@ public abstract class AbstractHtml implements Html {
         return createAttributeHtml(BGCOLOR, singleton(color));
     }
 
-    //buttons
-    protected final <T extends Html> TagHtml createSimpleButtonTagHtml(T href, T caption) {
-        Set<AttributeHtml> attributeHtmlSet = Stream.of(
-                createSimpleButtonAttributeHtml(),
-                createHrefButtonAttributeHtml(href.toString())
-        ).collect(Collectors.toSet());
-        return createButtonTagHtml(attributeHtmlSet, caption.toString());
-    }
-
+    //attribute.button
     protected final AttributeHtml createHrefButtonAttributeHtml(String href) {
         String buttonHref = String.format(WINDOW_LOCATION_HREF.toString(), href);
         return createAttributeHtml(ONCLICK, singleton(createStringHtml(buttonHref)));
@@ -155,14 +171,6 @@ public abstract class AbstractHtml implements Html {
         return createAttributeHtml(TYPE, singleton(attributeValueId));
     }
 
-    protected final <T extends Html> TagHtml createSimpleButtonTagHtml(T caption) {
-        return createButtonTagHtml(singleton(createSimpleButtonAttributeHtml()), caption.toString());
-    }
-
-    private TagHtml createButtonTagHtml(Set<AttributeHtml> typeAttributeHtmlSet, String caption) {
-        StringHtml captionStringHtml = createStringHtml(caption);
-        return createTagHtml(BUTTON, typeAttributeHtmlSet, singletonList(captionStringHtml));
-    }
 
     //headers
     protected final TagHtml createH1TagHtml(String title) {
