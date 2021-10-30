@@ -39,7 +39,7 @@ public abstract class AbstractHtml implements Html {
     HtmlFactories htmlFactories;
     @Autowired
     StreamUtils streamUtils;
-    @Value("${spring.application.name}")
+    @Value("${spring.application.name:[spring.application.name] property not set}")
     String applicationName;
 
     Factory<TemplateHtml> templateHtmlFactory;
