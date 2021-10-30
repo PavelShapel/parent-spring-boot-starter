@@ -29,6 +29,7 @@
         <module>jpa-spring-boot-starter</module>
         <!--        <module>jms-spring-boot-starter</module>-->
         <module>cache-spring-boot-starter</module>
+        <module>kafka-spring-boot-starter</module>
     </modules>
 
     <dependencyManagement>
