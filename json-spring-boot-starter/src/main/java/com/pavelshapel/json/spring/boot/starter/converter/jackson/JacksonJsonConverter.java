@@ -3,6 +3,7 @@ package com.pavelshapel.json.spring.boot.starter.converter.jackson;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pavelshapel.json.spring.boot.starter.converter.JsonConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
 public class JacksonJsonConverter implements JsonConverter {
     private final ObjectMapper objectMapper;
 
+    @Autowired
     public JacksonJsonConverter(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
