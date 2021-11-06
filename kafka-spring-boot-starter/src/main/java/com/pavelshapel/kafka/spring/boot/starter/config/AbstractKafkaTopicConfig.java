@@ -13,7 +13,6 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
@@ -26,16 +25,15 @@ public abstract class AbstractKafkaTopicConfig {
 
     @PostConstruct
     private void postConstruct() {
-        IntStream.range(0, getTopics().size())
-                .forEach(this::registerTopicBean);
+        getTopics().forEach(this::registerTopicBean);
     }
 
-    private void registerTopicBean(int index) {
+    private void registerTopicBean(NewTopic topic) {
         String className = NewTopic.class.getSimpleName();
         context.registerBean(
-                String.format("%s%d", uncapitalize(className), index),
+                String.format("%s%s", uncapitalize(topic.name()), className),
                 NewTopic.class,
-                () -> getTopics().get(index));
+                () -> topic);
     }
 
     @Bean

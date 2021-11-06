@@ -14,10 +14,4 @@ public class KafkaStarterAutoConfiguration {
     public KafkaContextRefreshedListener kafkaContextRefreshedListener() {
         return new KafkaContextRefreshedListener();
     }
-
-//    @Bean
-//    @ConditionalOnProperty(prefix = TYPE, name = "server")
-//    public KafkaSenderAnnotationBeanPostProcessor kafkaSenderAnnotationBeanPostProcessor() {
-//        return new KafkaSenderAnnotationBeanPostProcessor();
-//    }
 }
