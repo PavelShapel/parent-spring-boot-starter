@@ -9,8 +9,8 @@ import static com.pavelshapel.kafka.spring.boot.starter.KafkaStarterAutoConfigur
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ConfigurationProperties(prefix = TYPE)
+@ConfigurationProperties(prefix = "spring." + TYPE)
 public class KafkaProperties {
     String server;
-    ConsumerKafkaProperties consumer;
+    ConsumerKafkaProperties consumer = new ConsumerKafkaProperties();
 }

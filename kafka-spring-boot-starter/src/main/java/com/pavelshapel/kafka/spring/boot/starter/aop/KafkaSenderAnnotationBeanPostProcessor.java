@@ -1,6 +1,6 @@
 package com.pavelshapel.kafka.spring.boot.starter.aop;
 
-import com.pavelshapel.kafka.spring.boot.starter.service.KafkaService;
+import com.pavelshapel.kafka.spring.boot.starter.service.KafkaProducer;
 import com.pavelshapel.web.spring.boot.starter.web.converter.AbstractDto;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -23,7 +23,7 @@ import static java.util.Objects.nonNull;
 public class KafkaSenderAnnotationBeanPostProcessor implements BeanPostProcessor {
     final Map<String, List<Method>> kafkaSenderBeans = new HashMap<>();
     @Autowired
-    KafkaService kafkaService;
+    KafkaProducer kafkaProducer;
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -59,7 +59,7 @@ public class KafkaSenderAnnotationBeanPostProcessor implements BeanPostProcessor
     private void sendMessage(Method method, Object result) {
         if (result instanceof AbstractDto) {
             KafkaSender annotation = method.getAnnotation(KafkaSender.class);
-            kafkaService.send(annotation.topic(), (AbstractDto) result);
+            kafkaProducer.send(annotation.topic(), (AbstractDto) result);
         }
     }
 }
