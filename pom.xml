@@ -25,9 +25,7 @@
         <module>random-spring-boot-starter</module>
         <module>web-spring-boot-starter</module>
         <module>core-spring-boot-starter</module>
-        <!--        <module>amqp-spring-boot-starter</module>-->
         <module>jpa-spring-boot-starter</module>
-        <!--        <module>jms-spring-boot-starter</module>-->
         <module>cache-spring-boot-starter</module>
         <module>kafka-spring-boot-starter</module>
     </modules>
