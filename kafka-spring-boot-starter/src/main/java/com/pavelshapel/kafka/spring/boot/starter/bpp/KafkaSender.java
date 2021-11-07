@@ -1,4 +1,4 @@
-package com.pavelshapel.kafka.spring.boot.starter.aop;
+package com.pavelshapel.kafka.spring.boot.starter.bpp;
 
 import java.lang.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.pavelshapel.kafka.spring.boot.starter.aop;
+package com.pavelshapel.kafka.spring.boot.starter.bpp;
 
 import com.pavelshapel.kafka.spring.boot.starter.service.KafkaProducer;
 import com.pavelshapel.web.spring.boot.starter.web.converter.AbstractDto;

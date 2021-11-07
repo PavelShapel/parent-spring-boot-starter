@@ -9,6 +9,6 @@ public interface Kafka<T extends AbstractDto> {
     }
 
     default String convertConsumerRecordToString(String prefix, String topic, String key, T value) {
-        return String.format("%s [topic [%s], key [%s], value [%s]]", prefix, topic, key, value);
+        return String.format("%s [topic [%s], key [%s], value [%s]]", prefix, topic, key, value.toString());
     }
 }
