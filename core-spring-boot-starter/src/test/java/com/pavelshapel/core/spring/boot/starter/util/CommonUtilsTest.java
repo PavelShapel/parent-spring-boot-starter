@@ -16,7 +16,7 @@ class CommonUtilsTest {
 
     @Test
     void getGenericSuperclass_WithValidParameter_ShouldReturnResult() {
-        Optional<Class<?>> genericSuperclass = commonUtils.getGenericSuperclass(TestPojo.class);
+        Optional<Class<?>> genericSuperclass = commonUtils.getGenericSuperclass(Tester.class);
 
         assertThat(genericSuperclass)
                 .isNotEmpty()
@@ -25,7 +25,7 @@ class CommonUtilsTest {
 
     @Test
     void getGenericSuperclass_WithInvalidParameter_ShouldReturnEmptyValue() {
-        Optional<Class<?>> genericSuperclass = commonUtils.getGenericSuperclass(TestPojo.class, 1);
+        Optional<Class<?>> genericSuperclass = commonUtils.getGenericSuperclass(Tester.class, 1);
 
         assertThat(genericSuperclass)
                 .isEmpty();

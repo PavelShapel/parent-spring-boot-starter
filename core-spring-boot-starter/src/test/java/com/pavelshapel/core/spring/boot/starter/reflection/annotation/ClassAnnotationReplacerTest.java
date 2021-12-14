@@ -32,12 +32,12 @@ class ClassAnnotationReplacerTest {
             }
         };
 
-        annotationReplacer.replace(TestPojo.class, Replaced.class, newAnnotation);
+        annotationReplacer.replace(AnnotationReplacerTester.class, Replaced.class, newAnnotation);
 
         assertThat(getReplacedAnnotation().value()).isEqualTo(NEW_MESSAGE);
     }
 
     private Replaced getReplacedAnnotation() {
-        return TestPojo.class.getAnnotation(Replaced.class);
+        return AnnotationReplacerTester.class.getAnnotation(Replaced.class);
     }
 }

@@ -2,11 +2,12 @@ package com.pavelshapel.core.spring.boot.starter.bean;
 
 import com.pavelshapel.core.spring.boot.starter.util.StreamUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+
+import static org.springframework.util.StringUtils.uncapitalize;
 
 public abstract class AbstractBeansCollection<T> implements BeansCollection<T> {
     @Autowired
@@ -26,7 +27,7 @@ public abstract class AbstractBeansCollection<T> implements BeansCollection<T> {
 
     @Override
     public Optional<T> getBean(Class<?> beanClass) {
-        String beanName = StringUtils.uncapitalize(beanClass.getSimpleName());
+        String beanName = uncapitalize(beanClass.getSimpleName());
         return getBean(beanName);
     }
 
