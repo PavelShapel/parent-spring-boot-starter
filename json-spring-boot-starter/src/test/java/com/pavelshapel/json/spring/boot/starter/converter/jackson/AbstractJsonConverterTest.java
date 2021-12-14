@@ -55,17 +55,17 @@ abstract class AbstractJsonConverterTest {
 
     @Test
     void jsonToPojo_ValidJsonAsParam_ShouldReturnPojo() {
-        Optional<TestPojo> optionalTester = jsonConverter.jsonToPojo(JSON_POJO, TestPojo.class);
+        Optional<JsonTester> optionalTester = jsonConverter.jsonToPojo(JSON_POJO, JsonTester.class);
 
-        TestPojo testPojo = createTestPojo();
+        JsonTester jsonTester = createTestPojo();
         assertThat(optionalTester)
                 .isNotEmpty()
-                .hasValue(testPojo);
+                .hasValue(jsonTester);
     }
 
     @Test
     void jsonToPojo_InvalidStringAsParam_ShouldReturnOptionalEmpty() {
-        Optional<TestPojo> optionalTester = jsonConverter.jsonToPojo(getInvalidJson(), TestPojo.class);
+        Optional<JsonTester> optionalTester = jsonConverter.jsonToPojo(getInvalidJson(), JsonTester.class);
 
         assertThat(optionalTester)
                 .isEmpty();
@@ -73,7 +73,7 @@ abstract class AbstractJsonConverterTest {
 
     @Test
     void jsonToPojo_NullStringAsParam_ShouldReturnOptionalEmpty() {
-        Optional<TestPojo> optionalTester = jsonConverter.jsonToPojo(null, TestPojo.class);
+        Optional<JsonTester> optionalTester = jsonConverter.jsonToPojo(null, JsonTester.class);
 
         assertThat(optionalTester)
                 .isEmpty();
@@ -81,7 +81,7 @@ abstract class AbstractJsonConverterTest {
 
     @Test
     void jsonToPojo_NullClassAsParam_ShouldReturnOptionalEmpty() {
-        Optional<TestPojo> optionalTester = jsonConverter.jsonToPojo(JSON_POJO, null);
+        Optional<JsonTester> optionalTester = jsonConverter.jsonToPojo(JSON_POJO, null);
 
         assertThat(optionalTester)
                 .isEmpty();
@@ -114,17 +114,17 @@ abstract class AbstractJsonConverterTest {
 
     @Test
     void mapToPojo_ValidMapAsParam_ShouldReturnPojo() {
-        Optional<TestPojo> optionalTester = jsonConverter.mapToPojo(createTestMap(), TestPojo.class);
+        Optional<JsonTester> optionalTester = jsonConverter.mapToPojo(createTestMap(), JsonTester.class);
 
-        TestPojo testPojo = createTestPojo();
+        JsonTester jsonTester = createTestPojo();
         assertThat(optionalTester)
                 .isNotEmpty()
-                .hasValue(testPojo);
+                .hasValue(jsonTester);
     }
 
     @Test
     void mapToPojo_NullMapAsParam_ShouldReturnPojo() {
-        Optional<TestPojo> optionalTester = jsonConverter.mapToPojo(null, TestPojo.class);
+        Optional<JsonTester> optionalTester = jsonConverter.mapToPojo(null, JsonTester.class);
 
         assertThat(optionalTester)
                 .isEmpty();
@@ -132,7 +132,7 @@ abstract class AbstractJsonConverterTest {
 
     @Test
     void mapToPojo_NullClassAsParam_ShouldReturnPojo() {
-        Optional<TestPojo> optionalTester = jsonConverter.mapToPojo(createTestMap(), null);
+        Optional<JsonTester> optionalTester = jsonConverter.mapToPojo(createTestMap(), null);
 
         assertThat(optionalTester)
                 .isEmpty();
@@ -159,8 +159,8 @@ abstract class AbstractJsonConverterTest {
         return RandomStringUtils.randomAlphanumeric(Byte.MAX_VALUE);
     }
 
-    private TestPojo createTestPojo() {
-        return new TestPojo(ID, NAME);
+    private JsonTester createTestPojo() {
+        return new JsonTester(ID, NAME);
     }
 
     private Map<String, Object> createTestMap() {
