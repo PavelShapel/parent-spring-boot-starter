@@ -1,8 +1,6 @@
 package com.pavelshapel.jpa.spring.boot.starter.service.jpa.decorator;
 
-import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -10,19 +8,13 @@ import org.springframework.cache.concurrent.ConcurrentMapCache;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class CacheableDecoratorJpaService<T extends AbstractEntity> extends AbstractDecoratorJpaService<T> {
+import static java.util.stream.Collectors.toList;
+
+
+public abstract class CacheableDecoratorJpaService<ID, T extends Entity<ID>> extends AbstractDecoratorJpaService<ID, T> {
     @Autowired
     private CacheManager cacheManager;
-
-    private final Class<T> genericClass;
-
-    @Override
-    public T createAndSave() {
-        return putToCache(super.createAndSave());
-    }
 
     @Override
     public T save(T entity) {
@@ -30,23 +22,24 @@ public abstract class CacheableDecoratorJpaService<T extends AbstractEntity> ext
     }
 
     @Override
-    public T update(Long id, T entity) {
+    public T update(ID id, T entity) {
         return putToCache(super.update(id, entity));
     }
 
     @Override
     public List<T> saveAll(Iterable<T> entities) {
         return super.saveAll(entities).stream()
-                .map(this::putToCache).collect(Collectors.toList());
+                .map(this::putToCache)
+                .collect(toList());
     }
 
     @Override
-    public T findById(Long id) {
+    public T findById(ID id) {
         return getFromCache(id).orElseGet(() -> putToCache(super.findById(id)));
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(ID id) {
         evictFromCache(id);
         super.deleteById(id);
     }
@@ -58,13 +51,13 @@ public abstract class CacheableDecoratorJpaService<T extends AbstractEntity> ext
     }
 
     private String getCacheName() {
-        return genericClass.getSimpleName();
+        return getEntityClass().getSimpleName();
     }
 
     private Cache getCache() {
         String cacheName = getCacheName();
         return Optional.ofNullable(cacheManager.getCache(cacheName))
-                .orElse(new ConcurrentMapCache(cacheName));
+                .orElseGet(() -> new ConcurrentMapCache(cacheName));
     }
 
     private T putToCache(T entity) {
@@ -72,7 +65,7 @@ public abstract class CacheableDecoratorJpaService<T extends AbstractEntity> ext
         return entity;
     }
 
-    private void evictFromCache(Long id) {
+    private void evictFromCache(ID id) {
         getCache().evict(id);
     }
 
@@ -80,7 +73,7 @@ public abstract class CacheableDecoratorJpaService<T extends AbstractEntity> ext
         getCache().clear();
     }
 
-    private Optional<T> getFromCache(Long id) {
-        return Optional.ofNullable(getCache().get(id, genericClass));
+    private Optional<T> getFromCache(ID id) {
+        return Optional.ofNullable(getCache().get(id, getEntityClass()));
     }
 }

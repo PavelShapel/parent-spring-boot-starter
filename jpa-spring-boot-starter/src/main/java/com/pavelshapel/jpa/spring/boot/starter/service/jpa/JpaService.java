@@ -1,39 +1,39 @@
 package com.pavelshapel.jpa.spring.boot.starter.service.jpa;
 
-import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
+import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
-public interface JpaService<T extends AbstractEntity> {
+public interface JpaService<ID, T extends Entity<ID>> {
     T create();
 
     T createAndSave();
 
     T save(T entity);
 
-    T update(Long id, T entity);
+    T update(ID id, T entity);
 
     List<T> saveAll(Iterable<T> entities);
 
 
-    T findById(Long id);
+    T findById(ID id);
 
-    List<T> findAllById(Iterable<Long> ids);
+    List<T> findAllById(Iterable<ID> ids);
 
     List<T> findAll();
 
     Page<T> findAll(Pageable pageable);
 
 
-    void deleteById(Long id);
+    void deleteById(ID id);
 
     void deleteAll();
 
 
-    boolean existsById(Long id);
+    boolean existsById(ID id);
 
     long getCount();
 
@@ -47,7 +47,7 @@ public interface JpaService<T extends AbstractEntity> {
 
     T getParent(T entity);
 
-    List<T> getParentage(Long id);
+    List<T> getParentage(ID id);
 
     Class<T> getEntityClass();
 }

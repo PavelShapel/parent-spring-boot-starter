@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class SearchCriteria {
     public static final String DEFAULT_FIELD = "id";
-    public static final Integer DEFAULT_VALUE = 0;
+    public static final String DEFAULT_VALUE = "0";
 
     @NotBlank
     private String field = DEFAULT_FIELD;

@@ -1,6 +1,6 @@
 package com.pavelshapel.jpa.spring.boot.starter.service.jpa.decorator;
 
-import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
+import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
 import com.pavelshapel.jpa.spring.boot.starter.service.jpa.JpaService;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,10 +12,10 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.List;
 
 
-public abstract class AbstractDecoratorJpaService<T extends AbstractEntity> implements JpaService<T> {
+public abstract class AbstractDecoratorJpaService<ID, T extends Entity<ID>> implements JpaService<ID, T> {
     @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.PROTECTED)
-    private JpaService<T> wrapped;
+    private JpaService<ID, T> wrapped;
 
     @Override
     public T create() {
@@ -33,7 +33,7 @@ public abstract class AbstractDecoratorJpaService<T extends AbstractEntity> impl
     }
 
     @Override
-    public T update(Long id, T entity) {
+    public T update(ID id, T entity) {
         return wrapped.update(id, entity);
     }
 
@@ -44,12 +44,12 @@ public abstract class AbstractDecoratorJpaService<T extends AbstractEntity> impl
 
 
     @Override
-    public T findById(Long id) {
+    public T findById(ID id) {
         return wrapped.findById(id);
     }
 
     @Override
-    public List<T> findAllById(Iterable<Long> ids) {
+    public List<T> findAllById(Iterable<ID> ids) {
         return wrapped.findAllById(ids);
     }
 
@@ -65,7 +65,7 @@ public abstract class AbstractDecoratorJpaService<T extends AbstractEntity> impl
 
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(ID id) {
         wrapped.deleteById(id);
     }
 
@@ -76,7 +76,7 @@ public abstract class AbstractDecoratorJpaService<T extends AbstractEntity> impl
 
 
     @Override
-    public boolean existsById(Long id) {
+    public boolean existsById(ID id) {
         return wrapped.existsById(id);
     }
 
@@ -92,7 +92,7 @@ public abstract class AbstractDecoratorJpaService<T extends AbstractEntity> impl
 
     @Override
     public Page<T> findAll(Specification<T> specification, Pageable pageable) {
-        return wrapped.findAll(specification,pageable);
+        return wrapped.findAll(specification, pageable);
     }
 
     @Override
@@ -106,7 +106,7 @@ public abstract class AbstractDecoratorJpaService<T extends AbstractEntity> impl
     }
 
     @Override
-    public List<T> getParentage(Long id) {
+    public List<T> getParentage(ID id) {
         return wrapped.getParentage(id);
     }
 

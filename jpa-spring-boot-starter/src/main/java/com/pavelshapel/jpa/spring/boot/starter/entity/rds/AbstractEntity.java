@@ -1,13 +1,13 @@
-package com.pavelshapel.jpa.spring.boot.starter.entity;
+package com.pavelshapel.jpa.spring.boot.starter.entity.rds;
 
-import lombok.*;
+import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
+import lombok.Data;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @MappedSuperclass
 @Data
-public abstract class AbstractEntity implements Serializable {
+public abstract class AbstractEntity implements Entity<Long> {
     public static final String MANDATORY = "mandatory";
 
     @Id

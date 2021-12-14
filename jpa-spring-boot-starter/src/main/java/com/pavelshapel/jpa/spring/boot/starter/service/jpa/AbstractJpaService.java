@@ -1,10 +1,10 @@
 package com.pavelshapel.jpa.spring.boot.starter.service.jpa;
 
-import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
+import com.pavelshapel.core.spring.boot.starter.util.CommonUtils;
+import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
 import com.pavelshapel.jpa.spring.boot.starter.repository.AbstractJpaRepository;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,13 +18,12 @@ import java.util.List;
 import static java.util.Objects.nonNull;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter(AccessLevel.PROTECTED)
-public abstract class AbstractJpaService<T extends AbstractEntity> implements JpaService<T> {
+public abstract class AbstractJpaService<ID, T extends Entity<ID>> implements JpaService<ID, T> {
+    @Getter(AccessLevel.PROTECTED)
     @Autowired
-    private AbstractJpaRepository<T> abstractJpaRepository;
-
-    private final Class<T> entityClass;
+    private AbstractJpaRepository<ID, T> jpaRepository;
+    @Autowired
+    private CommonUtils commonUtils;
 
     @Override
     public T createAndSave() {
@@ -33,82 +32,82 @@ public abstract class AbstractJpaService<T extends AbstractEntity> implements Jp
 
     @Override
     public T save(T entity) {
-        return abstractJpaRepository.save(entity);
+        return jpaRepository.save(entity);
     }
 
     @Override
-    public T update(Long id, T entity) {
+    public T update(ID id, T entity) {
         entity.setId(null);
         T entityFromDatabase = findById(id);
         copyFields(entity, entityFromDatabase);
-        return abstractJpaRepository.save(entityFromDatabase);
+        return jpaRepository.save(entityFromDatabase);
     }
 
     @Override
     public List<T> saveAll(Iterable<T> entities) {
-        return abstractJpaRepository.saveAll(entities);
+        return jpaRepository.saveAll(entities);
     }
 
 
     @Override
-    public T findById(Long id) {
-        return abstractJpaRepository.findById(id).get();
+    public T findById(ID id) {
+        return jpaRepository.findById(id).get();
     }
 
     @Override
-    public List<T> findAllById(Iterable<Long> ids) {
-        return abstractJpaRepository.findAllById(ids);
+    public List<T> findAllById(Iterable<ID> ids) {
+        return jpaRepository.findAllById(ids);
     }
 
     @Override
     public List<T> findAll() {
-        return abstractJpaRepository.findAll();
+        return jpaRepository.findAll();
     }
 
     @Override
     public Page<T> findAll(Pageable pageable) {
-        return abstractJpaRepository.findAll(pageable);
+        return jpaRepository.findAll(pageable);
     }
 
 
     @Override
-    public void deleteById(Long id) {
-        abstractJpaRepository.deleteById(id);
+    public void deleteById(ID id) {
+        jpaRepository.deleteById(id);
     }
 
     @Override
     public void deleteAll() {
-        abstractJpaRepository.deleteAll();
+        jpaRepository.deleteAll();
     }
 
 
     @Override
-    public boolean existsById(Long id) {
-        return abstractJpaRepository.existsById(id);
+    public boolean existsById(ID id) {
+        return jpaRepository.existsById(id);
     }
 
     @Override
     public long getCount() {
-        return abstractJpaRepository.count();
+        return jpaRepository.count();
     }
 
     @Override
     public List<T> findAll(Specification<T> specification) {
-        return abstractJpaRepository.findAll(specification);
+        return jpaRepository.findAll(specification);
     }
 
     @Override
     public Page<T> findAll(Specification<T> specification, Pageable pageable) {
-        return abstractJpaRepository.findAll(specification, pageable);
+        return jpaRepository.findAll(specification, pageable);
     }
 
     @Override
     public long getCount(Specification<T> specification) {
-        return abstractJpaRepository.count(specification);
+        return jpaRepository.count(specification);
     }
 
     @Override
-    public List<T> getParentage(Long id) {
+    public List<T> getParentage(ID id) {
         T child = findById(id);
         T parent;
         List<T> result = new ArrayList<>();
@@ -122,7 +121,8 @@ public abstract class AbstractJpaService<T extends AbstractEntity> implements Jp
 
     @Override
     public Class<T> getEntityClass() {
-        return entityClass;
+        return (Class<T>) commonUtils.getGenericSuperclass(getClass(), 1)
+                .orElseThrow(ClassCastException::new);
     }
 
 

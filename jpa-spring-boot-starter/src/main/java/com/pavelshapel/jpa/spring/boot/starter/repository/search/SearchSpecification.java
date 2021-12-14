@@ -1,6 +1,6 @@
 package com.pavelshapel.jpa.spring.boot.starter.repository.search;
 
-import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
+import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -10,7 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 @Data
-public abstract class SearchSpecification<T extends AbstractEntity> implements Specification<T> {
+public abstract class SearchSpecification<T extends Entity<?>> implements Specification<T> {
     private transient SearchCriteria searchCriteria;
 
     @Override
