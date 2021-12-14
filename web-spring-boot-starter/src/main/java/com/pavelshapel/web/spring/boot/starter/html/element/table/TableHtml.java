@@ -2,7 +2,7 @@ package com.pavelshapel.web.spring.boot.starter.html.element.table;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
+import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
 import com.pavelshapel.web.spring.boot.starter.html.constant.AttributeValueId;
 import com.pavelshapel.web.spring.boot.starter.html.element.AbstractHtml;
 import com.pavelshapel.web.spring.boot.starter.html.element.Html;
@@ -38,8 +38,8 @@ public class TableHtml extends AbstractHtml {
     public static final String ASC = "asc";
     public static final String SORT_PATTERN = "%s,%s";
 
-    Class<? extends AbstractEntity> entityClass;
-    Page<? extends AbstractEntity> entities;
+    Class<? extends Entity<?>> entityClass;
+    Page<? extends Entity<?>> entities;
 
     @Override
     public String toString() {
@@ -134,7 +134,7 @@ public class TableHtml extends AbstractHtml {
         return String.format(SORT_PATTERN, order.getProperty(), order.getDirection().name());
     }
 
-    private List<TagHtml> convertEntityToTdTagHtmlList(AbstractEntity entity) {
+    private List<TagHtml> convertEntityToTdTagHtmlList(Entity<?> entity) {
         return getEntityFields().stream()
                 .sorted(reorderIdFieldAsFirst())
                 .map(field -> getFieldValue(entity, field))

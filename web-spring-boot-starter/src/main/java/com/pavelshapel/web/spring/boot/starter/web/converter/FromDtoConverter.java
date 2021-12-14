@@ -1,7 +1,8 @@
 package com.pavelshapel.web.spring.boot.starter.web.converter;
 
-import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
+import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
+import com.pavelshapel.web.spring.boot.starter.web.dto.Dto;
 import org.springframework.core.convert.converter.Converter;
 
-public interface FromDtoConverter<S extends AbstractDto, T extends AbstractEntity> extends Converter<S, T> {
+public interface FromDtoConverter<ID, S extends Dto<ID>, T extends Entity<ID>> extends Converter<S, T> {
 }

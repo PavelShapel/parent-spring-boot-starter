@@ -9,6 +9,5 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 @SuperBuilder
 public class ErrorResponse extends Response {
-    @NonNull
     private String error;
 }

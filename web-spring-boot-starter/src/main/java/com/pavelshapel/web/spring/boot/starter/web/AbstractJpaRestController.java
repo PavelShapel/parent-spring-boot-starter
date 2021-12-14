@@ -2,15 +2,15 @@ package com.pavelshapel.web.spring.boot.starter.web;
 
 import com.pavelshapel.aop.spring.boot.starter.log.method.Loggable;
 import com.pavelshapel.core.spring.boot.starter.util.StreamUtils;
-import com.pavelshapel.jpa.spring.boot.starter.entity.AbstractEntity;
+import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchCriteria;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchSpecification;
 import com.pavelshapel.jpa.spring.boot.starter.service.jpa.JpaService;
 import com.pavelshapel.web.spring.boot.starter.html.element.table.TableHtml;
-import com.pavelshapel.web.spring.boot.starter.html.factory.impl.HtmlFactories;
-import com.pavelshapel.web.spring.boot.starter.web.converter.AbstractDto;
+import com.pavelshapel.web.spring.boot.starter.html.factory.Factories;
 import com.pavelshapel.web.spring.boot.starter.web.converter.FromDtoConverter;
 import com.pavelshapel.web.spring.boot.starter.web.converter.ToDtoConverter;
+import com.pavelshapel.web.spring.boot.starter.web.dto.Dto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,22 +34,22 @@ import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter(AccessLevel.PROTECTED)
 @Loggable
-public abstract class AbstractJpaRestController<E extends AbstractEntity, D extends AbstractDto> {
+public abstract class AbstractJpaRestController<ID, E extends Entity<ID>, D extends Dto<ID>> {
     public static final String ID_PATH = "/{id}" + EMPTY;
     public static final String SEARCH_PATH = "/search" + EMPTY;
     public static final String PARENTAGE_PATH = ID_PATH + "/parentage";
     public static final String FORM_PATH = ID_PATH + "/form";
     public static final String TABLE_PATH = "/table" + EMPTY;
 
-    private final JpaService<E> jpaService;
+    private final JpaService<ID, E> jpaService;
     private final SearchSpecification<E> searchSpecification;
-    private final FromDtoConverter<D, E> fromDtoConverter;
-    private final ToDtoConverter<E, D> toDtoConverter;
+    private final FromDtoConverter<ID, D, E> fromDtoConverter;
+    private final ToDtoConverter<ID, E, D> toDtoConverter;
 
     @Autowired
     private StreamUtils streamUtils;
     @Autowired
-    private HtmlFactories htmlFactories;
+    private Factories htmlFactories;
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<D> save(@RequestBody @Valid D dto) {
@@ -65,7 +65,7 @@ public abstract class AbstractJpaRestController<E extends AbstractEntity, D exte
     }
 
     @PutMapping(path = ID_PATH, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<D> update(@PathVariable Long id, @RequestBody @Valid D dto) {
+    public ResponseEntity<D> update(@PathVariable ID id, @RequestBody @Valid D dto) {
         return fromDtoConverter
                 .andThen(entity -> jpaService.update(id, entity))
                 .andThen(toDtoConverter)
@@ -75,8 +75,8 @@ public abstract class AbstractJpaRestController<E extends AbstractEntity, D exte
 
 
     @GetMapping(path = ID_PATH, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<D> findById(@PathVariable Long id) {
-        return ((Converter<Long, E>) jpaService::findById)
+    public ResponseEntity<D> findById(@PathVariable ID id) {
+        return ((Converter<ID, E>) jpaService::findById)
                 .andThen(toDtoConverter)
                 .andThen(ResponseEntity::ok)
                 .convert(id);
@@ -98,14 +98,14 @@ public abstract class AbstractJpaRestController<E extends AbstractEntity, D exte
 
     @GetMapping(path = PARENTAGE_PATH, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<List<D>> getParentage(@RequestParam(required = false, defaultValue = "false") Boolean reverse,
-                                                @PathVariable Long id) {
+                                                @PathVariable ID id) {
         return jpaService.getParentage(id).stream()
                 .map(toDtoConverter::convert)
                 .collect(streamUtils.toResponseEntityList(reverse));
     }
 
     @DeleteMapping(path = ID_PATH, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable ID id) {
         jpaService.deleteById(id);
         return ResponseEntity.ok().build();
     }
