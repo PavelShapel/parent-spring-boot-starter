@@ -3,6 +3,7 @@ package com.pavelshapel.test.spring.boot.starter.layer;
 import com.pavelshapel.jpa.spring.boot.starter.JpaAuditingConfiguration;
 import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
 import com.pavelshapel.jpa.spring.boot.starter.repository.AbstractJpaRepository;
+import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchSpecification;
 import com.pavelshapel.test.spring.boot.starter.container.PostgreSQLExtension;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.jpa.domain.Specification;
 
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
@@ -26,7 +26,7 @@ public abstract class AbstractJpaRepositoryTest<ID, T extends Entity<ID>> {
     @Autowired
     private AbstractJpaRepository<ID, T> jpaRepository;
     @Autowired
-    private Specification<T> searchSpecification;
+    private SearchSpecification<T> searchSpecification;
     @Autowired
     private TestEntityManager testEntityManager;
 

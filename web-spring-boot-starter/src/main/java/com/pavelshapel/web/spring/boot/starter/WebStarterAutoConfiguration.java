@@ -96,8 +96,13 @@ public class WebStarterAutoConfiguration implements WebMvcConfigurer {
 
     //html
     @Bean
+    public FactoryBeansCollection factoryBeansCollection() {
+        return new FactoryBeansCollection();
+    }
+
+    @Bean
     public HtmlFactories htmlFactories() {
-        return new HtmlFactories();
+        return new HtmlFactories(factoryBeansCollection());
     }
 
     @Bean
