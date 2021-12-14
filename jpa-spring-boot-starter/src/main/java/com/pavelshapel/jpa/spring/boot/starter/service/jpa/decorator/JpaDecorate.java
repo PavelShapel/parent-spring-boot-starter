@@ -10,5 +10,5 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 public @interface JpaDecorate {
-    Class<? extends JpaService>[] decorations();
+    Class<? extends JpaService<?, ?>>[] decorations();
 }
