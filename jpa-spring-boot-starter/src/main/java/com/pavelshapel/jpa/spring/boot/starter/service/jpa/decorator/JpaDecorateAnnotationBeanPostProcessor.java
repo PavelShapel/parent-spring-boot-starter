@@ -45,7 +45,8 @@ public class JpaDecorateAnnotationBeanPostProcessor implements BeanPostProcessor
         for (Class<? extends JpaService<?, ?>> decorationClass : annotation.decorations()) {
             String decorationBeanName = uncapitalize(decorationClass.getSimpleName());
             JpaService<?, ?> wrapper = getWrapper(decorationBeanName);
-            wrapped = getWrappedWithDecoration(wrapper, wrapped);
+            wrapped = getWrappedWithDecoration(wrapper, wrappedName);
+            wrappedName = uncapitalize(wrapped.getClass().getSimpleName());
         }
         return wrapped;
     }
@@ -54,10 +55,9 @@ public class JpaDecorateAnnotationBeanPostProcessor implements BeanPostProcessor
         return (JpaService<?, ?>) applicationContext.getBean(beanName);
     }
 
-    private Object getWrappedWithDecoration(Object wrapper, Object wrapped) {
+    private Object getWrappedWithDecoration(Object wrapper, String wrappedName) {
         AbstractDecoratorJpaService<?, ?> decorator = (AbstractDecoratorJpaService<?, ?>) wrapper;
-        String wrappedBeanName = uncapitalize(wrapped.getClass().getSimpleName());
-        decorator.setWrapped((JpaService) applicationContext.getBean(wrappedBeanName));
+        decorator.setWrapped((JpaService) applicationContext.getBean(wrappedName));
         return decorator;
     }
 }
