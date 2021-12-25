@@ -44,17 +44,17 @@ public class StreamUtils {
                 });
     }
 
-    public <T, K, U> Collector<T, ?, Map<K, U>> toMapOfNullables(Function<? super T, ? extends K> keyMapper,
-                                                                 Function<? super T, ? extends U> valueMapper,
-                                                                 BinaryOperator<U> mergeFunction) {
+    public <T, K, V> Collector<T, ?, Map<K, V>> toMapOfNullables(Function<? super T, ? extends K> keyMapper,
+                                                                 Function<? super T, ? extends V> valueMapper,
+                                                                 BinaryOperator<V> mergeFunction) {
         return Collectors.collectingAndThen(
                 Collectors.toList(),
                 list -> {
-                    Map<K, U> result = new HashMap<>();
+                    Map<K, V> result = new HashMap<>();
                     for (T item : list) {
                         K key = keyMapper.apply(item);
-                        U newValue = valueMapper.apply(item);
-                        U value = result.containsKey(key) ? mergeFunction.apply(result.get(key), newValue) : newValue;
+                        V newValue = valueMapper.apply(item);
+                        V value = result.containsKey(key) ? mergeFunction.apply(result.get(key), newValue) : newValue;
                         result.put(key, value);
                     }
                     return result;
