@@ -24,11 +24,15 @@ public class LoggableMethodSpecification {
         this.methodDeclaringClassName = declaringClass.getSimpleName();
         this.methodName = this.method.getName();
         this.loggable = Optional.ofNullable(this.method.getAnnotation(Loggable.class))
-                .orElse(declaringClass.getAnnotation(Loggable.class));
+                .orElseGet(() -> declaringClass.getAnnotation(Loggable.class));
     }
 
     private Method getMethod(JoinPoint joinPoint) {
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        return methodSignature.getMethod();
+        return Optional.ofNullable(joinPoint)
+                .map(JoinPoint::getSignature)
+                .filter(MethodSignature.class::isInstance)
+                .map(MethodSignature.class::cast)
+                .map(MethodSignature::getMethod)
+                .orElseThrow(UnsupportedOperationException::new);
     }
 }
