@@ -10,7 +10,13 @@ public class CommonUtils {
 
     public Optional<Class<?>> getGenericSuperclass(Class<?> sourceClass, int index) {
         try {
-            return Optional.of((Class<?>) ((ParameterizedType) sourceClass.getGenericSuperclass()).getActualTypeArguments()[index]);
+            return Optional.ofNullable(sourceClass)
+                    .map(Class::getGenericSuperclass)
+                    .filter(ParameterizedType.class::isInstance)
+                    .map(ParameterizedType.class::cast)
+                    .map(ParameterizedType::getActualTypeArguments)
+                    .map(types -> types[index])
+                    .map(type -> (Class<?>) type);
         } catch (Exception exception) {
             return Optional.empty();
         }
