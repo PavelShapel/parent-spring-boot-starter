@@ -2,7 +2,7 @@ package com.pavelshapel.web.spring.boot.starter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
-import com.pavelshapel.jpa.spring.boot.starter.entity.rds.AbstractRdsEntity;
+import com.pavelshapel.jpa.spring.boot.starter.entity.rdb.AbstractRdsEntity;
 import com.pavelshapel.web.spring.boot.starter.html.constant.TagId;
 import com.pavelshapel.web.spring.boot.starter.web.exception.handler.RestResponseEntityExceptionHandler;
 import com.pavelshapel.web.spring.boot.starter.html.element.Html;

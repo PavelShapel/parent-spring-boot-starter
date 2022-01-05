@@ -1,4 +1,4 @@
-package com.pavelshapel.jpa.spring.boot.starter.entity.rds;
+package com.pavelshapel.jpa.spring.boot.starter.entity.rdb;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;

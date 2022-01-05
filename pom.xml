@@ -27,11 +27,18 @@
         <module>core-spring-boot-starter</module>
         <module>jpa-spring-boot-starter</module>
         <module>cache-spring-boot-starter</module>
-        <module>kafka-spring-boot-starter</module>
+        <!--        <module>kafka-spring-boot-starter</module>-->
     </modules>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
             <!--testcontainers-->
             <dependency>
                 <groupId>org.testcontainers</groupId>
@@ -75,18 +82,7 @@
                 <scope>provided</scope>
                 <optional>true</optional>
             </dependency>
-
             <!--com.pavelshapel-->
-            <dependency>
-                <groupId>com.pavelshapel</groupId>
-                <artifactId>json-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.pavelshapel</groupId>
-                <artifactId>jpa-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.pavelshapel</groupId>
                 <artifactId>aop-spring-boot-starter</artifactId>
@@ -99,6 +95,16 @@
             </dependency>
             <dependency>
                 <groupId>com.pavelshapel</groupId>
+                <artifactId>jpa-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.pavelshapel</groupId>
+                <artifactId>json-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.pavelshapel</groupId>
                 <artifactId>test-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -106,14 +112,6 @@
                 <groupId>com.pavelshapel</groupId>
                 <artifactId>web-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>

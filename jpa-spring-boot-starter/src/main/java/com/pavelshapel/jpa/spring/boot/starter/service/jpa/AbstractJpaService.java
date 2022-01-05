@@ -5,12 +5,14 @@ import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
 import com.pavelshapel.jpa.spring.boot.starter.repository.AbstractJpaRepository;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +42,7 @@ public abstract class AbstractJpaService<ID, T extends Entity<ID>> implements Jp
         entity.setId(null);
         T entityFromDatabase = findById(id);
         copyFields(entity, entityFromDatabase);
-        return jpaRepository.save(entityFromDatabase);
+        return save(entityFromDatabase);
     }
 
     @Override
@@ -51,7 +53,8 @@ public abstract class AbstractJpaService<ID, T extends Entity<ID>> implements Jp
 
     @Override
     public T findById(ID id) {
-        return jpaRepository.findById(id).get();
+        return jpaRepository.findById(id)
+                .orElse(null);
     }
 
     @Override
@@ -121,33 +124,36 @@ public abstract class AbstractJpaService<ID, T extends Entity<ID>> implements Jp
 
     @Override
     public Class<T> getEntityClass() {
-        return (Class<T>) commonUtils.getGenericSuperclass(getClass(), 1)
-                .orElseThrow(ClassCastException::new);
+        return commonUtils.getGenericSuperclass(getClass(), 1)
+                .map(entityClass -> (Class<T>) entityClass)
+                .orElseThrow(UnsupportedOperationException::new);
     }
 
 
     private void copyFields(Object source, Object destination) {
-        if (!source.getClass().isAssignableFrom(destination.getClass())) {
-            throw new IllegalArgumentException(
-                    String.format("destination class [%s] must be same or subclass as source class [%s]",
-                            destination.getClass().getName(),
-                            source.getClass().getName()
-                    )
-            );
+        if (isSameOrSubclass(source, destination)) {
+            ReflectionUtils.doWithFields(source.getClass(), field -> copyField(source, destination, field), this::filterField);
         } else {
-            ReflectionUtils.doWithFields(source.getClass(),
-                    field -> {
-                        makeAccessible(field);
-                        Object value = field.get(source);
-                        if (nonNull(value)) {
-                            field.set(destination, value);
-                        }
-                    },
-                    field -> !Modifier.isStatic(field.getModifiers()) &&
-                            !Modifier.isFinal(field.getModifiers()) &&
-                            !Modifier.isTransient(field.getModifiers())
-
-            );
+            throw new IllegalArgumentException();
         }
+    }
+
+    private boolean isSameOrSubclass(Object source, Object destination) {
+        return source.getClass().isAssignableFrom(destination.getClass());
+    }
+
+    @SneakyThrows
+    private void copyField(Object source, Object destination, Field field) {
+        makeAccessible(field);
+        Object value = field.get(source);
+        if (nonNull(value)) {
+            field.set(destination, value);
+        }
+    }
+
+    private boolean filterField(Field field) {
+        return !Modifier.isStatic(field.getModifiers()) &&
+                !Modifier.isFinal(field.getModifiers()) &&
+                !Modifier.isTransient(field.getModifiers());
     }
 }
