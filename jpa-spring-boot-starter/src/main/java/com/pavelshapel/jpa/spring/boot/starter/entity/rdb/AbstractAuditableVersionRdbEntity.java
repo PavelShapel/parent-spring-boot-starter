@@ -18,7 +18,7 @@ import java.util.Date;
 @MappedSuperclass
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
-public abstract class AbstractAuditableVersionRdsEntity extends AbstractVersionRdsEntity {
+public abstract class AbstractAuditableVersionRdbEntity extends AbstractVersionRdbEntity {
     @CreatedBy
     @Column
     @EqualsAndHashCode.Exclude

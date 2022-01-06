@@ -8,7 +8,7 @@ import javax.persistence.*;
 @MappedSuperclass
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
-public abstract class AbstractVersionRdsEntity extends AbstractRdsEntity {
+public abstract class AbstractVersionRdbEntity extends AbstractRdbEntity {
     @Version
     @Column
     @EqualsAndHashCode.Exclude

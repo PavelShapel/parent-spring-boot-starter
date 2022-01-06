@@ -1,4 +1,4 @@
-package com.pavelshapel.web.spring.boot.starter.web.dto.rds;
+package com.pavelshapel.web.spring.boot.starter.web.dto.rdb;
 
 import com.pavelshapel.web.spring.boot.starter.web.dto.Dto;
 import lombok.Data;

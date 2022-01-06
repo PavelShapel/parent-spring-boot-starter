@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @MappedSuperclass
 @Data
-public abstract class AbstractRdsEntity implements Entity<Long> {
+public abstract class AbstractRdbEntity implements Entity<Long> {
     public static final String MANDATORY = "mandatory";
 
     @Id

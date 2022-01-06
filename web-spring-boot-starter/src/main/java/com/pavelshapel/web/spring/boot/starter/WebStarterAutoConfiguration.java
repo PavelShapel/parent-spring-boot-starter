@@ -2,7 +2,7 @@ package com.pavelshapel.web.spring.boot.starter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
-import com.pavelshapel.jpa.spring.boot.starter.entity.rdb.AbstractRdsEntity;
+import com.pavelshapel.jpa.spring.boot.starter.entity.rdb.AbstractRdbEntity;
 import com.pavelshapel.web.spring.boot.starter.html.constant.TagId;
 import com.pavelshapel.web.spring.boot.starter.web.exception.handler.RestResponseEntityExceptionHandler;
 import com.pavelshapel.web.spring.boot.starter.html.element.Html;
@@ -162,7 +162,7 @@ public class WebStarterAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @Scope(SCOPE_PROTOTYPE)
-    public TableHtml tableHtml(Class<? extends Entity<?>> entityClass, Page<? extends AbstractRdsEntity> entities) {
+    public TableHtml tableHtml(Class<? extends Entity<?>> entityClass, Page<? extends AbstractRdbEntity> entities) {
         return new TableHtml(entityClass, entities);
     }
 }
