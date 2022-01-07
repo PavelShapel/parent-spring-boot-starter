@@ -3,7 +3,7 @@ package com.pavelshapel.random.spring.boot.starter.randomizer.service.collection
 import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Entity;
 import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Specification;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.collection.CollectionRandomizer;
-import com.pavelshapel.random.spring.boot.starter.randomizer.service.factory.impl.GenericRandomizerFactory;
+import com.pavelshapel.random.spring.boot.starter.randomizer.service.factory.RandomizerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class GenericCollectionRandomizer implements CollectionRandomizer {
     @Autowired
-    private GenericRandomizerFactory genericRandomizerFactory;
+    private RandomizerFactory genericRandomizerFactory;
 
     @Override
     public Map<String, Object> randomize(Entity map) {

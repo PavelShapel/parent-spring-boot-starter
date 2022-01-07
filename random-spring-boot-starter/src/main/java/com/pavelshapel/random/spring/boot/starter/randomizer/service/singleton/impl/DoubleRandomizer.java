@@ -12,16 +12,14 @@ import static com.pavelshapel.random.spring.boot.starter.randomizer.enums.Defaul
 public class DoubleRandomizer extends AbstractRandomizer<Double> {
     @Override
     public Double randomize(Specification specification) {
-        final double randomizedDouble = ThreadLocalRandom.current().nextDouble(
+        double randomizedDouble = ThreadLocalRandom.current().nextDouble(
                 specification.getMin(),
                 specification.getMax()
         );
-
-        final BigDecimal scaledBigDecimal = BigDecimal.valueOf(randomizedDouble).setScale(
+        BigDecimal scaledBigDecimal = BigDecimal.valueOf(randomizedDouble).setScale(
                 getRandomizedScale(),
                 RoundingMode.HALF_UP
         );
-
         return scaledBigDecimal.doubleValue();
     }
 

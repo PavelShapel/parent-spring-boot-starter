@@ -23,21 +23,16 @@ public abstract class AbstractRandomizer<T> implements Randomizer<T> {
 
     @Override
     public Specification createDefaultSpecification() {
-        return Specification.builder()
-                .type(boundedType.getType().getSimpleName())
-                .min(boundedType.getRange().getMinimum())
-                .max(boundedType.getRange().getMaximum())
-                .build();
+        return createBoundedSpecification(boundedType.getRange().getMinimum(), boundedType.getRange().getMaximum());
     }
 
 
     private Specification createBoundedSpecification(long minValue, long maxValue) {
-        final Specification specification = Specification.builder()
+        Specification specification = Specification.builder()
                 .type(boundedType.getType().getSimpleName())
                 .min(minValue)
                 .max(maxValue)
                 .build();
-
         return specificationVerifier.verify(specification);
     }
 }

@@ -1,5 +1,6 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.service.collection.impl;
 
+import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
 import com.pavelshapel.random.spring.boot.starter.RandomStarterAutoConfiguration;
 import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Entity;
 import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Specification;
@@ -17,7 +18,10 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = RandomStarterAutoConfiguration.class)
+@SpringBootTest(classes = {
+        RandomStarterAutoConfiguration.class,
+        CoreStarterAutoConfiguration.class
+})
 class GenericCollectionRandomizerTest {
     @Autowired
     private GenericCollectionRandomizer genericCollectionRandomizer;

@@ -12,25 +12,23 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DateRandomizer extends AbstractRandomizer<Date> {
     @Override
     public Date randomize(Specification specification) {
-        final Range<Calendar> dateRange = getDateRange(specification);
-        final long randomizedLong = ThreadLocalRandom.current().nextLong(
+        Range<Calendar> dateRange = getDateRange(specification);
+        long randomizedLong = ThreadLocalRandom.current().nextLong(
                 dateRange.getMinimum().getTimeInMillis(),
                 dateRange.getMaximum().getTimeInMillis()
         );
-
         return new Date(randomizedLong);
     }
 
     private Range<Calendar> getDateRange(Specification specification) {
-        final Calendar min = new GregorianCalendar(
+        Calendar min = new GregorianCalendar(
                 Math.toIntExact(specification.getMin()),
                 Calendar.JANUARY,
                 1);
-        final Calendar max = new GregorianCalendar(
+        Calendar max = new GregorianCalendar(
                 Math.toIntExact(specification.getMax()),
                 Calendar.DECEMBER,
                 31);
-
         return Range.between(min, max);
     }
 }

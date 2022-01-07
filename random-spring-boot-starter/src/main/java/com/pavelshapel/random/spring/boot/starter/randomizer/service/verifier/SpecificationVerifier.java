@@ -29,7 +29,6 @@ public class SpecificationVerifier implements Verifier<Specification> {
                     .build();
         } catch (Exception exception) {
             log.warn("Implemented default range on exception [{}]", exception.toString());
-
             return Specification.builder()
                     .type(specification.getType())
                     .min(boundedType.getRange().getMinimum())

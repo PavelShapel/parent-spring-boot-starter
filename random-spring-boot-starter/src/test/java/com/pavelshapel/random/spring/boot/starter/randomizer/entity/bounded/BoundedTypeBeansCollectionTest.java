@@ -1,5 +1,6 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded;
 
+import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
 import com.pavelshapel.random.spring.boot.starter.RandomStarterAutoConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@SpringBootTest(classes = RandomStarterAutoConfiguration.class)
+@SpringBootTest(classes = {
+        RandomStarterAutoConfiguration.class,
+        CoreStarterAutoConfiguration.class
+})
 class BoundedTypeBeansCollectionTest {
     @Autowired
     private BoundedTypeBeansCollection boundedTypeBeansCollection;

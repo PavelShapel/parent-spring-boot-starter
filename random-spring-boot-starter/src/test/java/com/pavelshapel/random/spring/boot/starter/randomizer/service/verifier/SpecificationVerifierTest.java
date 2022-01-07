@@ -1,5 +1,6 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.service.verifier;
 
+import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
 import com.pavelshapel.random.spring.boot.starter.RandomStarterAutoConfiguration;
 import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Specification;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.RandomizerBeansCollection;
@@ -10,7 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@SpringBootTest(classes = RandomStarterAutoConfiguration.class)
+@SpringBootTest(classes = {
+        RandomStarterAutoConfiguration.class,
+        CoreStarterAutoConfiguration.class
+})
 class SpecificationVerifierTest {
     @Autowired
     private RandomizerBeansCollection randomizerBeansCollection;
