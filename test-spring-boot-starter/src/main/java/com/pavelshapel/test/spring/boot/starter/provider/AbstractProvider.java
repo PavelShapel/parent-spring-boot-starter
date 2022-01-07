@@ -47,6 +47,6 @@ public abstract class AbstractProvider implements ArgumentsProvider {
                 .map(Supplier::get)
                 .filter(targetClass::isInstance)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(String.format(ERROR_MESSAGE_PATTERN, targetClass.getSimpleName())));
+                .orElseThrow(() -> new UnsupportedOperationException(String.format(ERROR_MESSAGE_PATTERN, targetClass.getSimpleName())));
     }
 }
