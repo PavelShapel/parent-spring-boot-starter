@@ -8,8 +8,9 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.Optional;
+
+import static java.util.Arrays.asList;
 
 @Aspect
 @Log4j2
@@ -107,11 +108,14 @@ public class LoggableAspect {
     }
 
     private boolean isContainingLoggableType(LoggableMethodSpecification loggableMethodSpecification, LoggableType loggableType) {
-        return Arrays.asList(loggableMethodSpecification.getLoggable().value())
+        return asList(loggableMethodSpecification.getLoggable().value())
                 .contains(loggableType);
     }
 
     private String getVerifiedLogResult(Object result) {
-        return Objects.isNull(result) || result.toString().isEmpty() ? NOTHING_TO_LOG : result.toString();
+        return Optional.ofNullable(result)
+                .map(Object::toString)
+                .filter(value -> !value.isEmpty())
+                .orElse(NOTHING_TO_LOG);
     }
 }
