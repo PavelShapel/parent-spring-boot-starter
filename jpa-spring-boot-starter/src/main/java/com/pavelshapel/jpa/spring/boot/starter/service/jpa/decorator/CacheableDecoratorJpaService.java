@@ -1,6 +1,6 @@
 package com.pavelshapel.jpa.spring.boot.starter.service.jpa.decorator;
 
-import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
+import com.pavelshapel.core.spring.boot.starter.model.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;

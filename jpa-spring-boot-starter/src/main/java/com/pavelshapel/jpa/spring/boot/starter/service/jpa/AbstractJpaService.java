@@ -1,7 +1,7 @@
 package com.pavelshapel.jpa.spring.boot.starter.service.jpa;
 
+import com.pavelshapel.core.spring.boot.starter.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.util.CommonUtils;
-import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
 import com.pavelshapel.jpa.spring.boot.starter.repository.AbstractJpaRepository;
 import lombok.AccessLevel;
 import lombok.Getter;

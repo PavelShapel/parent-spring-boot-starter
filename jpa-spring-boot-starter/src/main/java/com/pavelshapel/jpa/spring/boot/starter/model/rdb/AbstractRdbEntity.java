@@ -1,6 +1,6 @@
-package com.pavelshapel.jpa.spring.boot.starter.entity.rdb;
+package com.pavelshapel.jpa.spring.boot.starter.model.rdb;
 
-import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
+import com.pavelshapel.core.spring.boot.starter.model.Entity;
 import lombok.Data;
 
 import javax.persistence.*;

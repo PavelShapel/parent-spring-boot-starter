@@ -1,6 +1,6 @@
 package com.pavelshapel.jpa.spring.boot.starter.repository;
 
-import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
+import com.pavelshapel.core.spring.boot.starter.model.Entity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
