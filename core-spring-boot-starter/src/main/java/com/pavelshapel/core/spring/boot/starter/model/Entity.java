@@ -2,8 +2,8 @@ package com.pavelshapel.core.spring.boot.starter.model;
 
 import java.io.Serializable;
 
-public interface Entity<T> extends Serializable {
-    T getId();
+public interface Entity<ID> extends Serializable {
+    ID getId();
 
-    void setId(T id);
+    void setId(ID id);
 }
