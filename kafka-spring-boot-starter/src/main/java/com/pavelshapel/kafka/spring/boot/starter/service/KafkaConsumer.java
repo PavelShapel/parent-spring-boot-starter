@@ -1,7 +1,7 @@
 package com.pavelshapel.kafka.spring.boot.starter.service;
 
-import com.pavelshapel.web.spring.boot.starter.web.converter.AbstractDto;
+import com.pavelshapel.core.spring.boot.starter.model.Dto;
 
-public interface KafkaConsumer<T extends AbstractDto> extends Kafka<T> {
+public interface KafkaConsumer<T extends Dto<String>> extends Kafka<T> {
     T receive(T dto);
 }

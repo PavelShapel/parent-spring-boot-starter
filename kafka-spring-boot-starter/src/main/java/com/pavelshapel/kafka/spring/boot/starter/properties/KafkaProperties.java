@@ -13,4 +13,5 @@ import static com.pavelshapel.kafka.spring.boot.starter.KafkaStarterAutoConfigur
 public class KafkaProperties {
     String server;
     ConsumerKafkaProperties consumer = new ConsumerKafkaProperties();
+    ProducerKafkaProperties producer = new ProducerKafkaProperties();
 }

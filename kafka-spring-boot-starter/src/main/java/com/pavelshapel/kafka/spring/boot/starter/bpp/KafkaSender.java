@@ -8,4 +8,5 @@ import java.lang.annotation.*;
 @Inherited
 public @interface KafkaSender {
     String topic();
+    String key();
 }

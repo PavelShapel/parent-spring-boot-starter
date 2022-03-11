@@ -1,7 +1,7 @@
 package com.pavelshapel.kafka.spring.boot.starter.config;
 
+import com.pavelshapel.core.spring.boot.starter.model.Dto;
 import com.pavelshapel.kafka.spring.boot.starter.properties.KafkaProperties;
-import com.pavelshapel.web.spring.boot.starter.web.converter.AbstractDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @EnableConfigurationProperties(KafkaProperties.class)
-public abstract class AbstractKafkaProducerConfig<T extends AbstractDto> {
+public abstract class AbstractKafkaProducerConfig<T extends Dto<String>> {
     @Autowired
     private KafkaProperties kafkaProperties;
 
@@ -28,6 +28,7 @@ public abstract class AbstractKafkaProducerConfig<T extends AbstractDto> {
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getServer());
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        properties.put(ProducerConfig.ACKS_CONFIG, kafkaProperties.getProducer().getAcks());
         return properties;
     }
 

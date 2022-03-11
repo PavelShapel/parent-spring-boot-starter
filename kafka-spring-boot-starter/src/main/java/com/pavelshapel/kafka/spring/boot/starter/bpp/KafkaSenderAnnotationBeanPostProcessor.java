@@ -1,7 +1,7 @@
 package com.pavelshapel.kafka.spring.boot.starter.bpp;
 
+import com.pavelshapel.core.spring.boot.starter.model.Dto;
 import com.pavelshapel.kafka.spring.boot.starter.service.KafkaProducer;
-import com.pavelshapel.web.spring.boot.starter.web.converter.AbstractDto;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.BeansException;
@@ -11,24 +11,19 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.Objects.nonNull;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class KafkaSenderAnnotationBeanPostProcessor implements BeanPostProcessor {
     final Map<String, List<Method>> kafkaSenderBeans = new HashMap<>();
     @Autowired
-    KafkaProducer kafkaProducer;
+    KafkaProducer<Dto<String>> kafkaProducer;
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         List<Method> methods = Arrays.stream(bean.getClass().getDeclaredMethods())
-                .filter(method -> method.isAnnotationPresent(KafkaSender.class))
+                .filter(this::isAnnotationKafkaSenderPresent)
                 .collect(Collectors.toList());
         if (!methods.isEmpty()) {
             kafkaSenderBeans.put(beanName, methods);
@@ -36,14 +31,20 @@ public class KafkaSenderAnnotationBeanPostProcessor implements BeanPostProcessor
         return bean;
     }
 
+    private boolean isAnnotationKafkaSenderPresent(Method method) {
+        return method.isAnnotationPresent(KafkaSender.class);
+    }
+
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        List<Method> kafkaSenderMethods = kafkaSenderBeans.get(beanName);
-        if (nonNull(kafkaSenderMethods)) {
-            Class<?> beanClass = bean.getClass();
-            return Proxy.newProxyInstance(beanClass.getClassLoader(), beanClass.getInterfaces(), getInvocationHandler(bean, kafkaSenderMethods));
-        }
-        return bean;
+    public Object postProcessAfterInitialization(Object bean, String beanName) {
+        return Optional.ofNullable(kafkaSenderBeans.get(beanName))
+                .map(methods -> createProxyInstance(bean, methods))
+                .orElse(bean);
+    }
+
+    private Object createProxyInstance(Object bean, List<Method> methods) {
+        Class<?> beanClass = bean.getClass();
+        return Proxy.newProxyInstance(beanClass.getClassLoader(), beanClass.getInterfaces(), getInvocationHandler(bean, methods));
     }
 
     private InvocationHandler getInvocationHandler(Object bean, List<Method> kafkaSenderMethods) {
@@ -57,9 +58,10 @@ public class KafkaSenderAnnotationBeanPostProcessor implements BeanPostProcessor
     }
 
     private void sendMessage(Method method, Object result) {
-        if (result instanceof AbstractDto) {
-            KafkaSender annotation = method.getAnnotation(KafkaSender.class);
-            kafkaProducer.send(annotation.topic(), (AbstractDto) result);
-        }
+        KafkaSender annotation = method.getAnnotation(KafkaSender.class);
+        Optional.ofNullable(result)
+                .filter(Dto.class::isInstance)
+                .map(Dto.class::cast)
+                .ifPresent(dto -> kafkaProducer.send(annotation.topic(), annotation.key(), dto));
     }
 }
