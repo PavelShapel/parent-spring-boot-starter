@@ -1,7 +1,7 @@
 package com.pavelshapel.test.spring.boot.starter.layer;
 
+import com.pavelshapel.core.spring.boot.starter.model.Entity;
 import com.pavelshapel.jpa.spring.boot.starter.JpaAuditingConfiguration;
-import com.pavelshapel.jpa.spring.boot.starter.entity.Entity;
 import com.pavelshapel.jpa.spring.boot.starter.repository.AbstractJpaRepository;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchSpecification;
 import com.pavelshapel.test.spring.boot.starter.container.PostgreSQLExtension;

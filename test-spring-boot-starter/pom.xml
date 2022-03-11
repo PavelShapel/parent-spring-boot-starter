@@ -40,21 +40,11 @@
         </dependency>
         <dependency>
             <groupId>com.pavelshapel</groupId>
+            <artifactId>core-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.pavelshapel</groupId>
             <artifactId>jpa-spring-boot-starter</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>
