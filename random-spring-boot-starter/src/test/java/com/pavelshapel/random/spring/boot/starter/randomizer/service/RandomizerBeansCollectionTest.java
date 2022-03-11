@@ -2,7 +2,7 @@ package com.pavelshapel.random.spring.boot.starter.randomizer.service;
 
 import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
 import com.pavelshapel.random.spring.boot.starter.RandomStarterAutoConfiguration;
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded.BoundedTypeBeansCollection;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedTypeBeansCollection;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.impl;
 
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Specification;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.Specification;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.AbstractRandomizer;
 import org.apache.commons.lang3.Range;
 

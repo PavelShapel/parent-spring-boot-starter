@@ -1,6 +1,6 @@
-package com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded.impl;
+package com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.impl;
 
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded.BoundedType;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedType;
 import org.apache.commons.lang3.Range;
 
 import static com.pavelshapel.random.spring.boot.starter.randomizer.enums.DefaultRanges.DEFAULT_LONG_RANGE;

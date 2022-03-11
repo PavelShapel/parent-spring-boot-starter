@@ -2,7 +2,7 @@ package com.pavelshapel.random.spring.boot.starter.randomizer.service.verifier;
 
 import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
 import com.pavelshapel.random.spring.boot.starter.RandomStarterAutoConfiguration;
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Specification;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.Specification;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.RandomizerBeansCollection;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.Randomizer;
 import org.junit.jupiter.api.Test;

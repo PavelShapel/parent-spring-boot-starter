@@ -1,7 +1,7 @@
 package com.pavelshapel.random.spring.boot.starter;
 
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded.BoundedTypeBeansCollection;
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded.impl.*;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedTypeBeansCollection;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.impl.*;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.RandomizerBeansCollection;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.collection.impl.GenericCollectionRandomizer;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.factory.impl.GenericRandomizerFactory;

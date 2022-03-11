@@ -1,8 +1,8 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.service.verifier;
 
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Specification;
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded.BoundedType;
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded.BoundedTypeBeansCollection;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.Specification;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedType;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedTypeBeansCollection;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Range;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class SpecificationVerifier implements Verifier<Specification> {
                     .max(intersection.getMaximum())
                     .build();
         } catch (Exception exception) {
-            log.warn("Implemented default range on exception [{}]", exception.toString());
+            log.warn("implemented default range on exception [{}]", exception.toString());
             return Specification.builder()
                     .type(specification.getType())
                     .min(boundedType.getRange().getMinimum())

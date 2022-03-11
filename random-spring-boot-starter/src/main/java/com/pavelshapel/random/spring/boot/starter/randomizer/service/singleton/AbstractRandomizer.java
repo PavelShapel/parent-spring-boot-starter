@@ -1,7 +1,7 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton;
 
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Specification;
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded.BoundedType;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.Specification;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedType;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.verifier.SpecificationVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 

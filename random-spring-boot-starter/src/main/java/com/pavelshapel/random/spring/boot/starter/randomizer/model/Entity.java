@@ -1,4 +1,4 @@
-package com.pavelshapel.random.spring.boot.starter.randomizer.entity;
+package com.pavelshapel.random.spring.boot.starter.randomizer.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

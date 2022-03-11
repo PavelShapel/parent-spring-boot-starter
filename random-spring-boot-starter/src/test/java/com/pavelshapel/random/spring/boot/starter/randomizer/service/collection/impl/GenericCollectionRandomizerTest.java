@@ -2,9 +2,9 @@ package com.pavelshapel.random.spring.boot.starter.randomizer.service.collection
 
 import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
 import com.pavelshapel.random.spring.boot.starter.RandomStarterAutoConfiguration;
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Entity;
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Specification;
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded.BoundedTypeBeansCollection;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.Entity;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.Specification;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedTypeBeansCollection;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.RandomizerBeansCollection;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.Randomizer;
 import org.junit.jupiter.api.Test;

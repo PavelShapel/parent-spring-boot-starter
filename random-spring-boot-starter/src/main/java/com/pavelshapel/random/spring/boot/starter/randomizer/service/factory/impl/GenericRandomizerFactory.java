@@ -1,6 +1,6 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.service.factory.impl;
 
-import com.pavelshapel.random.spring.boot.starter.randomizer.entity.Specification;
+import com.pavelshapel.random.spring.boot.starter.randomizer.model.Specification;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.RandomizerBeansCollection;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.factory.RandomizerFactory;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.Randomizer;

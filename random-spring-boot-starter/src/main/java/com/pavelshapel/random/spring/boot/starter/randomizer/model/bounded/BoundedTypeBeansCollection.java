@@ -1,4 +1,4 @@
-package com.pavelshapel.random.spring.boot.starter.randomizer.entity.bounded;
+package com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded;
 
 import com.pavelshapel.core.spring.boot.starter.bean.AbstractBeansCollection;
 
