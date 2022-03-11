@@ -15,30 +15,16 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.pavelshapel</groupId>
             <artifactId>json-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.pavelshapel</groupId>
             <artifactId>jpa-spring-boot-starter</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.pavelshapel</groupId>
             <artifactId>aop-spring-boot-starter</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.pavelshapel</groupId>
-            <artifactId>core-spring-boot-starter</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.pavelshapel</groupId>
@@ -54,18 +40,6 @@
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>${springdoc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>
