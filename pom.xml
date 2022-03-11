@@ -27,7 +27,7 @@
         <module>core-spring-boot-starter</module>
         <module>jpa-spring-boot-starter</module>
         <module>cache-spring-boot-starter</module>
-        <!--        <module>kafka-spring-boot-starter</module>-->
+        <module>kafka-spring-boot-starter</module>
     </modules>
 
     <dependencyManagement>
@@ -113,6 +113,11 @@
                 <artifactId>web-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.pavelshapel</groupId>
+                <artifactId>cache-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -125,6 +130,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
             <optional>true</optional>
         </dependency>
     </dependencies>
