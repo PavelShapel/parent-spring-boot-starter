@@ -1,7 +1,8 @@
 package com.pavelshapel.core.spring.boot.starter;
 
-import com.pavelshapel.core.spring.boot.starter.reflection.annotation.AnnotationReplacer;
-import com.pavelshapel.core.spring.boot.starter.reflection.annotation.ClassAnnotationReplacer;
+import com.pavelshapel.core.spring.boot.starter.bpp.annotation.autowired.SelfAutowiredAnnotationBeanPostProcessor;
+import com.pavelshapel.core.spring.boot.starter.reflection.annotation.replacer.AnnotationReplacer;
+import com.pavelshapel.core.spring.boot.starter.reflection.annotation.replacer.ClassAnnotationReplacer;
 import com.pavelshapel.core.spring.boot.starter.util.CommonUtils;
 import com.pavelshapel.core.spring.boot.starter.util.CompletableFutureUtils;
 import com.pavelshapel.core.spring.boot.starter.util.StreamUtils;
@@ -35,5 +36,10 @@ public class CoreStarterAutoConfiguration {
     @Bean
     public CompletableFutureUtils completableFutureUtils() {
         return new CompletableFutureUtils();
+    }
+
+    @Bean
+    public SelfAutowiredAnnotationBeanPostProcessor selfAutowiredAnnotationBeanPostProcessor() {
+        return new SelfAutowiredAnnotationBeanPostProcessor();
     }
 }

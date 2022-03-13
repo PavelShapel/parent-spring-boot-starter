@@ -1,4 +1,4 @@
-package com.pavelshapel.core.spring.boot.starter.reflection.annotation;
+package com.pavelshapel.core.spring.boot.starter.reflection.annotation.replacer;
 
 import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.pavelshapel.core.spring.boot.starter.reflection.annotation;
+package com.pavelshapel.core.spring.boot.starter.reflection.annotation.replacer;
 
 import java.lang.annotation.Annotation;
 
