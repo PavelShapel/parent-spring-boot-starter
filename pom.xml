@@ -14,7 +14,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <testcontainers.version>1.16.2</testcontainers.version>
+        <testcontainers.version>1.16.3</testcontainers.version>
         <springdoc.version>1.6.6</springdoc.version>
     </properties>
 
@@ -82,6 +82,13 @@
                 <scope>provided</scope>
                 <optional>true</optional>
             </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>dynalite</artifactId>
+                <version>${testcontainers.version}</version>
+                <scope>provided</scope>
+                <optional>true</optional>
+            </dependency>
             <!--com.pavelshapel-->
             <dependency>
                 <groupId>com.pavelshapel</groupId>
@@ -135,9 +142,25 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>provided</scope>
             <optional>true</optional>
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
