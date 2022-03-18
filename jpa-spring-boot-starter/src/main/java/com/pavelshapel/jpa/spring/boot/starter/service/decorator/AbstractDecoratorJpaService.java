@@ -1,7 +1,7 @@
-package com.pavelshapel.jpa.spring.boot.starter.service.jpa.decorator;
+package com.pavelshapel.jpa.spring.boot.starter.service.decorator;
 
 import com.pavelshapel.core.spring.boot.starter.model.Entity;
-import com.pavelshapel.jpa.spring.boot.starter.service.jpa.JpaService;
+import com.pavelshapel.jpa.spring.boot.starter.service.JpaService;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

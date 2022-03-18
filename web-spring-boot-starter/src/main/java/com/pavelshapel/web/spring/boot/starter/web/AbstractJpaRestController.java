@@ -6,7 +6,7 @@ import com.pavelshapel.core.spring.boot.starter.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.util.StreamUtils;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchCriteria;
 import com.pavelshapel.jpa.spring.boot.starter.repository.search.SearchSpecification;
-import com.pavelshapel.jpa.spring.boot.starter.service.jpa.JpaService;
+import com.pavelshapel.jpa.spring.boot.starter.service.JpaService;
 import com.pavelshapel.web.spring.boot.starter.html.element.table.TableHtml;
 import com.pavelshapel.web.spring.boot.starter.html.factory.Factories;
 import com.pavelshapel.web.spring.boot.starter.web.converter.FromDtoConverter;

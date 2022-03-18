@@ -1,4 +1,4 @@
-package com.pavelshapel.jpa.spring.boot.starter.model.rdb;
+package com.pavelshapel.jpa.spring.boot.starter.model;
 
 import com.pavelshapel.core.spring.boot.starter.model.Entity;
 import lombok.Data;

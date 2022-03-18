@@ -1,4 +1,4 @@
-package com.pavelshapel.jpa.spring.boot.starter.service.jpa;
+package com.pavelshapel.jpa.spring.boot.starter.service;
 
 import com.pavelshapel.core.spring.boot.starter.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.util.CommonUtils;

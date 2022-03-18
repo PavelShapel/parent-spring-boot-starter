@@ -1,4 +1,4 @@
-package com.pavelshapel.jpa.spring.boot.starter.service.jpa.decorator;
+package com.pavelshapel.jpa.spring.boot.starter.service.decorator;
 
 import com.pavelshapel.core.spring.boot.starter.model.Entity;
 import org.springframework.beans.factory.annotation.Autowired;

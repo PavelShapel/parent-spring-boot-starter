@@ -1,6 +1,6 @@
 package com.pavelshapel.jpa.spring.boot.starter;
 
-import com.pavelshapel.jpa.spring.boot.starter.service.jpa.decorator.JpaDecorateAnnotationBeanPostProcessor;
+import com.pavelshapel.jpa.spring.boot.starter.service.decorator.JpaDecorateAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

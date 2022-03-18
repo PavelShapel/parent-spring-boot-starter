@@ -1,4 +1,4 @@
-package com.pavelshapel.jpa.spring.boot.starter.model.rdb;
+package com.pavelshapel.jpa.spring.boot.starter.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;

@@ -2,7 +2,7 @@ package com.pavelshapel.web.spring.boot.starter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pavelshapel.core.spring.boot.starter.model.Entity;
-import com.pavelshapel.jpa.spring.boot.starter.model.rdb.AbstractRdbEntity;
+import com.pavelshapel.jpa.spring.boot.starter.model.AbstractRdbEntity;
 import com.pavelshapel.web.spring.boot.starter.html.constant.TagId;
 import com.pavelshapel.web.spring.boot.starter.html.element.Html;
 import com.pavelshapel.web.spring.boot.starter.html.element.simple.AttributeHtml;
@@ -15,7 +15,6 @@ import com.pavelshapel.web.spring.boot.starter.web.exception.handler.RestRespons
 import com.pavelshapel.web.spring.boot.starter.wrapper.TypedResponseWrapperRestControllerAdvice;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
@@ -37,8 +36,6 @@ public class WebStarterAutoConfiguration implements WebMvcConfigurer {
     public static final String TYPE = "web";
 
     //inject custom objectMapper to represent date/string correctly
-    @Autowired
-    private ObjectMapper objectMapper;
     @Value("${spring.application.name:[spring.application.name] property not set}")
     private String applicationName;
     @Value("${spring.application.description:[spring.application.description] property not set}")
@@ -66,9 +63,14 @@ public class WebStarterAutoConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+    @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-        converter.setObjectMapper(objectMapper);
+        converter.setObjectMapper(objectMapper());
         return converter;
     }
 

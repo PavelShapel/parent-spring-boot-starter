@@ -1,6 +1,6 @@
-package com.pavelshapel.jpa.spring.boot.starter.service.jpa.decorator;
+package com.pavelshapel.jpa.spring.boot.starter.service.decorator;
 
-import com.pavelshapel.jpa.spring.boot.starter.service.jpa.JpaService;
+import com.pavelshapel.jpa.spring.boot.starter.service.JpaService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
