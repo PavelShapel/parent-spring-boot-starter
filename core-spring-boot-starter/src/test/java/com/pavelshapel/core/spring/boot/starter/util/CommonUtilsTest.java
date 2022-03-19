@@ -30,4 +30,20 @@ class CommonUtilsTest {
         assertThat(genericSuperclass)
                 .isEmpty();
     }
+
+    @Test
+    void getRandomisedEnum_WithValidParameter_ShouldReturnRandomValue() {
+        Optional<EnumTester> randomisedEnum = commonUtils.getRandomisedEnum(EnumTester.class);
+
+        assertThat(randomisedEnum)
+                .isNotEmpty();
+    }
+
+    @Test
+    void getRandomisedEnum_WithInvalidParameter_ShouldReturnEmptyValue() {
+        Optional<EmptyEnumTester> randomisedEnum = commonUtils.getRandomisedEnum(EmptyEnumTester.class);
+
+        assertThat(randomisedEnum)
+                .isEmpty();
+    }
 }
