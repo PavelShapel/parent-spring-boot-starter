@@ -1,6 +1,7 @@
-package com.pavelshapel.core.spring.boot.starter.util;
+package com.pavelshapel.core.spring.boot.starter.util.impl;
 
 import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
+import com.pavelshapel.core.spring.boot.starter.util.CompletableFutureUtils;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(classes = {CoreStarterAutoConfiguration.class})
-class CompletableFutureUtilsTest {
+class CoreCompletableFutureUtilsTest {
     @Autowired
     private CompletableFutureUtils completableFutureUtils;
 

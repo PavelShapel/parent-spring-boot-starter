@@ -1,21 +1,26 @@
-package com.pavelshapel.core.spring.boot.starter.util;
+package com.pavelshapel.core.spring.boot.starter.util.impl;
 
 import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
+import com.pavelshapel.core.spring.boot.starter.util.StreamUtils;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(classes = {CoreStarterAutoConfiguration.class})
-class StreamUtilsTest {
+class CoreStreamUtilsTest {
     public static final String COLLECTION_ELEMENT = "collection element";
 
     @Autowired
