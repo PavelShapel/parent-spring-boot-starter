@@ -1,7 +1,7 @@
 package com.pavelshapel.jpa.spring.boot.starter.service;
 
 import com.pavelshapel.core.spring.boot.starter.model.Entity;
-import com.pavelshapel.core.spring.boot.starter.util.CommonUtils;
+import com.pavelshapel.core.spring.boot.starter.util.ClassUtils;
 import com.pavelshapel.jpa.spring.boot.starter.repository.AbstractJpaRepository;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public abstract class AbstractJpaService<ID, T extends Entity<ID>> implements Jp
     @Autowired
     private AbstractJpaRepository<ID, T> jpaRepository;
     @Autowired
-    private CommonUtils commonUtils;
+    private ClassUtils classUtils;
 
     @Override
     public T createAndSave() {
@@ -124,7 +124,7 @@ public abstract class AbstractJpaService<ID, T extends Entity<ID>> implements Jp
 
     @Override
     public Class<T> getEntityClass() {
-        return commonUtils.getGenericSuperclass(getClass(), 1)
+        return classUtils.getGenericSuperclass(getClass(), 1)
                 .map(entityClass -> (Class<T>) entityClass)
                 .orElseThrow(UnsupportedOperationException::new);
     }
