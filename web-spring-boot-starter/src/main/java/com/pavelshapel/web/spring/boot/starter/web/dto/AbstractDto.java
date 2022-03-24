@@ -4,6 +4,6 @@ import com.pavelshapel.core.spring.boot.starter.model.Dto;
 import lombok.Data;
 
 @Data
-public abstract class AbstractDto implements Dto<Long> {
-    private Long id;
+public abstract class AbstractDto<ID> implements Dto<ID> {
+    private ID id;
 }

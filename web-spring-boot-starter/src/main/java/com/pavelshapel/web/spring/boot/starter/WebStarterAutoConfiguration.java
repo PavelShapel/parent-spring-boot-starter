@@ -149,7 +149,7 @@ public class WebStarterAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @Scope(SCOPE_PROTOTYPE)
-    public TableHtml tableHtml(Class<? extends Entity<?>> entityClass, Page<? extends AbstractEntity> entities) {
+    public TableHtml tableHtml(Class<? extends Entity<?>> entityClass, Page<? extends AbstractEntity<?>> entities) {
         return new TableHtml(entityClass, entities);
     }
 }
