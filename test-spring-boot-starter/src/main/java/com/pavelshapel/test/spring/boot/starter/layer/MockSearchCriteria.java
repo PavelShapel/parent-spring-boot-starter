@@ -12,6 +12,14 @@ public interface MockSearchCriteria {
         return searchCriteria;
     }
 
+    default SearchCriteria getMockSearchCriteriaId(String value, SearchOperation searchOperation) {
+        return getMockSearchCriteria(value, "id", searchOperation);
+    }
+
+    default SearchCriteria getMockSearchCriteriaParent(String value, SearchOperation searchOperation) {
+        return getMockSearchCriteria(value, "parent", searchOperation);
+    }
+
     default SearchCriteria getMockSearchCriteriaName(String value, SearchOperation searchOperation) {
         return getMockSearchCriteria(value, "name", searchOperation);
     }

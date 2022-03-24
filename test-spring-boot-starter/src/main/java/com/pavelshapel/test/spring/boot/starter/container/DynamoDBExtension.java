@@ -9,6 +9,7 @@ import org.testcontainers.utility.DockerImageName;
 public class DynamoDBExtension implements BeforeAllCallback, AfterAllCallback {
     private static final String DEFAULT_TAG = "v1.2.1-1";
     private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse("quay.io/testcontainers/dynalite");
+    private static final String AWS_ENDPOINT_PATH = "spring.aws.endpoint";
 
     private DynaliteContainer dynamoDBContainer;
 
@@ -16,6 +17,7 @@ public class DynamoDBExtension implements BeforeAllCallback, AfterAllCallback {
     public void beforeAll(ExtensionContext context) {
         dynamoDBContainer = new DynaliteContainer(DEFAULT_IMAGE_NAME.withTag(DEFAULT_TAG));
         dynamoDBContainer.start();
+        System.setProperty(AWS_ENDPOINT_PATH, dynamoDBContainer.getEndpointConfiguration().getServiceEndpoint());
     }
 
     @Override
