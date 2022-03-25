@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 
 import static java.util.Arrays.asList;
+import static java.util.logging.Level.SEVERE;
 
 @Aspect
 @Log
@@ -60,7 +61,7 @@ public class LoggableAspect {
                         LoggableType.METHOD_EXCEPTION.getPrefix(),
                         getVerifiedLogResult(responseEntity)
                 };
-                log.log(Level.SEVERE, LOG_PATTERN, params);
+                log.log(SEVERE, LOG_PATTERN, params);
                 return false;
             }
         }
@@ -80,7 +81,7 @@ public class LoggableAspect {
                 loggableMethodSpecification.getMethodName(),
                 LoggableType.METHOD_EXCEPTION.getPrefix(),
                 getVerifiedLogResult(throwable)};
-        log.log(Level.SEVERE, LOG_PATTERN, params);
+        log.log(SEVERE, LOG_PATTERN, params);
     }
 
     @SneakyThrows

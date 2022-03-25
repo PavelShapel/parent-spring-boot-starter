@@ -4,9 +4,8 @@ import lombok.extern.java.Log;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-import java.util.logging.Level;
-
 import static com.pavelshapel.aop.spring.boot.starter.AopStarterAutoConfiguration.TYPE;
+import static java.util.logging.Level.INFO;
 
 @SuppressWarnings("NullableProblems")
 @Log
@@ -15,6 +14,6 @@ public class AopContextRefreshedListener implements ApplicationListener<ContextR
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        log.log(Level.INFO, LOG_PATTERN, TYPE);
+        log.log(INFO, LOG_PATTERN, TYPE);
     }
 }
