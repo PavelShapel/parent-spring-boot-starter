@@ -1,16 +1,16 @@
 package com.pavelshapel.core.spring.boot.starter;
 
-import com.pavelshapel.core.spring.boot.starter.bpp.annotation.autowired.SelfAutowiredAnnotationBeanPostProcessor;
-import com.pavelshapel.core.spring.boot.starter.reflection.annotation.replacer.AnnotationReplacer;
-import com.pavelshapel.core.spring.boot.starter.reflection.annotation.replacer.ClassAnnotationReplacer;
-import com.pavelshapel.core.spring.boot.starter.util.ClassUtils;
-import com.pavelshapel.core.spring.boot.starter.util.CompletableFutureUtils;
-import com.pavelshapel.core.spring.boot.starter.util.RandomUtils;
-import com.pavelshapel.core.spring.boot.starter.util.StreamUtils;
-import com.pavelshapel.core.spring.boot.starter.util.impl.CoreClassUtils;
-import com.pavelshapel.core.spring.boot.starter.util.impl.CoreCompletableFutureUtils;
-import com.pavelshapel.core.spring.boot.starter.util.impl.CoreStreamUtils;
-import com.pavelshapel.core.spring.boot.starter.util.impl.CoreRandomUtils;
+import com.pavelshapel.core.spring.boot.starter.bpp.SelfAutowiredAnnotationBeanPostProcessor;
+import com.pavelshapel.core.spring.boot.starter.api.annotation.AnnotationReplacer;
+import com.pavelshapel.core.spring.boot.starter.impl.annotation.ClassAnnotationReplacer;
+import com.pavelshapel.core.spring.boot.starter.api.util.ClassUtils;
+import com.pavelshapel.core.spring.boot.starter.api.util.CompletableFutureUtils;
+import com.pavelshapel.core.spring.boot.starter.api.util.RandomUtils;
+import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
+import com.pavelshapel.core.spring.boot.starter.impl.util.CoreClassUtils;
+import com.pavelshapel.core.spring.boot.starter.impl.util.CoreCompletableFutureUtils;
+import com.pavelshapel.core.spring.boot.starter.impl.util.CoreRandomUtils;
+import com.pavelshapel.core.spring.boot.starter.impl.util.CoreStreamUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

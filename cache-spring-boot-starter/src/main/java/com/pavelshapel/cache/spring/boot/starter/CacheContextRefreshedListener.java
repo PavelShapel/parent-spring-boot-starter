@@ -10,7 +10,7 @@ import static java.util.logging.Level.INFO;
 @SuppressWarnings("NullableProblems")
 @Log
 public class CacheContextRefreshedListener implements ApplicationListener<ContextRefreshedEvent> {
-    public static final String LOG_PATTERN = "{}-spring-boot-starter was applied";
+    public static final String LOG_PATTERN = "{0}-spring-boot-starter was applied";
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
