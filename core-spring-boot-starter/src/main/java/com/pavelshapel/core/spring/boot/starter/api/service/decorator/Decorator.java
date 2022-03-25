@@ -1,4 +1,4 @@
-package com.pavelshapel.jpa.spring.boot.starter.service.decorator;
+package com.pavelshapel.core.spring.boot.starter.api.service.decorator;
 
 import org.springframework.stereotype.Component;
 

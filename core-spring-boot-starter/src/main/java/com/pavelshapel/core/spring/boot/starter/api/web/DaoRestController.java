@@ -2,7 +2,7 @@ package com.pavelshapel.core.spring.boot.starter.api.web;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Dto;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
-import com.pavelshapel.core.spring.boot.starter.impl.web.SearchCriteria;
+import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriteria;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;

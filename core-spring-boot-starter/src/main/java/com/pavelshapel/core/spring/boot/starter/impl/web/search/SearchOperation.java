@@ -1,4 +1,4 @@
-package com.pavelshapel.core.spring.boot.starter.impl.web;
+package com.pavelshapel.core.spring.boot.starter.impl.web.search;
 
 public enum SearchOperation {
     EQUALS,
