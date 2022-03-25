@@ -1,21 +1,21 @@
 package com.pavelshapel.aop.spring.boot.starter.log.method;
 
 import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
-import org.apache.logging.log4j.Level;
+import lombok.extern.java.Log;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
+import java.util.logging.Level;
 
 import static java.util.Arrays.asList;
 
 @Aspect
-@Log4j2
+@Log
 public class LoggableAspect {
-    private static final String LOG_PATTERN = "[{}.{}] {} -> {}";
+    private static final String LOG_PATTERN = "[{0}.{1}] {2} -> {3}";
     private static final String NOTHING_TO_LOG = "nothing to log";
     private static final String POINTCUT = "execution(* *(..)) && (annotatedMethod() || annotatedClass())";
 
@@ -39,14 +39,14 @@ public class LoggableAspect {
 
     private void logSuccess(LoggableMethodSpecification loggableMethodSpecification, Object result) {
         if (isResponseEntityErrorNotLogged(loggableMethodSpecification, result)) {
-            Level level = Level.toLevel(loggableMethodSpecification.getLoggable().level().toString());
-            log.log(level,
-                    LOG_PATTERN,
+            Level level = Level.parse(loggableMethodSpecification.getLoggable().level());
+            Object[] params = {
                     loggableMethodSpecification.getMethodDeclaringClassName(),
                     loggableMethodSpecification.getMethodName(),
                     LoggableType.METHOD_RESULT.getPrefix(),
                     getVerifiedLogResult(result)
-            );
+            };
+            log.log(level, LOG_PATTERN, params);
         }
     }
 
@@ -54,11 +54,13 @@ public class LoggableAspect {
         if (result instanceof ResponseEntity) {
             ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
             if (responseEntity.getStatusCode().isError()) {
-                log.error(LOG_PATTERN,
+                Object[] params = {
                         loggableMethodSpecification.getMethodDeclaringClassName(),
                         loggableMethodSpecification.getMethodName(),
                         LoggableType.METHOD_EXCEPTION.getPrefix(),
-                        getVerifiedLogResult(responseEntity));
+                        getVerifiedLogResult(responseEntity)
+                };
+                log.log(Level.SEVERE, LOG_PATTERN, params);
                 return false;
             }
         }
@@ -74,13 +76,11 @@ public class LoggableAspect {
     }
 
     private void logException(LoggableMethodSpecification loggableMethodSpecification, Throwable throwable) {
-        log.error(
-                LOG_PATTERN,
-                loggableMethodSpecification.getMethodDeclaringClassName(),
+        Object[] params = {loggableMethodSpecification.getMethodDeclaringClassName(),
                 loggableMethodSpecification.getMethodName(),
                 LoggableType.METHOD_EXCEPTION.getPrefix(),
-                getVerifiedLogResult(throwable)
-        );
+                getVerifiedLogResult(throwable)};
+        log.log(Level.SEVERE, LOG_PATTERN, params);
     }
 
     @SneakyThrows
@@ -97,14 +97,12 @@ public class LoggableAspect {
     }
 
     private void logDuration(LoggableMethodSpecification loggableMethodSpecification, long duration) {
-        Level level = Level.toLevel(loggableMethodSpecification.getLoggable().level().toString());
-        log.log(level,
-                LOG_PATTERN,
-                loggableMethodSpecification.getMethodDeclaringClassName(),
+        Level level = Level.parse(loggableMethodSpecification.getLoggable().level());
+        Object[] params = {loggableMethodSpecification.getMethodDeclaringClassName(),
                 loggableMethodSpecification.getMethodName(),
                 LoggableType.METHOD_DURATION.getPrefix(),
-                getVerifiedLogResult(String.format("%d ms", duration))
-        );
+                getVerifiedLogResult(String.format("%d ms", duration))};
+        log.log(level, LOG_PATTERN, params);
     }
 
     private boolean isContainingLoggableType(LoggableMethodSpecification loggableMethodSpecification, LoggableType loggableType) {
