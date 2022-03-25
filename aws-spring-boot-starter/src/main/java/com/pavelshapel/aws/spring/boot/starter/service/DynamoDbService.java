@@ -1,13 +1,12 @@
-package com.pavelshapel.jpa.spring.boot.starter.service;
+package com.pavelshapel.aws.spring.boot.starter.service;
 
-import com.pavelshapel.core.spring.boot.starter.model.Entity;
+import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
-public interface JpaService<ID, T extends Entity<ID>> {
+public interface DynamoDbService<ID, T extends Entity<ID>> {
     T create();
 
     T createAndSave();
@@ -36,13 +35,6 @@ public interface JpaService<ID, T extends Entity<ID>> {
     boolean existsById(ID id);
 
     long getCount();
-
-
-    List<T> findAll(Specification<T> specification);
-
-    Page<T> findAll(Specification<T> specification, Pageable pageable);
-
-    long getCount(Specification<T> specification);
 
 
     T getParent(T entity);
