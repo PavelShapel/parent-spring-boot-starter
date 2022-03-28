@@ -1,6 +1,6 @@
 package com.pavelshapel.kafka.spring.boot.starter.config;
 
-import com.pavelshapel.core.spring.boot.starter.model.Dto;
+import com.pavelshapel.core.spring.boot.starter.api.model.Dto;
 import com.pavelshapel.kafka.spring.boot.starter.properties.KafkaProperties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;

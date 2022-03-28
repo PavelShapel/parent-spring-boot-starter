@@ -1,6 +1,6 @@
 package com.pavelshapel.kafka.spring.boot.starter.service;
 
-import com.pavelshapel.core.spring.boot.starter.model.Dto;
+import com.pavelshapel.core.spring.boot.starter.api.model.Dto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;

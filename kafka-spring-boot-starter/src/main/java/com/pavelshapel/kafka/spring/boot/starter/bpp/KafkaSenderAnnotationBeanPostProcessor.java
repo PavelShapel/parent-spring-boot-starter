@@ -1,6 +1,6 @@
 package com.pavelshapel.kafka.spring.boot.starter.bpp;
 
-import com.pavelshapel.core.spring.boot.starter.model.Dto;
+import com.pavelshapel.core.spring.boot.starter.api.model.Dto;
 import com.pavelshapel.kafka.spring.boot.starter.service.KafkaProducer;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;

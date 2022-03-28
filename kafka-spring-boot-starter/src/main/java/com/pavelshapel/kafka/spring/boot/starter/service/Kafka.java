@@ -1,6 +1,6 @@
 package com.pavelshapel.kafka.spring.boot.starter.service;
 
-import com.pavelshapel.core.spring.boot.starter.model.Dto;
+import com.pavelshapel.core.spring.boot.starter.api.model.Dto;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.util.Optional;
