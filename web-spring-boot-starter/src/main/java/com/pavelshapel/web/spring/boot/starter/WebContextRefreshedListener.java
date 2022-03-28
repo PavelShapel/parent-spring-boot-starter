@@ -1,15 +1,19 @@
 package com.pavelshapel.web.spring.boot.starter;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.java.Log;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import static com.pavelshapel.web.spring.boot.starter.WebStarterAutoConfiguration.TYPE;
+import static java.util.logging.Level.INFO;
 
-@Slf4j
+@SuppressWarnings("NullableProblems")
+@Log
 public class WebContextRefreshedListener implements ApplicationListener<ContextRefreshedEvent> {
+    public static final String LOG_PATTERN = "{0}-spring-boot-starter was applied";
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        log.info("{}-spring-boot-starter was applied", TYPE);
+        log.log(INFO, LOG_PATTERN, TYPE);
     }
 }

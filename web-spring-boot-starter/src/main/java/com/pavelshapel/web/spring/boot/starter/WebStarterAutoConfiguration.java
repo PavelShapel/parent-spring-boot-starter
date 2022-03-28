@@ -1,7 +1,7 @@
 package com.pavelshapel.web.spring.boot.starter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pavelshapel.core.spring.boot.starter.model.Entity;
+import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.jpa.spring.boot.starter.model.AbstractEntity;
 import com.pavelshapel.web.spring.boot.starter.html.constant.TagId;
 import com.pavelshapel.web.spring.boot.starter.html.element.Html;

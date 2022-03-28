@@ -1,6 +1,6 @@
 package com.pavelshapel.web.spring.boot.starter.html.element;
 
-import com.pavelshapel.core.spring.boot.starter.util.StreamUtils;
+import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
 import com.pavelshapel.web.spring.boot.starter.html.constant.AttributeId;
 import com.pavelshapel.web.spring.boot.starter.html.constant.AttributeValueId;
 import com.pavelshapel.web.spring.boot.starter.html.constant.TagId;

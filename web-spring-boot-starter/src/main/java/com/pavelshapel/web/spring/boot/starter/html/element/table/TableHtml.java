@@ -2,7 +2,7 @@ package com.pavelshapel.web.spring.boot.starter.html.element.table;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.pavelshapel.core.spring.boot.starter.model.Entity;
+import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.web.spring.boot.starter.html.constant.AttributeValueId;
 import com.pavelshapel.web.spring.boot.starter.html.element.AbstractHtml;
 import com.pavelshapel.web.spring.boot.starter.html.element.Html;
