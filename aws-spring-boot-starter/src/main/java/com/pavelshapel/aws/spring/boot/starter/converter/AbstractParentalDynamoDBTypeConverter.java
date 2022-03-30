@@ -1,21 +1,38 @@
 package com.pavelshapel.aws.spring.boot.starter.converter;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverter;
-import com.pavelshapel.aws.spring.boot.starter.service.DynamoDbService;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 
+import java.lang.reflect.Executable;
+import java.util.Arrays;
 import java.util.Optional;
 
+@NoArgsConstructor
 public abstract class AbstractParentalDynamoDBTypeConverter<ID, T extends ParentalEntity<ID, T>> implements DynamoDBTypeConverter<ID, T> {
-    @Autowired
-    private DynamoDbService<ID, T> dynamoDbService;
+    private static DaoService staticDaoService;
+
+    @SneakyThrows
+    protected AbstractParentalDynamoDBTypeConverter(DaoService<ID, T> daoService) {
+        staticDaoService = daoService;
+        Arrays.stream(getClass().getConstructors())
+                .map(Executable::getParameters)
+                .map(parameters -> parameters.length)
+                .filter(length -> length.equals(0))
+                .findFirst()
+                .orElseThrow(this::throwIllegalArgumentException);
+    }
+
+    private IllegalArgumentException throwIllegalArgumentException() {
+        String message = String.format("the constructor for class [%s] with no arguments must be implemented", getClass().getSimpleName());
+        return new IllegalArgumentException(message);
+    }
 
     @Override
     public ID convert(T location) {
-        System.out.println("convert");
-        System.out.println(dynamoDbService.toString());
         return Optional.ofNullable(location)
                 .map(Entity::getId)
                 .orElse(null);
@@ -23,11 +40,9 @@ public abstract class AbstractParentalDynamoDBTypeConverter<ID, T extends Parent
 
     @Override
     public T unconvert(ID id) {
-        System.out.println("unconvert");
-        System.out.println(dynamoDbService);
-        System.out.println(dynamoDbService.toString());
         return Optional.ofNullable(id)
-                .map(dynamoDbService::findById)
+                .map(notNullId -> staticDaoService.findById(notNullId))
+                .map(entity -> (T) entity)
                 .orElse(null);
     }
 }

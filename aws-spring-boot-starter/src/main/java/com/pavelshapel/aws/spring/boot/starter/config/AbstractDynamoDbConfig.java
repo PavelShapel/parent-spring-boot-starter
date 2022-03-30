@@ -12,6 +12,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 
 import java.util.Optional;
 
@@ -40,6 +41,7 @@ public abstract class AbstractDynamoDbConfig {
     }
 
     @Bean
+    @Primary
     public DynamoDBMapper dynamoDBMapper() {
         return new DynamoDBMapper(amazonDynamoDB(), dynamoDBMapperConfig());
     }
