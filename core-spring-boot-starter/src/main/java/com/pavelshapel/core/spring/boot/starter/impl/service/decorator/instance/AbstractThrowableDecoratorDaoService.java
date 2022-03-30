@@ -1,6 +1,7 @@
-package com.pavelshapel.jpa.spring.boot.starter.service.decorator;
+package com.pavelshapel.core.spring.boot.starter.impl.service.decorator.instance;
 
-import com.pavelshapel.core.spring.boot.starter.model.Entity;
+import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
+import com.pavelshapel.core.spring.boot.starter.impl.service.decorator.AbstractDecoratorSpecificationDaoService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -14,8 +15,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.joining;
 
-public abstract class ThrowableDecoratorJpaService<ID, T extends Entity<ID>> extends AbstractDecoratorJpaService<ID, T> {
-
+public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<ID>> extends AbstractDecoratorSpecificationDaoService<ID, T> {
     @Override
     public T update(ID id, T entity) {
         verifyId(id);
@@ -73,13 +73,6 @@ public abstract class ThrowableDecoratorJpaService<ID, T extends Entity<ID>> ext
     public Page<T> findAll(Specification<T> specification, Pageable pageable) {
         Page<T> entities = super.findAll(specification, pageable);
         verifyCount(entities.getTotalElements());
-        return entities;
-    }
-
-    @Override
-    public List<T> getParentage(ID id) {
-        List<T> entities = super.getParentage(id);
-        verifyCollection(entities);
         return entities;
     }
 

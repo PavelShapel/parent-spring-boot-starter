@@ -1,6 +1,6 @@
-package com.pavelshapel.jpa.spring.boot.starter.service.decorator;
+package com.pavelshapel.core.spring.boot.starter.impl.service.decorator;
 
-import com.pavelshapel.jpa.spring.boot.starter.service.JpaService;
+import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -11,8 +11,8 @@ import java.util.Map;
 
 import static org.springframework.util.StringUtils.uncapitalize;
 
-public class JpaDecorateAnnotationBeanPostProcessor implements BeanPostProcessor {
-    private final Map<String, Class<?>> jpaDecorateBeans = new HashMap<>();
+public class DaoDecorateAnnotationBeanPostProcessor implements BeanPostProcessor {
+    private final Map<String, Class<?>> daoDecorateBeans = new HashMap<>();
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -20,18 +20,18 @@ public class JpaDecorateAnnotationBeanPostProcessor implements BeanPostProcessor
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         Class<?> beanClass = bean.getClass();
-        boolean isJpaService = bean instanceof JpaService;
-        boolean isNotDecoratorJpaService = !(bean instanceof AbstractDecoratorJpaService);
-        boolean isJpaDecoratePresent = beanClass.isAnnotationPresent(JpaDecorate.class);
-        if (isJpaService && isNotDecoratorJpaService && isJpaDecoratePresent) {
-            jpaDecorateBeans.put(beanName, beanClass);
+        boolean isDaoService = bean instanceof DaoService;
+        boolean isNotAbstractDecoratorDaoService = !(bean instanceof AbstractDecoratorDaoService);
+        boolean isDaoDecoratePresent = beanClass.isAnnotationPresent(DaoDecorate.class);
+        if (isDaoService && isNotAbstractDecoratorDaoService && isDaoDecoratePresent) {
+            daoDecorateBeans.put(beanName, beanClass);
         }
         return bean;
     }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        return jpaDecorateBeans.containsKey(beanName)
+        return daoDecorateBeans.containsKey(beanName)
                 ? getDecoratedBean(bean, beanName)
                 : bean;
     }
@@ -41,22 +41,22 @@ public class JpaDecorateAnnotationBeanPostProcessor implements BeanPostProcessor
     }
 
     private Object iterateDecorationsInAnnotation(Object wrapped, String wrappedName) {
-        JpaDecorate annotation = jpaDecorateBeans.get(wrappedName).getAnnotation(JpaDecorate.class);
-        for (Class<? extends JpaService<?, ?>> decorationClass : annotation.decorations()) {
+        DaoDecorate annotation = daoDecorateBeans.get(wrappedName).getAnnotation(DaoDecorate.class);
+        for (Class<? extends DaoService<?, ?>> decorationClass : annotation.decorations()) {
             String decorationBeanName = uncapitalize(decorationClass.getSimpleName());
-            JpaService<?, ?> wrapper = getWrapper(decorationBeanName);
+            DaoService<?, ?> wrapper = getWrapper(decorationBeanName);
             wrapped = getWrappedWithDecoration(wrapper, wrapped);
         }
         return wrapped;
     }
 
-    private JpaService<?, ?> getWrapper(String beanName) {
-        return (JpaService<?, ?>) applicationContext.getBean(beanName);
+    private DaoService<?, ?> getWrapper(String beanName) {
+        return (DaoService<?, ?>) applicationContext.getBean(beanName);
     }
 
     private Object getWrappedWithDecoration(Object wrapper, Object wrapped) {
-        AbstractDecoratorJpaService<?, ?> decorator = (AbstractDecoratorJpaService<?, ?>) wrapper;
-        decorator.setWrapped((JpaService) wrapped);
+        AbstractDecoratorDaoService<?, ?> decorator = (AbstractDecoratorDaoService<?, ?>) wrapper;
+        decorator.setWrapped((DaoService) wrapped);
         return decorator;
     }
 }

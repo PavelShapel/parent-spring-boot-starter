@@ -1,7 +1,9 @@
-package com.pavelshapel.aws.spring.boot.starter.service;
+package com.pavelshapel.core.spring.boot.starter.impl.service;
 
-import com.pavelshapel.aws.spring.boot.starter.repository.DynamoDbRepository;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
+import com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity;
+import com.pavelshapel.core.spring.boot.starter.api.repository.DaoRepository;
+import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
 import com.pavelshapel.core.spring.boot.starter.api.util.ClassUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
 import lombok.AccessLevel;
@@ -16,14 +18,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
-public abstract class AbstractDynamoDbService<ID, T extends Entity<ID>> implements DynamoDbService<ID, T> {
+public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements DaoService<ID, T> {
     @Getter(AccessLevel.PROTECTED)
     @Autowired
-    private DynamoDbRepository<ID, T> dynamoDbRepository;
+    private DaoRepository<ID, T> daoRepository;
     @Autowired
     private ClassUtils classUtils;
     @Autowired
@@ -36,7 +39,7 @@ public abstract class AbstractDynamoDbService<ID, T extends Entity<ID>> implemen
 
     @Override
     public T save(T entity) {
-        return dynamoDbRepository.save(entity);
+        return daoRepository.save(entity);
     }
 
     @Override
@@ -49,63 +52,79 @@ public abstract class AbstractDynamoDbService<ID, T extends Entity<ID>> implemen
 
     @Override
     public List<T> saveAll(Iterable<T> entities) {
-        return streamUtils.iterableToList(dynamoDbRepository.saveAll(entities));
+        return streamUtils.iterableToList(daoRepository.saveAll(entities));
     }
 
 
     @Override
     public T findById(ID id) {
-        return dynamoDbRepository.findById(id)
+        return daoRepository.findById(id)
                 .orElse(null);
     }
 
     @Override
     public List<T> findAllById(Iterable<ID> ids) {
-        return streamUtils.iterableToList(dynamoDbRepository.findAllById(ids));
+        return streamUtils.iterableToList(daoRepository.findAllById(ids));
     }
 
     @Override
     public List<T> findAll() {
-        return streamUtils.iterableToList(dynamoDbRepository.findAll());
+        return streamUtils.iterableToList(daoRepository.findAll());
     }
 
     @Override
     public Page<T> findAll(Pageable pageable) {
-        return dynamoDbRepository.findAll(pageable);
+        return daoRepository.findAll(pageable);
     }
 
 
     @Override
     public void deleteById(ID id) {
-        dynamoDbRepository.deleteById(id);
+        daoRepository.deleteById(id);
     }
 
     @Override
     public void deleteAll() {
-        dynamoDbRepository.deleteAll();
+        daoRepository.deleteAll();
     }
 
 
     @Override
     public boolean existsById(ID id) {
-        return dynamoDbRepository.existsById(id);
+        return daoRepository.existsById(id);
     }
 
     @Override
     public long getCount() {
-        return dynamoDbRepository.count();
+        return daoRepository.count();
+    }
+
+    @Override
+    public List<T> getChildren(T entity) {
+        return findAll().stream()
+                .filter(ParentalEntity.class::isInstance)
+                .map(ParentalEntity.class::cast)
+                .map(ParentalEntity::getParent)
+                .map(parentalEntity -> (T) parentalEntity)
+                .filter(entity::equals)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean hasChildren(T entity) {
+        return !getChildren(entity).isEmpty();
     }
 
     @Override
     public List<T> getParentage(ID id) {
-        T child = findById(id);
-        T parent;
         List<T> result = new ArrayList<>();
-        do {
-            result.add(child);
-            parent = getParent(child);
-            child = parent;
-        } while (nonNull(parent));
+        daoRepository.findById(id)
+                .filter(ParentalEntity.class::isInstance)
+                .filter(result::add)
+                .map(ParentalEntity.class::cast)
+                .map(ParentalEntity::getParent)
+                .map(Entity::getId)
+                .ifPresent(parentId -> result.addAll(getParentage((ID) parentId)));
         return result;
     }
 

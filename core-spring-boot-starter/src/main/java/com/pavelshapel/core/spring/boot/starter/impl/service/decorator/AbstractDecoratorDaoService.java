@@ -1,7 +1,7 @@
-package com.pavelshapel.aws.spring.boot.starter.service.decorator;
+package com.pavelshapel.core.spring.boot.starter.impl.service.decorator;
 
-import com.pavelshapel.aws.spring.boot.starter.service.DynamoDbService;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
+import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,10 +11,10 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 
-public abstract class AbstractDecoratorDynamoDbService<ID, T extends Entity<ID>> implements DynamoDbService<ID, T> {
+public abstract class AbstractDecoratorDaoService<ID, T extends Entity<ID>> implements DaoService<ID, T> {
     @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.PROTECTED)
-    private DynamoDbService<ID, T> wrapped;
+    private DaoService<ID, T> wrapped;
 
     @Override
     public T create() {
@@ -85,8 +85,13 @@ public abstract class AbstractDecoratorDynamoDbService<ID, T extends Entity<ID>>
     }
 
     @Override
-    public T getParent(T entity) {
-        return wrapped.getParent(entity);
+    public List<T> getChildren(T entity) {
+        return wrapped.getChildren(entity);
+    }
+
+    @Override
+    public boolean hasChildren(T entity) {
+        return wrapped.hasChildren(entity);
     }
 
     @Override

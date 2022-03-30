@@ -3,7 +3,6 @@ package com.pavelshapel.core.spring.boot.starter.api.service;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 
@@ -38,16 +37,12 @@ public interface DaoService<ID, T extends Entity<ID>> {
     long getCount();
 
 
-    List<T> findAll(Specification<T> specification);
+    List<T> getChildren(T entity);
 
-    Page<T> findAll(Specification<T> specification, Pageable pageable);
-
-    long getCount(Specification<T> specification);
-
-
-    T getParent(T entity);
+    boolean hasChildren(T entity);
 
     List<T> getParentage(ID id);
+
 
     Class<T> getEntityClass();
 }

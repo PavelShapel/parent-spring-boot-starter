@@ -1,6 +1,7 @@
-package com.pavelshapel.aws.spring.boot.starter.service.decorator;
+package com.pavelshapel.core.spring.boot.starter.impl.service.decorator.instance;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
+import com.pavelshapel.core.spring.boot.starter.impl.service.decorator.AbstractDecoratorSpecificationDaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -12,7 +13,7 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 
 
-public abstract class CacheableDecoratorDynamoDbService<ID, T extends Entity<ID>> extends AbstractDecoratorDynamoDbService<ID, T> {
+public abstract class AbstractCacheableDecoratorDaoService<ID, T extends Entity<ID>> extends AbstractDecoratorSpecificationDaoService<ID, T> {
     @Autowired
     private CacheManager cacheManager;
 

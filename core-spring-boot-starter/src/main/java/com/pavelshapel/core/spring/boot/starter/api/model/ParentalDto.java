@@ -1,7 +1,7 @@
 package com.pavelshapel.core.spring.boot.starter.api.model;
 
-public interface ParentalDto<ID, T extends Dto<ID>> extends Dto<ID> {
-    T getParent();
+public interface ParentalDto<ID> extends Dto<ID> {
+    ID getParent();
 
-    void setParent(T parent);
+    void setParent(ID parent);
 }

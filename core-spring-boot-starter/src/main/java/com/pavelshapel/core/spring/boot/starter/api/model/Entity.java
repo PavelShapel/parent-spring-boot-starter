@@ -1,8 +1,6 @@
 package com.pavelshapel.core.spring.boot.starter.api.model;
 
-import java.io.Serializable;
-
-public interface Entity<ID> extends Serializable {
+public interface Entity<ID> {
     String MANDATORY = "mandatory";
 
     ID getId();
