@@ -1,5 +1,6 @@
 package com.pavelshapel.test.spring.boot.starter.provider;
 
+import com.pavelshapel.core.spring.boot.starter.enums.PrimitiveType;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
@@ -42,8 +43,8 @@ public abstract class AbstractProvider implements ArgumentsProvider {
     }
 
     private Object getArgument(Class<?> targetClass) {
-        return Arrays.stream(RandomizedClass.values())
-                .map(RandomizedClass::getRandomValueSupplier)
+        return Arrays.stream(PrimitiveType.values())
+                .map(PrimitiveType::getRandomValueSupplier)
                 .map(Supplier::get)
                 .filter(targetClass::isInstance)
                 .findFirst()

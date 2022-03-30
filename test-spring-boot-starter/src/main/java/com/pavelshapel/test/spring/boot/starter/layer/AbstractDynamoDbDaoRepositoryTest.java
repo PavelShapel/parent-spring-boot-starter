@@ -2,9 +2,9 @@ package com.pavelshapel.test.spring.boot.starter.layer;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.*;
-import com.pavelshapel.aws.spring.boot.starter.repository.DynamoDbRepository;
 import com.pavelshapel.aws.spring.boot.starter.util.DbHandler;
-import com.pavelshapel.core.spring.boot.starter.model.Entity;
+import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
+import com.pavelshapel.core.spring.boot.starter.api.repository.DaoRepository;
 import com.pavelshapel.test.spring.boot.starter.container.DynamoDBExtension;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,11 +20,11 @@ import static java.util.Collections.singletonList;
 @SpringBootTest
 @ExtendWith(DynamoDBExtension.class)
 @Getter(AccessLevel.PROTECTED)
-public abstract class AbstractDynamoDbRepositoryTest<ID, T extends Entity<ID>> {
+public abstract class AbstractDynamoDbDaoRepositoryTest<ID, T extends Entity<ID>> {
     public static final String ID = "id";
 
     @Autowired
-    private DynamoDbRepository<ID, T> dynamoDbRepository;
+    private DaoRepository<ID, T> daoRepository;
     @Autowired
     private DbHandler dynamoDbHandler;
 
