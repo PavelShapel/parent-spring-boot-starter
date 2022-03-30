@@ -1,6 +1,5 @@
 package com.pavelshapel.jpa.spring.boot.starter;
 
-import com.pavelshapel.jpa.spring.boot.starter.service.decorator.JpaDecorateAnnotationBeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,10 +10,5 @@ public class JpaStarterAutoConfiguration {
     @Bean
     public JpaContextRefreshedListener jpaContextRefreshedListener() {
         return new JpaContextRefreshedListener();
-    }
-
-    @Bean
-    public JpaDecorateAnnotationBeanPostProcessor jpaDecorateAnnotationBeanPostProcessor() {
-        return new JpaDecorateAnnotationBeanPostProcessor();
     }
 }
