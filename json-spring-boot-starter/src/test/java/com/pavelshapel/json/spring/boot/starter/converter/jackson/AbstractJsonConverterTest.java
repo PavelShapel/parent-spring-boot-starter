@@ -155,6 +155,14 @@ abstract class AbstractJsonConverterTest {
                 .isFalse();
     }
 
+    @Test
+    void pojoToPrettyJson_ValidPojoAsParam_ShouldReturnJson() {
+        Optional<String> optionalJson = jsonConverter.pojoToPrettyJson(createTestPojo());
+
+        assertThat(optionalJson)
+                .isNotEmpty();
+    }
+
     private String getInvalidJson() {
         return RandomStringUtils.randomAlphanumeric(Byte.MAX_VALUE);
     }

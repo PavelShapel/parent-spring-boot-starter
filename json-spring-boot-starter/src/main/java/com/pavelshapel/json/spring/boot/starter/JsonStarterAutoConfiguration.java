@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 @Configuration
 public class JsonStarterAutoConfiguration {
     public static final String TYPE = "json";
+    public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     @Bean
     public JsonContextRefreshedListener jsonContextRefreshedListener() {
@@ -35,7 +36,7 @@ public class JsonStarterAutoConfiguration {
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+        mapper.setDateFormat(new SimpleDateFormat(DATE_PATTERN));
         mapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
         return mapper;
     }
