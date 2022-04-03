@@ -16,6 +16,8 @@ import org.springframework.context.annotation.Primary;
 
 import java.util.Optional;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 public abstract class AbstractDynamoDbConfig {
     @Autowired
     private AwsProperties awsProperties;
@@ -48,6 +50,15 @@ public abstract class AbstractDynamoDbConfig {
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
+        return Optional.of(awsProperties)
+                .filter(properties -> isEmpty(properties.getProfile()))
+                .filter(properties -> isEmpty(properties.getAccessKey()))
+                .filter(properties -> isEmpty(properties.getSecretKey()))
+                .map(unused -> AmazonDynamoDBClientBuilder.defaultClient())
+                .orElseGet(this::buildClientWithCredentials);
+    }
+
+    private AmazonDynamoDB buildClientWithCredentials() {
         return AmazonDynamoDBClientBuilder
                 .standard()
                 .withCredentials(awsCredentialsProvider())

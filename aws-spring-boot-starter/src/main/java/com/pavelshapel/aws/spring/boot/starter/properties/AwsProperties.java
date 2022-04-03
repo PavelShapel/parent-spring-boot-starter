@@ -4,7 +4,6 @@ import com.amazonaws.regions.Regions;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import static com.pavelshapel.aws.spring.boot.starter.AwsStarterAutoConfiguration.TYPE;
@@ -17,8 +16,8 @@ public class AwsProperties {
     static final String DYNAMO_DB_URL_PATTERN = "https://dynamodb.%s.amazonaws.com/";
 
     String profile;
-    String accessKey = RandomStringUtils.randomAlphanumeric(1, Byte.MAX_VALUE);
-    String secretKey = RandomStringUtils.randomAlphanumeric(1, Byte.MAX_VALUE);
+    String accessKey;
+    String secretKey;
     String region = DEFAULT_REGION;
     String endpoint = String.format(DYNAMO_DB_URL_PATTERN, DEFAULT_REGION);
 }
