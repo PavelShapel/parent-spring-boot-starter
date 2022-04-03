@@ -18,6 +18,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -91,7 +92,7 @@ public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements Da
 
     @Override
     public boolean existsById(ID id) {
-        return daoRepository.existsById(id);
+        return Optional.ofNullable(findById(id)).isPresent();
     }
 
     @Override
@@ -118,7 +119,7 @@ public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements Da
     @Override
     public List<T> getParentage(ID id) {
         List<T> result = new ArrayList<>();
-        daoRepository.findById(id)
+        Optional.ofNullable(findById(id))
                 .filter(ParentalEntity.class::isInstance)
                 .filter(result::add)
                 .map(ParentalEntity.class::cast)

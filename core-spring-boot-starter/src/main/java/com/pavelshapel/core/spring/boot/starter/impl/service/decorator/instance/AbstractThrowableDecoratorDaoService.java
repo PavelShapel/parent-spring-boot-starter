@@ -1,6 +1,7 @@
 package com.pavelshapel.core.spring.boot.starter.impl.service.decorator.instance;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
+import com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity;
 import com.pavelshapel.core.spring.boot.starter.impl.service.decorator.AbstractDecoratorSpecificationDaoService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,6 +54,7 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
     @Override
     public void deleteById(ID id) {
         verifyId(id);
+        verifyChildren(id);
         super.deleteById(id);
     }
 
@@ -111,4 +113,13 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
                 )
         );
     }
+
+    private void verifyChildren(ID id) {
+        T entity = findById(id);
+        String message = String.format("entity [%s] has children", entity);
+        if (entity instanceof ParentalEntity && hasChildren(entity)) {
+            throw new UnsupportedOperationException(message);
+        }
+    }
+
 }

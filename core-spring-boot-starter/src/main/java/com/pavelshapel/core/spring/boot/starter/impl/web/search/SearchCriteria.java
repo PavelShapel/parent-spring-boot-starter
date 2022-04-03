@@ -7,6 +7,8 @@ import org.springframework.data.util.Pair;
 import javax.validation.constraints.NotBlank;
 import java.util.Optional;
 
+import static com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchOperation.*;
+
 @Data
 public class SearchCriteria {
     public static final String DEFAULT_FIELD = "id";
@@ -17,7 +19,7 @@ public class SearchCriteria {
     private String field = DEFAULT_FIELD;
     @NotBlank
     private String value = DEFAULT_VALUE;
-    private SearchOperation operation = SearchOperation.GREATER_THAN_OR_EQUAL_TO;
+    private SearchOperation operation = GREATER_THAN_OR_EQUAL_TO;
 
     public Comparable<?> getCastedValue() {
         return Optional.of(value)
