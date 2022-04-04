@@ -6,6 +6,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 import java.util.logging.Level;
@@ -114,7 +115,7 @@ public class LoggableAspect {
     private String getVerifiedLogResult(Object result) {
         return Optional.ofNullable(result)
                 .map(Object::toString)
-                .filter(value -> !value.isEmpty())
+                .filter(StringUtils::hasLength)
                 .orElse(NOTHING_TO_LOG);
     }
 }
