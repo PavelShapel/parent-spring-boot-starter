@@ -7,7 +7,7 @@ public interface Dated {
 
     void setCreatedDate(Date createdDate);
 
-    Date getUpdatedDate();
+    Date getLastModifiedDate();
 
-    void setUpdatedDate(Date updatedDate);
+    void setLastModifiedDate(Date lastModifiedDate);
 }
