@@ -14,6 +14,7 @@ import java.io.OutputStream;
 
 
 public abstract class AbstractRequestStreamHandler implements RequestStreamHandler {
+    public static final String LAMBDA = "lambda";
     private static SpringBootLambdaContainerHandler<AwsProxyRequest, AwsProxyResponse> handler;
 
     protected AbstractRequestStreamHandler(Class<?> applicationClass) {
@@ -22,7 +23,9 @@ public abstract class AbstractRequestStreamHandler implements RequestStreamHandl
                     .defaultProxy()
                     .asyncInit()
                     .springBootApplication(applicationClass)
+                    .profiles(LAMBDA)
                     .buildAndInitialize();
+
         } catch (ContainerInitializationException exception) {
             //if we fail here. We re-throw the exception to force another cold start
             exception.printStackTrace();
