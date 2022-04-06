@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.List;
+
 import static com.pavelshapel.aws.spring.boot.starter.AwsStarterAutoConfiguration.TYPE;
 
 @Data
@@ -20,4 +22,5 @@ public class AwsProperties {
     String secretKey;
     String region = DEFAULT_REGION;
     String endpoint = String.format(DYNAMO_DB_URL_PATTERN, DEFAULT_REGION);
+    List<String> createdTables;
 }

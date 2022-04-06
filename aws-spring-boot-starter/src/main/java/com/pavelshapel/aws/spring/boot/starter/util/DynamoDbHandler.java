@@ -5,23 +5,37 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
-import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
-import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
-import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.amazonaws.services.dynamodbv2.model.*;
+import com.pavelshapel.aop.spring.boot.starter.log.method.Loggable;
+import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Collections.singletonList;
+
+@Loggable
 public class DynamoDbHandler implements DbHandler {
+    public static final String ID = "id";
+
     @Autowired
     private AmazonDynamoDB amazonDynamoDB;
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
+    @Autowired
+    private AwsProperties awsProperties;
+
+    @PostConstruct
+    private void postConstruct() {
+        Optional.ofNullable(awsProperties)
+                .map(AwsProperties::getCreatedTables)
+                .ifPresent(this::createTables);
+    }
 
     @Override
     public List<String> getTableNames() {
@@ -29,6 +43,17 @@ public class DynamoDbHandler implements DbHandler {
                 .map(AmazonDynamoDB::listTables)
                 .map(ListTablesResult::getTableNames)
                 .orElseGet(Collections::emptyList);
+    }
+
+    private void createTables(List<String> tableNames) {
+        tableNames.forEach(this::createTableIfNotExists);
+    }
+
+    private void createTableIfNotExists(String tableName) {
+        ProvisionedThroughput provisionedThroughput = new ProvisionedThroughput(10L, 10L);
+        List<KeySchemaElement> keySchemaElements = singletonList(new KeySchemaElement(ID, KeyType.HASH));
+        List<AttributeDefinition> attributeDefinitions = singletonList(new AttributeDefinition(ID, ScalarAttributeType.S));
+        createTableIfNotExists(tableName, keySchemaElements, attributeDefinitions, provisionedThroughput);
     }
 
     @Override
