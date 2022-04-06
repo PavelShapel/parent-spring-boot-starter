@@ -1,6 +1,7 @@
 package com.pavelshapel.core.spring.boot.starter.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Getter
+@RequiredArgsConstructor
 public enum PrimitiveType {
     BOOLEAN(PrimitiveType::getRandomBoolean, PrimitiveType::castToBoolean),
     STRING(PrimitiveType::getRandomString, PrimitiveType::castToString),
@@ -23,11 +25,6 @@ public enum PrimitiveType {
 
     private final Supplier<Object> randomValueSupplier;
     private final Function<String, Comparable<?>> castFunction;
-
-    PrimitiveType(Supplier<Object> randomValueSupplier, Function<String, Comparable<?>> castFunction) {
-        this.randomValueSupplier = randomValueSupplier;
-        this.castFunction = castFunction;
-    }
 
     private static Date getRandomDate() {
         Calendar min = new GregorianCalendar(1900, Calendar.JANUARY, 1);
