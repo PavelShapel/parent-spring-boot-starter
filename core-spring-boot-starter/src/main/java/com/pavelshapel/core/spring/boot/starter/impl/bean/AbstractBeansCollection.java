@@ -2,6 +2,7 @@ package com.pavelshapel.core.spring.boot.starter.impl.bean;
 
 import com.pavelshapel.core.spring.boot.starter.api.bean.BeansCollection;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
@@ -13,16 +14,17 @@ public abstract class AbstractBeansCollection<T> implements BeansCollection<T> {
     @Autowired
     private StreamUtils streamUtils;
     @Autowired
-    private Map<String, T> beans;
+    private ObjectFactory<Map<String, T>> beans;
 
     @Override
     public Map<String, T> getBeans() {
-        return beans;
+        return beans.getObject();
     }
 
     @Override
     public Optional<T> getBean(String beanName) {
-        return Optional.ofNullable(beans.get(beanName));
+        return Optional.ofNullable(getBeans())
+                .map(map -> map.get(beanName));
     }
 
     @Override
@@ -35,7 +37,7 @@ public abstract class AbstractBeansCollection<T> implements BeansCollection<T> {
 
     @Override
     public Optional<T> getBean(Predicate<T> predicate) {
-        return beans.values().stream()
+        return getBeans().values().stream()
                 .filter(predicate)
                 .collect(streamUtils.toSingleton());
     }
