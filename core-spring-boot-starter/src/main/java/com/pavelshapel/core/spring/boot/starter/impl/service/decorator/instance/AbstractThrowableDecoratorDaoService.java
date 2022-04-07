@@ -10,17 +10,27 @@ import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
+import static com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchOperation.IS_NULL;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 
 public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<ID>> extends AbstractDecoratorSpecificationDaoService<ID, T> {
     @Override
+    public T save(T entity) {
+        verifyRootExists(entity);
+        return super.save(entity);
+    }
+
+    @Override
     public T update(ID id, T entity) {
         verifyId(id);
+        verifyRootExists(entity);
         return super.update(id, entity);
     }
 
@@ -129,23 +139,21 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
             throw new UnsupportedOperationException(message);
         }
     }
-//
-//    private void verifySingleRoot(T entity) {
-//        Optional.ofNullable(entity)
-//                .filter(ParentalEntity.class::isInstance)
-//                .map(ParentalEntity.class::cast)
-//                .map(ParentalEntity::getParent)
-//                .filter(Objects::isNull)
-//                        .ifPresent(parentalEntity -> );
-//        findAll().stream()
-//                .filter(ParentalEntity.class::isInstance)
-//                .map(ParentalEntity.class::cast)
-//                .map(ParentalEntity::getParent)
-//                .filter(Objects::isNull)
-//                .findFirst()
-//                .orElseThrow(() -> new UnsupportedOperationException("root already exists"));
-//    }
-//
-//    private boolean findRoot
 
+    private void verifyRootExists(T entity) {
+        Optional.ofNullable(entity)
+                .filter(ParentalEntity.class::isInstance)
+                .map(ParentalEntity.class::cast)
+                .filter(parentalEntity -> nonNull(parentalEntity.getParent()) || rootNotExists())
+                .orElseThrow(() -> new UnsupportedOperationException("root already exists"));
+    }
+
+    private boolean rootNotExists() {
+        SearchCriteria searchCriteria = new SearchCriteria();
+        searchCriteria.setField(ParentalEntity.PARENT);
+        searchCriteria.setOperation(IS_NULL);
+        return !findAll(searchCriteria).stream()
+                .findFirst()
+                .isPresent();
+    }
 }

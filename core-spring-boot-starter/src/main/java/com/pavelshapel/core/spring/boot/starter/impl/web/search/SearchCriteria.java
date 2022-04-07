@@ -15,11 +15,17 @@ public class SearchCriteria {
     private SearchOperation operation;
 
     public Comparable<?> getCastedValue() {
+        return Optional.ofNullable(value)
+                .map(this::buildPair)
+                .map(this::castToTargetClass)
+                .orElse(null);
+    }
+
+    private Pair<String, PrimitiveType> buildPair(String value) {
         return Optional.of(value)
                 .map(source -> source.split(SPLIT_REGEX))
                 .filter(strings -> strings.length == 2)
                 .map(strings -> Pair.of(strings[0], PrimitiveType.valueOf(strings[1])))
-                .map(this::castToTargetClass)
                 .orElseThrow(() -> new UnsupportedOperationException(String.format("value [%s] unsupported", value)));
     }
 
