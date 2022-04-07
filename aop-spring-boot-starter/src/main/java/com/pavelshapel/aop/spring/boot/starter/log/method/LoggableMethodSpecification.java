@@ -19,11 +19,11 @@ public class LoggableMethodSpecification {
     Loggable loggable;
 
     public LoggableMethodSpecification(@NonNull JoinPoint joinPoint) {
-        this.method = getMethod(joinPoint);
-        Class<?> declaringClass = this.method.getDeclaringClass();
-        this.methodDeclaringClassName = declaringClass.getSimpleName();
-        this.methodName = this.method.getName();
-        this.loggable = Optional.ofNullable(this.method.getAnnotation(Loggable.class))
+        method = getMethod(joinPoint);
+        Class<?> declaringClass = method.getDeclaringClass();
+        methodDeclaringClassName = declaringClass.getSimpleName();
+        methodName = method.getName();
+        loggable = Optional.ofNullable(method.getAnnotation(Loggable.class))
                 .orElseGet(() -> declaringClass.getAnnotation(Loggable.class));
     }
 
