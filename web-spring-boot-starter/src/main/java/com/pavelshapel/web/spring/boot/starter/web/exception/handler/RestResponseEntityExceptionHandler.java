@@ -12,12 +12,18 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.persistence.EntityNotFoundException;
 
+@SuppressWarnings("NullableProblems")
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFoundException(Exception exception, WebRequest request) {
         return createErrorResponseEntity(exception, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(UnsupportedOperationException.class)
+    protected ResponseEntity<Object> handleUnsupportedOperationException(Exception exception, WebRequest request) {
+        return createErrorResponseEntity(exception, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
     @Override
