@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+@SuppressWarnings("NullableProblems")
 public class SelfAutowiredAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
     private final Map<String, Object> selfAutowiredBeans = new HashMap<>();
 
