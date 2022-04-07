@@ -17,7 +17,6 @@ import static com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchOpe
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 
 public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<ID>> extends AbstractDecoratorSpecificationDaoService<ID, T> {
@@ -144,15 +143,19 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
         Optional.ofNullable(entity)
                 .filter(ParentalEntity.class::isInstance)
                 .map(ParentalEntity.class::cast)
-                .filter(parentalEntity -> nonNull(parentalEntity.getParent()) || rootNotExists())
-                .orElseThrow(() -> new UnsupportedOperationException("root already exists"));
+                .filter(parentalEntity -> isNull(parentalEntity.getParent()) && rootExists())
+                .ifPresent(unused -> throwRootAlreadyExistsException());
     }
 
-    private boolean rootNotExists() {
+    private void throwRootAlreadyExistsException(){
+        throw new UnsupportedOperationException("root already exists");
+    }
+
+    private boolean rootExists() {
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setField(ParentalEntity.PARENT);
         searchCriteria.setOperation(IS_NULL);
-        return !findAll(searchCriteria).stream()
+        return findAll(searchCriteria).stream()
                 .findFirst()
                 .isPresent();
     }
