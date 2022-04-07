@@ -17,12 +17,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.pavelshapel.core.spring.boot.starter.api.model.Entity.ID;
 import static java.util.Collections.singletonList;
 
 @Loggable
 public class DynamoDbHandler implements DbHandler {
-    public static final String ID = "id";
-
     @Autowired
     private AmazonDynamoDB amazonDynamoDB;
     @Autowired
