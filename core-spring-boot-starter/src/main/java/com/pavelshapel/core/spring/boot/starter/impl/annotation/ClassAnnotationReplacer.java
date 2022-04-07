@@ -15,7 +15,7 @@ public class ClassAnnotationReplacer implements AnnotationReplacer {
     @SneakyThrows
     @Override
     public <T extends Annotation> void replace(Class<?> targetClass, Class<T> annotationClass, T newAnnotation) {
-        Method method = Class.class.getDeclaredMethod(ANNOTATION_METHOD, null);
+        Method method = Class.class.getDeclaredMethod(ANNOTATION_METHOD);
         method.setAccessible(true);
         Object annotationData = method.invoke(targetClass);
         Field annotations = annotationData.getClass().getDeclaredField(ANNOTATIONS);
