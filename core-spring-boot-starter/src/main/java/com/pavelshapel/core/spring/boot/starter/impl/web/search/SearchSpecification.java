@@ -31,8 +31,6 @@ public abstract class SearchSpecification<T extends Entity<?>> implements Specif
                 return builder.lessThan(root.get(field), value);
             case LESS_THAN_OR_EQUAL_TO:
                 return builder.lessThanOrEqualTo(root.get(field), value);
-            case LIKE:
-                return builder.like(builder.lower(root.get(field)), builder.lower(builder.literal(value.toString())));
             case STARTS_WITH:
                 return builder.like(builder.lower(root.get(field)), builder.lower(builder.literal(value + "%")));
             case ENDS_WITH:
