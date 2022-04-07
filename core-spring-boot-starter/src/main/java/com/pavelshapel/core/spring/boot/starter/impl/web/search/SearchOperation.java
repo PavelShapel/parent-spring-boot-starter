@@ -22,7 +22,7 @@ public enum SearchOperation {
     IS_NULL(SearchOperation::isNullPredicate),
     IS_NOT_NULL(SearchOperation::isNotNullPredicate);
 
-    private final Function<?, Predicate<Comparable<Object>>> function;
+    private final Function<Comparable<?>, Predicate<Comparable<Object>>> function;
 
     private static Predicate<Comparable<Object>> equalsPredicate(Object pattern) {
         return new EqualsPredicate(pattern);

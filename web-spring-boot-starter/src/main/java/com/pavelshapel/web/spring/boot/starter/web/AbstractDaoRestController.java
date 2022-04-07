@@ -7,6 +7,7 @@ import com.pavelshapel.core.spring.boot.starter.api.model.Dto;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
+import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriteria;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -72,8 +75,14 @@ public abstract class AbstractDaoRestController<ID, E extends Entity<ID>, D exte
     }
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<D>> findAll() {
-        return daoService.findAll().stream()
+    public ResponseEntity<List<D>> findAll(@Valid SearchCriteria searchCriteria) {
+        return Optional.ofNullable(searchCriteria)
+                .filter(criteria -> Objects.nonNull(criteria.getField()))
+                .filter(criteria -> Objects.nonNull(criteria.getValue()))
+                .filter(criteria -> Objects.nonNull(criteria.getOperation()))
+                .map(criteria -> daoService.findAll(searchCriteria))
+                .orElseGet(daoService::findAll)
+                .stream()
                 .map(toDtoConverter::convert)
                 .collect(streamUtils.toResponseEntityList());
     }

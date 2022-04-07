@@ -7,6 +7,6 @@ public class ContainsPredicate extends AbstractPredicate {
 
     @Override
     public boolean test(Comparable<Object> comparable) {
-        return comparable.toString().contains(getPattern().toString());
+        return comparable.toString().toLowerCase().contains(getPattern().toString().toLowerCase());
     }
 }

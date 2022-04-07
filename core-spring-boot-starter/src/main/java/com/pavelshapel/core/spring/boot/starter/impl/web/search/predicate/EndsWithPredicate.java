@@ -7,6 +7,6 @@ public class EndsWithPredicate extends AbstractPredicate {
 
     @Override
     public boolean test(Comparable<Object> comparable) {
-        return comparable.toString().endsWith(getPattern().toString());
+        return comparable.toString().toLowerCase().endsWith(getPattern().toString().toLowerCase());
     }
 }

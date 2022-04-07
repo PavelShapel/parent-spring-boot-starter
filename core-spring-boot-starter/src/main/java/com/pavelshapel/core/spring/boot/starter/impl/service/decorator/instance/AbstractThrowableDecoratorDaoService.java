@@ -3,6 +3,7 @@ package com.pavelshapel.core.spring.boot.starter.impl.service.decorator.instance
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity;
 import com.pavelshapel.core.spring.boot.starter.impl.service.decorator.AbstractDecoratorSpecificationDaoService;
+import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriteria;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -50,18 +51,11 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
         return entities;
     }
 
-
     @Override
-    public void deleteById(ID id) {
-        verifyId(id);
-        verifyChildren(id);
-        super.deleteById(id);
-    }
-
-    @Override
-    public void deleteAll() {
-        verifyCount(super.getCount());
-        super.deleteAll();
+    public List<T> findAll(SearchCriteria searchCriteria) {
+        List<T> entities = super.findAll(searchCriteria);
+        verifyCollection(entities);
+        return entities;
     }
 
     @Override
@@ -76,6 +70,20 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
         Page<T> entities = super.findAll(specification, pageable);
         verifyCount(entities.getTotalElements());
         return entities;
+    }
+
+
+    @Override
+    public void deleteById(ID id) {
+        verifyId(id);
+        verifyChildren(id);
+        super.deleteById(id);
+    }
+
+    @Override
+    public void deleteAll() {
+        verifyCount(super.getCount());
+        super.deleteAll();
     }
 
     protected void verifyId(ID id) {
@@ -121,5 +129,23 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
             throw new UnsupportedOperationException(message);
         }
     }
+//
+//    private void verifySingleRoot(T entity) {
+//        Optional.ofNullable(entity)
+//                .filter(ParentalEntity.class::isInstance)
+//                .map(ParentalEntity.class::cast)
+//                .map(ParentalEntity::getParent)
+//                .filter(Objects::isNull)
+//                        .ifPresent(parentalEntity -> );
+//        findAll().stream()
+//                .filter(ParentalEntity.class::isInstance)
+//                .map(ParentalEntity.class::cast)
+//                .map(ParentalEntity::getParent)
+//                .filter(Objects::isNull)
+//                .findFirst()
+//                .orElseThrow(() -> new UnsupportedOperationException("root already exists"));
+//    }
+//
+//    private boolean findRoot
 
 }

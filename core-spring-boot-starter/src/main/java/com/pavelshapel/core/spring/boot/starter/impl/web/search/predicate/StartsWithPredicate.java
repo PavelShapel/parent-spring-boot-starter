@@ -7,6 +7,6 @@ public class StartsWithPredicate extends AbstractPredicate {
 
     @Override
     public boolean test(Comparable<Object> comparable) {
-        return comparable.toString().startsWith(getPattern().toString());
+        return comparable.toString().toLowerCase().startsWith(getPattern().toString().toLowerCase());
     }
 }

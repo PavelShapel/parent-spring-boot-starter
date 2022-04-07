@@ -2,6 +2,7 @@ package com.pavelshapel.core.spring.boot.starter.impl.service.decorator;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
+import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriteria;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -60,6 +61,11 @@ public abstract class AbstractDecoratorDaoService<ID, T extends Entity<ID>> impl
     @Override
     public Page<T> findAll(Pageable pageable) {
         return wrapped.findAll(pageable);
+    }
+
+    @Override
+    public List<T> findAll(SearchCriteria searchCriteria) {
+        return wrapped.findAll(searchCriteria);
     }
 
 

@@ -6,23 +6,24 @@ import com.pavelshapel.core.spring.boot.starter.api.repository.DaoRepository;
 import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
 import com.pavelshapel.core.spring.boot.starter.api.util.ClassUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
+import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriteria;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
-import static org.springframework.util.ReflectionUtils.makeAccessible;
+import static org.springframework.util.ReflectionUtils.*;
 
 public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements DaoService<ID, T> {
     @Getter(AccessLevel.PROTECTED)
@@ -78,6 +79,21 @@ public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements Da
         return daoRepository.findAll(pageable);
     }
 
+    @Override
+    public List<T> findAll(SearchCriteria searchCriteria) {
+        Comparable<?> value = searchCriteria.getCastedValue();
+        Predicate<Comparable<Object>> predicate = searchCriteria.getOperation().getFunction().apply(value);
+        return findAll().stream()
+                .filter(entity -> predicate.test(getFieldValue(entity, searchCriteria)))
+                .collect(Collectors.toList());
+    }
+
+    @SneakyThrows
+    private Comparable<Object> getFieldValue(T entity, SearchCriteria searchCriteria) {
+        Field field = findField(entity.getClass(), searchCriteria.getField());
+        makeAccessible(field);
+        return ((Comparable<Object>) field.get(entity));
+    }
 
     @Override
     public void deleteById(ID id) {
@@ -139,7 +155,7 @@ public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements Da
 
     private void copyFields(Object source, Object destination) {
         if (isSameOrSubclass(source, destination)) {
-            ReflectionUtils.doWithFields(source.getClass(), field -> copyField(source, destination, field), this::filterField);
+            doWithFields(source.getClass(), field -> copyField(source, destination, field), this::filterField);
         } else {
             throw new IllegalArgumentException();
         }
