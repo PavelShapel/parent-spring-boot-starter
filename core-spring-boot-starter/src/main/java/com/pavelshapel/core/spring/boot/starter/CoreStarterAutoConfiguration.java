@@ -7,7 +7,7 @@ import com.pavelshapel.core.spring.boot.starter.api.util.ClassUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.CompletableFutureUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.RandomUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
-import com.pavelshapel.core.spring.boot.starter.impl.service.decorator.DaoDecorateAnnotationBeanPostProcessor;
+import com.pavelshapel.core.spring.boot.starter.impl.service.decorator.DecorateDaoServiceAnnotationBeanPostProcessor;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreClassUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreCompletableFutureUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreRandomUtils;
@@ -55,7 +55,7 @@ public class CoreStarterAutoConfiguration {
     }
 
     @Bean
-    public DaoDecorateAnnotationBeanPostProcessor daoDecorateAnnotationBeanPostProcessor() {
-        return new DaoDecorateAnnotationBeanPostProcessor();
+    public DecorateDaoServiceAnnotationBeanPostProcessor daoDecorateAnnotationBeanPostProcessor() {
+        return new DecorateDaoServiceAnnotationBeanPostProcessor();
     }
 }

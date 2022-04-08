@@ -11,7 +11,8 @@ import java.util.Map;
 
 import static org.springframework.util.StringUtils.uncapitalize;
 
-public class DaoDecorateAnnotationBeanPostProcessor implements BeanPostProcessor {
+@SuppressWarnings("NullableProblems")
+public class DecorateDaoServiceAnnotationBeanPostProcessor implements BeanPostProcessor {
     private final Map<String, Class<?>> daoDecorateBeans = new HashMap<>();
 
     @Autowired
@@ -22,7 +23,7 @@ public class DaoDecorateAnnotationBeanPostProcessor implements BeanPostProcessor
         Class<?> beanClass = bean.getClass();
         boolean isDaoService = bean instanceof DaoService;
         boolean isNotAbstractDecoratorDaoService = !(bean instanceof AbstractDecoratorDaoService);
-        boolean isDaoDecoratePresent = beanClass.isAnnotationPresent(DaoDecorate.class);
+        boolean isDaoDecoratePresent = beanClass.isAnnotationPresent(DecorateDaoService.class);
         if (isDaoService && isNotAbstractDecoratorDaoService && isDaoDecoratePresent) {
             daoDecorateBeans.put(beanName, beanClass);
         }
@@ -41,7 +42,7 @@ public class DaoDecorateAnnotationBeanPostProcessor implements BeanPostProcessor
     }
 
     private Object iterateDecorationsInAnnotation(Object wrapped, String wrappedName) {
-        DaoDecorate annotation = daoDecorateBeans.get(wrappedName).getAnnotation(DaoDecorate.class);
+        DecorateDaoService annotation = daoDecorateBeans.get(wrappedName).getAnnotation(DecorateDaoService.class);
         for (Class<? extends DaoService<?, ?>> decorationClass : annotation.decorations()) {
             String decorationBeanName = uncapitalize(decorationClass.getSimpleName());
             DaoService<?, ?> wrapper = getWrapper(decorationBeanName);

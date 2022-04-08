@@ -21,7 +21,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return createErrorResponseEntity(exception, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
-    @ExceptionHandler(UnsupportedOperationException.class)
+    @ExceptionHandler({UnsupportedOperationException.class, IllegalArgumentException.class})
     protected ResponseEntity<Object> handleUnsupportedOperationException(Exception exception, WebRequest request) {
         return createErrorResponseEntity(exception, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }

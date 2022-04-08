@@ -1,9 +1,9 @@
 package com.pavelshapel.core.spring.boot.starter.api.model;
 
-public interface Typed {
+public interface Typed<T> {
     String TYPE = "type";
 
-    String getType();
+    T getType();
 
-    void setType(String type);
+    void setType(T type);
 }

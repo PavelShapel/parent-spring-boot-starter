@@ -9,6 +9,6 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Documented
 @Inherited
-public @interface DaoDecorate {
+public @interface DecorateDaoService {
     Class<? extends DaoService<?, ?>>[] decorations();
 }
