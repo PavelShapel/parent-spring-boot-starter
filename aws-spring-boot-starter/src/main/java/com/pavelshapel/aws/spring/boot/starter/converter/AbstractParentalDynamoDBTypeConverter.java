@@ -23,10 +23,10 @@ public abstract class AbstractParentalDynamoDBTypeConverter<ID, T extends Parent
                 .map(parameters -> parameters.length)
                 .filter(length -> length.equals(0))
                 .findFirst()
-                .orElseThrow(this::throwIllegalArgumentException);
+                .orElseThrow(this::createNoArgumentsConstructorMustBeImplementedException);
     }
 
-    private IllegalArgumentException throwIllegalArgumentException() {
+    private IllegalArgumentException createNoArgumentsConstructorMustBeImplementedException() {
         String message = String.format("the constructor for class [%s] with no arguments must be implemented", getClass().getSimpleName());
         return new IllegalArgumentException(message);
     }

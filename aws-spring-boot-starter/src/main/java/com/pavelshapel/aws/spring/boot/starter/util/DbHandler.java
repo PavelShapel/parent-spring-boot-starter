@@ -15,7 +15,11 @@ public interface DbHandler {
 
     String createTableIfNotExists(String tableName, List<KeySchemaElement> keySchemaElements, List<AttributeDefinition> attributeDefinitions, ProvisionedThroughput provisionedThroughput);
 
+    String createDefaultTableIfNotExists(String tableName);
+
     String createTable(String tableName, List<KeySchemaElement> keySchemaElements, List<AttributeDefinition> attributeDefinitions, ProvisionedThroughput provisionedThroughput);
+
+    String createDefaultTable(String tableName);
 
     String deleteTableIfExists(String tableName);
 
