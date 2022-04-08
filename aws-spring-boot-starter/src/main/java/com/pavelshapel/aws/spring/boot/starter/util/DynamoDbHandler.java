@@ -22,6 +22,9 @@ import static java.util.Collections.singletonList;
 
 @Loggable
 public class DynamoDbHandler implements DbHandler {
+    public static final Long CAPACITY = 10L;
+    public static final String TABLE_DOES_NOT_EXIST_PATTERN = "table [%s] does not exist";
+
     @Autowired
     private AmazonDynamoDB amazonDynamoDB;
     @Autowired
@@ -36,23 +39,16 @@ public class DynamoDbHandler implements DbHandler {
                 .ifPresent(this::createTables);
     }
 
+    private void createTables(List<String> tableNames) {
+        tableNames.forEach(this::createDefaultTableIfNotExists);
+    }
+
     @Override
     public List<String> getTableNames() {
         return Optional.of(amazonDynamoDB)
                 .map(AmazonDynamoDB::listTables)
                 .map(ListTablesResult::getTableNames)
                 .orElseGet(Collections::emptyList);
-    }
-
-    private void createTables(List<String> tableNames) {
-        tableNames.forEach(this::createTableIfNotExists);
-    }
-
-    private void createTableIfNotExists(String tableName) {
-        ProvisionedThroughput provisionedThroughput = new ProvisionedThroughput(10L, 10L);
-        List<KeySchemaElement> keySchemaElements = singletonList(new KeySchemaElement(ID, KeyType.HASH));
-        List<AttributeDefinition> attributeDefinitions = singletonList(new AttributeDefinition(ID, ScalarAttributeType.S));
-        createTableIfNotExists(tableName, keySchemaElements, attributeDefinitions, provisionedThroughput);
     }
 
     @Override
@@ -65,7 +61,15 @@ public class DynamoDbHandler implements DbHandler {
         return Optional.of(isTableExists(tableName))
                 .filter(Boolean.FALSE::equals)
                 .map(unused -> createTable(tableName, keySchemaElements, attributeDefinitions, provisionedThroughput))
-                .orElse(null);
+                .orElse(String.format(TABLE_DOES_NOT_EXIST_PATTERN, tableName));
+    }
+
+    @Override
+    public String createDefaultTableIfNotExists(String tableName) {
+        return Optional.of(isTableExists(tableName))
+                .filter(Boolean.FALSE::equals)
+                .map(unused -> createDefaultTable(tableName))
+                .orElse(String.format(TABLE_DOES_NOT_EXIST_PATTERN, tableName));
     }
 
     @Override
@@ -73,6 +77,14 @@ public class DynamoDbHandler implements DbHandler {
         return Optional.of(createDynamoDB())
                 .map(dynamoDB -> createTable(tableName, keySchemaElements, attributeDefinitions, provisionedThroughput, dynamoDB))
                 .orElse(null);
+    }
+
+    @Override
+    public String createDefaultTable(String tableName) {
+        ProvisionedThroughput provisionedThroughput = new ProvisionedThroughput(CAPACITY, CAPACITY);
+        List<KeySchemaElement> keySchemaElements = singletonList(new KeySchemaElement(ID, KeyType.HASH));
+        List<AttributeDefinition> attributeDefinitions = singletonList(new AttributeDefinition(ID, ScalarAttributeType.S));
+        return createTable(tableName, keySchemaElements, attributeDefinitions, provisionedThroughput);
     }
 
     @SneakyThrows
@@ -87,7 +99,7 @@ public class DynamoDbHandler implements DbHandler {
         return Optional.of(isTableExists(tableName))
                 .filter(Boolean.TRUE::equals)
                 .map(unused -> deleteTable(tableName))
-                .orElse(null);
+                .orElse(String.format(TABLE_DOES_NOT_EXIST_PATTERN, tableName));
     }
 
     @Override
