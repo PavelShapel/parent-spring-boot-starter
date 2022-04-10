@@ -1,7 +1,7 @@
 package com.pavelshapel.core.spring.boot.starter.api.model;
 
 public interface Typed<T> {
-    String TYPE = "type";
+    String TYPE_FIELD = "type";
 
     T getType();
 

@@ -153,9 +153,9 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
 
     private boolean rootExists() {
         SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setField(ParentalEntity.PARENT);
+        searchCriteria.setField(ParentalEntity.PARENT_FIELD);
         searchCriteria.setOperation(IS_NULL);
-        return findAll(searchCriteria).stream()
+        return super.findAll(searchCriteria).stream()
                 .findFirst()
                 .isPresent();
     }

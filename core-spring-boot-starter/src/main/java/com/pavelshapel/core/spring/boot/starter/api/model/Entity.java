@@ -2,7 +2,7 @@ package com.pavelshapel.core.spring.boot.starter.api.model;
 
 public interface Entity<ID> extends Comparable<Entity<ID>>{
     String MANDATORY = "mandatory";
-    String ID = "id";
+    String ID_FIELD = "id";
 
     ID getId();
 

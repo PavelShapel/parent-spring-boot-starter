@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.pavelshapel.core.spring.boot.starter.api.model.Entity.ID;
+import static com.pavelshapel.core.spring.boot.starter.api.model.Entity.ID_FIELD;
 import static java.util.Collections.singletonList;
 
 @Loggable
@@ -82,8 +82,8 @@ public class DynamoDbHandler implements DbHandler {
     @Override
     public String createDefaultTable(String tableName) {
         ProvisionedThroughput provisionedThroughput = new ProvisionedThroughput(CAPACITY, CAPACITY);
-        List<KeySchemaElement> keySchemaElements = singletonList(new KeySchemaElement(ID, KeyType.HASH));
-        List<AttributeDefinition> attributeDefinitions = singletonList(new AttributeDefinition(ID, ScalarAttributeType.S));
+        List<KeySchemaElement> keySchemaElements = singletonList(new KeySchemaElement(ID_FIELD, KeyType.HASH));
+        List<AttributeDefinition> attributeDefinitions = singletonList(new AttributeDefinition(ID_FIELD, ScalarAttributeType.S));
         return createTable(tableName, keySchemaElements, attributeDefinitions, provisionedThroughput);
     }
 

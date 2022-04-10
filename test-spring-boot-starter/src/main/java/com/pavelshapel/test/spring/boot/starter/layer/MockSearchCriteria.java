@@ -18,14 +18,14 @@ public interface MockSearchCriteria {
     }
 
     default SearchCriteria getMockSearchCriteriaId(String value, PrimitiveType valueType, SearchOperation searchOperation) {
-        return getMockSearchCriteria(value, valueType, Entity.ID, searchOperation);
+        return getMockSearchCriteria(value, valueType, Entity.ID_FIELD, searchOperation);
     }
 
     default SearchCriteria getMockSearchCriteriaParent(String value, PrimitiveType valueType, SearchOperation searchOperation) {
-        return getMockSearchCriteria(value, valueType, ParentalEntity.PARENT, searchOperation);
+        return getMockSearchCriteria(value, valueType, ParentalEntity.PARENT_FIELD, searchOperation);
     }
 
     default SearchCriteria getMockSearchCriteriaName(String value, SearchOperation searchOperation) {
-        return getMockSearchCriteria(value, PrimitiveType.STRING, Named.NAME, searchOperation);
+        return getMockSearchCriteria(value, PrimitiveType.STRING, Named.NAME_FIELD, searchOperation);
     }
 }
