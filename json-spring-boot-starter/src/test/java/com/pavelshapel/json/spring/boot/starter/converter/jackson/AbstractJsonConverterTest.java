@@ -13,9 +13,11 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 abstract class AbstractJsonConverterTest {
-    private static final Integer ID = 1;
+    private static final String ID = "id";
     private static final String NAME = "name";
-    private static final String JSON_POJO = String.format("{\"id\":%d,\"name\":\"%s\"}", ID, NAME);
+    private static final Integer ID_VALUE = 1;
+    private static final String NAME_VALUE = NAME;
+    private static final String JSON_POJO = String.format("{\"%s\":%d,\"%s\":\"%s\"}", ID, ID_VALUE, NAME, NAME_VALUE);
 
     private final JsonConverter jsonConverter;
 
@@ -147,7 +149,7 @@ abstract class AbstractJsonConverterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"null", NAME})
+    @ValueSource(strings = {"null", NAME_VALUE})
     void isValidJson_InvalidParam_ShouldReturnFalse(String json) {
         boolean isValidJson = jsonConverter.isValidJson(json);
 
@@ -163,18 +165,35 @@ abstract class AbstractJsonConverterTest {
                 .isNotEmpty();
     }
 
+    @Test
+    void getNodeAsString_WithValidParams_ShouldReturnResult() {
+        Optional<String> optionalNode = jsonConverter.getNodeAsString(JSON_POJO, NAME_VALUE);
+
+        assertThat(optionalNode)
+                .isNotEmpty()
+                .hasValue(NAME_VALUE);
+    }
+
+    @Test
+    void getNodeAsString_WithInValidParams_ShouldReturnOptionalEmpty() {
+        Optional<String> optionalNode = jsonConverter.getNodeAsString(getInvalidJson(), NAME_VALUE);
+
+        assertThat(optionalNode)
+                .isEmpty();
+    }
+
     private String getInvalidJson() {
         return RandomStringUtils.randomAlphanumeric(Byte.MAX_VALUE);
     }
 
     private JsonTester createTestPojo() {
-        return new JsonTester(ID, NAME);
+        return new JsonTester(ID_VALUE, NAME_VALUE);
     }
 
     private Map<String, Object> createTestMap() {
         Map<String, Object> map = new HashMap<>();
-        map.put("id", ID);
-        map.put("name", NAME);
+        map.put(ID, ID_VALUE);
+        map.put(NAME, NAME_VALUE);
         return map;
     }
 }

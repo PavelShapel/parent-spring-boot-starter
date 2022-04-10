@@ -12,4 +12,9 @@ public abstract class AbstractEntity<ID> implements Entity<ID> {
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private ID id;
+
+    @Override
+    public int compareTo(Entity<ID> entity) {
+        return ((Comparable<ID>) getId()).compareTo(entity.getId());
+    }
 }
