@@ -22,19 +22,19 @@ public class AspectTester {
 
     @Loggable({LoggableType.METHOD_RESULT, LoggableType.METHOD_DURATION, LoggableType.METHOD_EXCEPTION})
     public void throwExceptionWithAnnotationWithLoggableType() {
-        throw throwException();
+        throwRuntimeException();
     }
 
     @Loggable({})
     public void throwExceptionWithAnnotationWithoutLoggableType() {
-        throw throwException();
+        throwRuntimeException();
     }
 
     public void throwExceptionWithoutAnnotation() {
-        throw throwException();
+        throwRuntimeException();
     }
 
-    private RuntimeException throwException() {
-        return new RuntimeException(MESSAGE);
+    private void throwRuntimeException() {
+        throw new RuntimeException(MESSAGE);
     }
 }
