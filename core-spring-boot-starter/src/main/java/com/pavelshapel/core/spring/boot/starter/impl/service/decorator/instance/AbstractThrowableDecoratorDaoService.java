@@ -97,13 +97,13 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
 
     protected void verifyId(ID id) {
         if (isNull(id) || !super.existsById(id)) {
-            throw createEntityNotFoundException(singletonList(id));
+            throwEntityNotFoundException(singletonList(id));
         }
     }
 
     protected void verifyCollection(List<T> entities, Iterable<ID> ids) {
         if (entities.isEmpty()) {
-            throw createEntityNotFoundException(ids);
+            throwEntityNotFoundException(ids);
         }
     }
 
@@ -113,16 +113,16 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
 
     protected void verifyCount(long count) {
         if (count == 0) {
-            throw createEntityNotFoundException(emptyList());
+            throwEntityNotFoundException(emptyList());
         }
     }
 
-    protected RuntimeException createEntityNotFoundException(Iterable<ID> ids) {
+    protected void throwEntityNotFoundException(Iterable<ID> ids) {
         String stringOfIds = StreamSupport.stream(ids.spliterator(), false)
                 .map(String::valueOf)
                 .collect(joining(", "));
 
-        return new EntityNotFoundException(
+        throw new EntityNotFoundException(
                 String.format(
                         "service: [%s]; ids: [%s]",
                         getClass().getSimpleName(),
@@ -147,7 +147,7 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
                 .ifPresent(unused -> throwRootAlreadyExistsException());
     }
 
-    private void throwRootAlreadyExistsException(){
+    private void throwRootAlreadyExistsException() {
         throw new UnsupportedOperationException("root already exists");
     }
 
