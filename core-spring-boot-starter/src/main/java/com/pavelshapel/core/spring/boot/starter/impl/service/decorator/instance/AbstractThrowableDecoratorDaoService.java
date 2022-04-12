@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
@@ -22,14 +23,14 @@ import static java.util.stream.Collectors.joining;
 public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<ID>> extends AbstractDecoratorSpecificationDaoService<ID, T> {
     @Override
     public T save(T entity) {
-        verifyRootExists(entity);
+        verifyRootExists(null, entity);
         return super.save(entity);
     }
 
     @Override
     public T update(ID id, T entity) {
         verifyId(id);
-        verifyRootExists(entity);
+        verifyRootExists(id, entity);
         return super.update(id, entity);
     }
 
@@ -139,11 +140,11 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
         }
     }
 
-    private void verifyRootExists(T entity) {
+    private void verifyRootExists(ID id, T entity) {
         Optional.ofNullable(entity)
                 .filter(ParentalEntity.class::isInstance)
                 .map(ParentalEntity.class::cast)
-                .filter(parentalEntity -> isNull(parentalEntity.getParent()) && rootExists())
+                .filter(parentalEntity -> isNull(parentalEntity.getParent()) && rootExists(id))
                 .ifPresent(unused -> throwRootAlreadyExistsException());
     }
 
@@ -151,12 +152,15 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
         throw new UnsupportedOperationException("root already exists");
     }
 
-    private boolean rootExists() {
+    private boolean rootExists(ID id) {
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setField(ParentalEntity.PARENT_FIELD);
         searchCriteria.setOperation(IS_NULL);
         return super.findAll(searchCriteria).stream()
                 .findFirst()
+                .map(Entity::getId)
+                .map(rootId -> Objects.equals(id, rootId))
+                .filter(Boolean.FALSE::equals)
                 .isPresent();
     }
 }

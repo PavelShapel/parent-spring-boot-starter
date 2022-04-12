@@ -52,6 +52,33 @@ public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements Da
         return save(entityFromDatabase);
     }
 
+    private void copyFields(Object source, Object destination) {
+        if (isSameOrSubclass(source, destination)) {
+            doWithFields(source.getClass(), field -> copyField(source, destination, field), this::filterField);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private boolean isSameOrSubclass(Object source, Object destination) {
+        return source.getClass().isAssignableFrom(destination.getClass());
+    }
+
+    @SneakyThrows
+    private void copyField(Object source, Object destination, Field field) {
+        makeAccessible(field);
+        Object value = field.get(source);
+        if (nonNull(value)) {
+            field.set(destination, value);
+        }
+    }
+
+    private boolean filterField(Field field) {
+        return !Modifier.isStatic(field.getModifiers()) &&
+                !Modifier.isFinal(field.getModifiers()) &&
+                !Modifier.isTransient(field.getModifiers());
+    }
+
     @Override
     public List<T> saveAll(Iterable<T> entities) {
         return streamUtils.iterableToList(daoRepository.saveAll(entities));
@@ -150,33 +177,5 @@ public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements Da
         return classUtils.getGenericSuperclass(getClass(), 1)
                 .map(entityClass -> (Class<T>) entityClass)
                 .orElseThrow(UnsupportedOperationException::new);
-    }
-
-
-    private void copyFields(Object source, Object destination) {
-        if (isSameOrSubclass(source, destination)) {
-            doWithFields(source.getClass(), field -> copyField(source, destination, field), this::filterField);
-        } else {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private boolean isSameOrSubclass(Object source, Object destination) {
-        return source.getClass().isAssignableFrom(destination.getClass());
-    }
-
-    @SneakyThrows
-    private void copyField(Object source, Object destination, Field field) {
-        makeAccessible(field);
-        Object value = field.get(source);
-        if (nonNull(value)) {
-            field.set(destination, value);
-        }
-    }
-
-    private boolean filterField(Field field) {
-        return !Modifier.isStatic(field.getModifiers()) &&
-                !Modifier.isFinal(field.getModifiers()) &&
-                !Modifier.isTransient(field.getModifiers());
     }
 }
