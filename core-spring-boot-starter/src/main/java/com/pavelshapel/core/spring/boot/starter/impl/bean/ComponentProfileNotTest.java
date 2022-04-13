@@ -1,5 +1,6 @@
-package com.pavelshapel.core.spring.boot.starter.api.service.decorator;
+package com.pavelshapel.core.spring.boot.starter.impl.bean;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
@@ -9,5 +10,6 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 @Component
-public @interface Decorator {
+@Profile("!test")
+public @interface ComponentProfileNotTest {
 }
