@@ -4,6 +4,7 @@ import com.pavelshapel.random.spring.boot.starter.randomizer.model.Specification
 import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedType;
 import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedTypeBeansCollection;
 import lombok.extern.java.Log;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,7 +41,7 @@ public class SpecificationVerifier implements Verifier<Specification> {
 
     private BoundedType<?> getBoundedType(Specification specification) {
         return boundedTypeBeansCollection.getBean(isSpecificationTypeEqualsBoundedType(specification))
-                .orElseThrow(() -> new IllegalArgumentException(specification.toString()));
+                .orElseThrow(() -> new NotImplementedException(String.format("bounded type not implemented for [%s]", specification.toString())));
     }
 
     private Predicate<BoundedType<?>> isSpecificationTypeEqualsBoundedType(Specification specification) {

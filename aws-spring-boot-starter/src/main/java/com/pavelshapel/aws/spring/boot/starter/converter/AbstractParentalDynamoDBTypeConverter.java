@@ -6,6 +6,7 @@ import com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity;
 import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.lang.reflect.Executable;
 import java.util.Arrays;
@@ -26,9 +27,9 @@ public abstract class AbstractParentalDynamoDBTypeConverter<ID, T extends Parent
                 .orElseThrow(this::createNoArgumentsConstructorMustBeImplementedException);
     }
 
-    private IllegalArgumentException createNoArgumentsConstructorMustBeImplementedException() {
+    private NotImplementedException createNoArgumentsConstructorMustBeImplementedException() {
         String message = String.format("the constructor for class [%s] with no arguments must be implemented", getClass().getSimpleName());
-        return new IllegalArgumentException(message);
+        return new NotImplementedException(message);
     }
 
     @Override

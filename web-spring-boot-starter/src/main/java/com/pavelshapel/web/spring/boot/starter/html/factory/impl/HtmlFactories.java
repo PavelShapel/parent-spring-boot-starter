@@ -18,6 +18,6 @@ public class HtmlFactories implements Factories {
     public <T extends Html> Factory<T> getFactory(Class<T> beanClass) {
         return factoryBeansCollection.getBean(factory -> factory.getBeanClass().equals(beanClass))
                 .map(factory -> (Factory<T>) factory)
-                .orElseThrow(NotImplementedException::new);
+                .orElseThrow(() -> new NotImplementedException(String.format("factory not implemented for [%s]", beanClass.getSimpleName())));
     }
 }
