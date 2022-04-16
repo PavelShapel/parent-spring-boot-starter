@@ -1,5 +1,6 @@
 package com.pavelshapel.aws.spring.boot.starter;
 
+import com.pavelshapel.aws.spring.boot.starter.config.AwsLambdaConfig;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import com.pavelshapel.aws.spring.boot.starter.util.DbHandler;
 import com.pavelshapel.aws.spring.boot.starter.util.DynamoDbHandler;
@@ -23,5 +24,10 @@ public class AwsStarterAutoConfiguration {
     @Bean
     public DbHandler dynamoDbHandler() {
         return new DynamoDbHandler();
+    }
+
+    @Bean
+    public AwsLambdaConfig awsLambdaConfig() {
+        return new AwsLambdaConfig();
     }
 }

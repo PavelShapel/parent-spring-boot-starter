@@ -22,7 +22,7 @@ public abstract class AbstractDynamoDbConfig {
     @Autowired
     private AwsProperties awsProperties;
 
-    public AWSCredentialsProvider awsCredentialsProvider() {
+    private AWSCredentialsProvider awsCredentialsProvider() {
         return Optional.ofNullable(awsProperties.getProfile())
                 .map(ProfileCredentialsProvider::new)
                 .map(AWSCredentialsProvider.class::cast)
