@@ -15,11 +15,29 @@ import static java.util.Collections.reverse;
 
 public class CoreStreamUtils implements StreamUtils {
     @Override
+    public <T> Collector<T, ?, Optional<List<T>>> toOptionalList() {
+        return Collectors.collectingAndThen(
+                Collectors.toList(),
+                Optional::of
+        );
+    }
+
+    @Override
     public <T> Collector<T, ?, Optional<T>> toSingleton() {
         return Collectors.collectingAndThen(
                 Collectors.toList(),
-                list -> list.size() == 1 ? Optional.of(list.get(0)) : Optional.empty()
+                this::toSingletonList
         );
+    }
+
+    private <T> Optional<T> toSingletonList(List<T> list) {
+        return Optional.of(list)
+                .filter(this::isSingletonList)
+                .map(singletonList -> singletonList.get(0));
+    }
+
+    private <T> boolean isSingletonList(List<T> list) {
+        return list.size() == 1;
     }
 
     @Override

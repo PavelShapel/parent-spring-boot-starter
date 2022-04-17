@@ -27,6 +27,17 @@ class CoreStreamUtilsTest {
     private StreamUtils streamUtils;
 
     @Test
+    void toOptionalList_WithValidParam_ShouldReturnResult() {
+        List<Object> list = singletonList(COLLECTION_ELEMENT);
+
+        Optional<List<Object>> optionalList = list.stream().collect(streamUtils.toOptionalList());
+
+        assertThat(optionalList)
+                .isNotEmpty()
+                .hasValue(list);
+    }
+
+    @Test
     void toSingleton_WithSingleCollection_ShouldReturnResult() {
         List<Object> list = singletonList(COLLECTION_ELEMENT);
 

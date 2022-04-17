@@ -11,6 +11,8 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 public interface StreamUtils {
+    <T> Collector<T, ?, Optional<List<T>>> toOptionalList();
+
     <T> Collector<T, ?, Optional<T>> toSingleton();
 
     <T> Collector<T, ?, ResponseEntity<List<T>>> toResponseEntityList();
