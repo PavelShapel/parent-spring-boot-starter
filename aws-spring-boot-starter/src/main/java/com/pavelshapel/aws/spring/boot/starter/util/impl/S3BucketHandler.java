@@ -9,6 +9,7 @@ import com.pavelshapel.aws.spring.boot.starter.util.BucketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -78,14 +79,18 @@ public class S3BucketHandler implements BucketHandler {
         return bucketName;
     }
 
-
     @Override
-    public void save(String bucketName, String key, String payload) {
+    public void upload(String bucketName, String key, String payload) {
         amazonS3.putObject(bucketName, key, payload);
     }
 
     @Override
-    public InputStream findByKey(String bucketName, String key) {
+    public void upload(String bucketName, String key, File payload) {
+        amazonS3.putObject(bucketName, key, payload);
+    }
+
+    @Override
+    public InputStream download(String bucketName, String key) {
         return Optional.of(amazonS3.getObject(bucketName, key))
                 .map(S3Object::getObjectContent)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("bucketName [%s], key [%s]", bucketName, key)));

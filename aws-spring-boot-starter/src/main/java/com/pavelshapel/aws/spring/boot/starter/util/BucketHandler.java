@@ -1,5 +1,6 @@
 package com.pavelshapel.aws.spring.boot.starter.util;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
@@ -16,9 +17,11 @@ public interface BucketHandler {
 
     String deleteBucket(String bucketName);
 
-    void save(String bucketName, String key, String payload);
+    void upload(String bucketName, String key, String payload);
 
-    InputStream findByKey(String bucketName, String key);
+    void upload(String bucketName, String key, File payload);
+
+    InputStream download(String bucketName, String key);
 
     List<String> listAll(String bucketName);
 
