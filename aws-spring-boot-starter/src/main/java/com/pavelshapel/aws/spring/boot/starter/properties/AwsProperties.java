@@ -1,26 +1,27 @@
 package com.pavelshapel.aws.spring.boot.starter.properties;
 
 import com.amazonaws.regions.Regions;
+import com.pavelshapel.aws.spring.boot.starter.properties.nested.DynamoDbNestedProperties;
+import com.pavelshapel.aws.spring.boot.starter.properties.nested.S3NestedProperties;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.List;
-
 import static com.pavelshapel.aws.spring.boot.starter.AwsStarterAutoConfiguration.TYPE;
+import static com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties.PREFIX;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ConfigurationProperties(prefix = "spring." + TYPE)
+@ConfigurationProperties(prefix = PREFIX)
 public class AwsProperties {
-    static final String DEFAULT_REGION = Regions.EU_WEST_1.getName();
-    static final String DYNAMO_DB_URL_PATTERN = "https://dynamodb.%s.amazonaws.com/";
+    public static final String PREFIX = "spring." + TYPE;
+    public static final String DEFAULT_REGION = Regions.EU_WEST_1.getName();
 
     String profile;
     String accessKey;
     String secretKey;
     String region = DEFAULT_REGION;
-    String endpoint = String.format(DYNAMO_DB_URL_PATTERN, DEFAULT_REGION);
-    List<String> createdTables;
+    DynamoDbNestedProperties dynamoDb;
+    S3NestedProperties s3;
 }

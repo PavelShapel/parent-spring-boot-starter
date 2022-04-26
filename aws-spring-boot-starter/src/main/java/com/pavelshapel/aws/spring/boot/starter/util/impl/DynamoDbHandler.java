@@ -1,4 +1,4 @@
-package com.pavelshapel.aws.spring.boot.starter.util;
+package com.pavelshapel.aws.spring.boot.starter.util.impl;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -8,6 +8,8 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.pavelshapel.aop.spring.boot.starter.log.method.Loggable;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
+import com.pavelshapel.aws.spring.boot.starter.properties.nested.DynamoDbNestedProperties;
+import com.pavelshapel.aws.spring.boot.starter.util.DbHandler;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import static java.util.Collections.singletonList;
 @Loggable
 public class DynamoDbHandler implements DbHandler {
     public static final Long CAPACITY = 10L;
+    public static final String TABLE_EXIST_PATTERN = "table [%s] already exists";
     public static final String TABLE_DOES_NOT_EXIST_PATTERN = "table [%s] does not exist";
 
     @Autowired
@@ -35,12 +38,9 @@ public class DynamoDbHandler implements DbHandler {
     @PostConstruct
     private void postConstruct() {
         Optional.ofNullable(awsProperties)
-                .map(AwsProperties::getCreatedTables)
-                .ifPresent(this::createTables);
-    }
-
-    private void createTables(List<String> tableNames) {
-        tableNames.forEach(this::createDefaultTableIfNotExists);
+                .map(AwsProperties::getDynamoDb)
+                .map(DynamoDbNestedProperties::getTableName)
+                .ifPresent(this::createDefaultTableIfNotExists);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class DynamoDbHandler implements DbHandler {
         return Optional.of(isTableExists(tableName))
                 .filter(Boolean.FALSE::equals)
                 .map(unused -> createTable(tableName, keySchemaElements, attributeDefinitions, provisionedThroughput))
-                .orElse(String.format(TABLE_DOES_NOT_EXIST_PATTERN, tableName));
+                .orElse(String.format(TABLE_EXIST_PATTERN, tableName));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class DynamoDbHandler implements DbHandler {
         return Optional.of(isTableExists(tableName))
                 .filter(Boolean.FALSE::equals)
                 .map(unused -> createDefaultTable(tableName))
-                .orElse(String.format(TABLE_DOES_NOT_EXIST_PATTERN, tableName));
+                .orElse(String.format(TABLE_EXIST_PATTERN, tableName));
     }
 
     @Override
