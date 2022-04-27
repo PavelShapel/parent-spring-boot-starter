@@ -20,6 +20,7 @@
         <derjust.version>5.1.0</derjust.version>
         <aws-lambda-java-events.version>3.11.0</aws-lambda-java-events.version>
         <aws-lambda-java-core.version>1.2.1</aws-lambda-java-core.version>
+        <aws-lambda-java-serialization.version>1.0.0</aws-lambda-java-serialization.version>
         <spring-cloud-dependencies.version>2021.0.1</spring-cloud-dependencies.version>
         <aws-serverless-java-container-springboot2.version>1.8</aws-serverless-java-container-springboot2.version>
     </properties>
@@ -129,22 +130,6 @@
                 <groupId>com.pavelshapel</groupId>
                 <artifactId>aws-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <!--aws-->
-            <dependency>
-                <groupId>com.amazonaws</groupId>
-                <artifactId>aws-lambda-java-core</artifactId>
-                <version>${aws-lambda-java-core.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.amazonaws</groupId>
-                <artifactId>aws-lambda-java-events</artifactId>
-                <version>${aws-lambda-java-events.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.amazonaws.serverless</groupId>
-                <artifactId>aws-serverless-java-container-springboot2</artifactId>
-                <version>${aws-serverless-java-container-springboot2.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
