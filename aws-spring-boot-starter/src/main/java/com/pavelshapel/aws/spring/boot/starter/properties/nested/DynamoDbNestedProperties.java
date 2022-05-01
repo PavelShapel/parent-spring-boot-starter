@@ -16,5 +16,5 @@ public class DynamoDbNestedProperties extends AbstractNestedProperties {
     static final String DYNAMO_DB_URL_PATTERN = "https://dynamodb.%s.amazonaws.com/";
 
     String endpoint = String.format(DYNAMO_DB_URL_PATTERN, DEFAULT_REGION);
-    String tableName;
+    String table;
 }

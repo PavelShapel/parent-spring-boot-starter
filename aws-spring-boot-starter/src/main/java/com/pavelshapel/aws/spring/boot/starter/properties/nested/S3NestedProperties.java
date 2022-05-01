@@ -16,5 +16,5 @@ public class S3NestedProperties extends AbstractNestedProperties {
     static final String S3_URL_PATTERN = "s3-website-%s.amazonaws.com";
 
     String endpoint = String.format(S3_URL_PATTERN, DEFAULT_REGION);
-    String bucketName;
+    String bucket;
 }
