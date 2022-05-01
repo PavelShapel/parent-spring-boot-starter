@@ -58,5 +58,10 @@
             <groupId>com.pavelshapel</groupId>
             <artifactId>aws-spring-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-lambda-java-tests</artifactId>
+            <version>${aws-lambda-java-tests.version}</version>
+        </dependency>
     </dependencies>
 </project>
