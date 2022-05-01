@@ -18,9 +18,6 @@ import java.util.stream.Collectors;
 
 @Loggable
 public class S3BucketHandler implements BucketHandler {
-    public static final String BUCKET_EXIST_PATTERN = "bucket [%s] already exists";
-    public static final String BUCKET_DOES_NOT_EXIST_PATTERN = "bucket [%s] does not exist";
-
     @Autowired
     private AmazonS3 amazonS3;
     @Autowired
@@ -30,7 +27,7 @@ public class S3BucketHandler implements BucketHandler {
     private void postConstruct() {
         Optional.ofNullable(awsProperties)
                 .map(AwsProperties::getS3)
-                .map(S3NestedProperties::getBucketName)
+                .map(S3NestedProperties::getBucket)
                 .ifPresent(this::createBucketIfNotExists);
     }
 
@@ -54,7 +51,7 @@ public class S3BucketHandler implements BucketHandler {
         return Optional.of(isBucketExists(bucketName))
                 .filter(Boolean.FALSE::equals)
                 .map(unused -> createBucket(bucketName))
-                .orElse(String.format(BUCKET_EXIST_PATTERN, bucketName));
+                .orElse(bucketName);
     }
 
     @Override
@@ -69,28 +66,39 @@ public class S3BucketHandler implements BucketHandler {
         return Optional.of(isBucketExists(bucketName))
                 .filter(Boolean.TRUE::equals)
                 .map(unused -> deleteBucket(bucketName))
-                .orElse(String.format(BUCKET_DOES_NOT_EXIST_PATTERN, bucketName));
+                .orElse(bucketName);
+    }
+
+    @Override
+    public void clearBucket(String bucketName) {
+        deleteAllObjects(bucketName);
+        deleteAllObjectVersions(bucketName);
     }
 
     @Override
     public String deleteBucket(String bucketName) {
-        deleteAll(bucketName);
+        clearBucket(bucketName);
         amazonS3.deleteBucket(bucketName);
         return bucketName;
     }
 
     @Override
-    public void upload(String bucketName, String key, String payload) {
+    public boolean isObjectExist(String bucketName, String key) {
+        return amazonS3.doesObjectExist(bucketName, key);
+    }
+
+    @Override
+    public void uploadObject(String bucketName, String key, String payload) {
         amazonS3.putObject(bucketName, key, payload);
     }
 
     @Override
-    public void upload(String bucketName, String key, File payload) {
+    public void uploadObject(String bucketName, String key, File payload) {
         amazonS3.putObject(bucketName, key, payload);
     }
 
     @Override
-    public InputStream download(String bucketName, String key) {
+    public InputStream downloadObject(String bucketName, String key) {
         return Optional.of(amazonS3.getObject(bucketName, key))
                 .map(S3Object::getObjectContent)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("bucketName [%s], key [%s]", bucketName, key)));
@@ -102,12 +110,6 @@ public class S3BucketHandler implements BucketHandler {
                 .getObjectSummaries().stream()
                 .map(S3ObjectSummary::getKey)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public void deleteAll(String bucketName) {
-        deleteAllObjects(bucketName);
-        deleteAllObjectVersions(bucketName);
     }
 
     private void deleteAllObjects(String bucketName) {

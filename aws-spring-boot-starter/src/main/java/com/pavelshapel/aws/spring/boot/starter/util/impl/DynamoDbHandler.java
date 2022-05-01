@@ -25,9 +25,6 @@ import static java.util.Collections.singletonList;
 @Loggable
 public class DynamoDbHandler implements DbHandler {
     public static final Long CAPACITY = 10L;
-    public static final String TABLE_EXIST_PATTERN = "table [%s] already exists";
-    public static final String TABLE_DOES_NOT_EXIST_PATTERN = "table [%s] does not exist";
-
     @Autowired
     private AmazonDynamoDB amazonDynamoDB;
     @Autowired
@@ -39,7 +36,7 @@ public class DynamoDbHandler implements DbHandler {
     private void postConstruct() {
         Optional.ofNullable(awsProperties)
                 .map(AwsProperties::getDynamoDb)
-                .map(DynamoDbNestedProperties::getTableName)
+                .map(DynamoDbNestedProperties::getTable)
                 .ifPresent(this::createDefaultTableIfNotExists);
     }
 
@@ -61,7 +58,7 @@ public class DynamoDbHandler implements DbHandler {
         return Optional.of(isTableExists(tableName))
                 .filter(Boolean.FALSE::equals)
                 .map(unused -> createTable(tableName, keySchemaElements, attributeDefinitions, provisionedThroughput))
-                .orElse(String.format(TABLE_EXIST_PATTERN, tableName));
+                .orElse(tableName);
     }
 
     @Override
@@ -69,7 +66,7 @@ public class DynamoDbHandler implements DbHandler {
         return Optional.of(isTableExists(tableName))
                 .filter(Boolean.FALSE::equals)
                 .map(unused -> createDefaultTable(tableName))
-                .orElse(String.format(TABLE_EXIST_PATTERN, tableName));
+                .orElse(tableName);
     }
 
     @Override
@@ -99,7 +96,7 @@ public class DynamoDbHandler implements DbHandler {
         return Optional.of(isTableExists(tableName))
                 .filter(Boolean.TRUE::equals)
                 .map(unused -> deleteTable(tableName))
-                .orElse(String.format(TABLE_DOES_NOT_EXIST_PATTERN, tableName));
+                .orElse(tableName);
     }
 
     @Override
