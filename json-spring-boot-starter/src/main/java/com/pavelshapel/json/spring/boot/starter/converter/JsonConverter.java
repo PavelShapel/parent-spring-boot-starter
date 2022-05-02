@@ -1,20 +1,19 @@
 package com.pavelshapel.json.spring.boot.starter.converter;
 
 import java.util.Map;
-import java.util.Optional;
 
 public interface JsonConverter {
-    Optional<String> pojoToJson(Object object);
+    <P> String pojoToJson(P pojo);
 
-    <T> Optional<T> jsonToPojo(String json, Class<T> targetClass);
+    <P> P jsonToPojo(String json, Class<P> targetClass);
 
-    Optional<Map<String, Object>> pojoToMap(Object object);
+    <P, M> Map<String, M> pojoToMap(P pojo);
 
-    <T> Optional<T> mapToPojo(Map<String, Object> map, Class<T> targetClass);
+    <P, M> P mapToPojo(Map<String, M> map, Class<P> targetClass);
 
     boolean isValidJson(String json);
 
-    Optional<String> pojoToPrettyJson(Object object);
+    <P> String pojoToPrettyJson(P pojo);
 
-    Optional<String> getNodeAsString(String json, String... nodes);
+    String getNodeAsString(String json, String... nodes);
 }

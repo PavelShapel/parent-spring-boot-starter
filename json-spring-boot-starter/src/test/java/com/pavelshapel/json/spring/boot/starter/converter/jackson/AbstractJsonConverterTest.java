@@ -8,9 +8,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 abstract class AbstractJsonConverterTest {
     private static final String ID = "id";
@@ -26,126 +26,114 @@ abstract class AbstractJsonConverterTest {
     }
 
     @Test
-    void initialization() {
-        assertThat(jsonConverter).isNotNull();
-    }
-
-    @Test
     void pojoToJson_ValidPojoAsParam_ShouldReturnJson() {
-        Optional<String> optionalJson = jsonConverter.pojoToJson(createTestPojo());
+        JsonTester pojo = createTestPojo();
 
-        assertThat(optionalJson)
-                .isNotEmpty()
-                .hasValue(JSON_POJO);
+        String json = jsonConverter.pojoToJson(pojo);
+
+        assertThat(json).isEqualTo(JSON_POJO);
     }
 
     @Test
-    void pojoToJson_NullAsParam_ShouldReturnOptionalEmpty() {
-        Optional<String> optionalJson = jsonConverter.pojoToJson(null);
+    void pojoToJson_NullAsParam_ShouldThrowException() {
+        JsonTester pojo = null;
 
-        assertThat(optionalJson)
-                .isEmpty();
+        assertThatThrownBy(() -> jsonConverter.pojoToJson(pojo))
+                .isInstanceOf(JsonConverterException.class);
     }
 
     @Test
-    void pojoToJson_InvalidPojoAsParam_ShouldReturnOptionalEmpty() {
-        Optional<String> optionalJson = jsonConverter.pojoToJson(getInvalidJson());
+    void pojoToJson_InvalidPojoAsParam_ShouldThrowException() {
+        String pojo = getInvalidJson();
 
-        assertThat(optionalJson)
-                .isEmpty();
+        assertThatThrownBy(() -> jsonConverter.pojoToJson(pojo))
+                .isInstanceOf(JsonConverterException.class);
     }
 
     @Test
     void jsonToPojo_ValidJsonAsParam_ShouldReturnPojo() {
-        Optional<JsonTester> optionalTester = jsonConverter.jsonToPojo(JSON_POJO, JsonTester.class);
+        JsonTester jsonTester = jsonConverter.jsonToPojo(JSON_POJO, JsonTester.class);
 
-        JsonTester jsonTester = createTestPojo();
-        assertThat(optionalTester)
-                .isNotEmpty()
-                .hasValue(jsonTester);
+        assertThat(jsonTester).isEqualTo(createTestPojo());
     }
 
     @Test
-    void jsonToPojo_InvalidStringAsParam_ShouldReturnOptionalEmpty() {
-        Optional<JsonTester> optionalTester = jsonConverter.jsonToPojo(getInvalidJson(), JsonTester.class);
+    void jsonToPojo_InvalidStringAsParam_ShouldThrowException() {
+        String json = getInvalidJson();
 
-        assertThat(optionalTester)
-                .isEmpty();
+        assertThatThrownBy(() -> jsonConverter.jsonToPojo(json, JsonTester.class))
+                .isInstanceOf(JsonConverterException.class);
     }
 
     @Test
-    void jsonToPojo_NullStringAsParam_ShouldReturnOptionalEmpty() {
-        Optional<JsonTester> optionalTester = jsonConverter.jsonToPojo(null, JsonTester.class);
+    void jsonToPojo_NullStringAsParam_ShouldThrowException() {
+        String json = null;
 
-        assertThat(optionalTester)
-                .isEmpty();
+        assertThatThrownBy(() -> jsonConverter.jsonToPojo(json, JsonTester.class))
+                .isInstanceOf(JsonConverterException.class);
     }
 
     @Test
-    void jsonToPojo_NullClassAsParam_ShouldReturnOptionalEmpty() {
-        Optional<JsonTester> optionalTester = jsonConverter.jsonToPojo(JSON_POJO, null);
-
-        assertThat(optionalTester)
-                .isEmpty();
+    void jsonToPojo_NullClassAsParam_ShouldThrowException() {
+        assertThatThrownBy(() -> jsonConverter.jsonToPojo(JSON_POJO, null))
+                .isInstanceOf(JsonConverterException.class);
     }
 
     @Test
     void pojoToMap_ValidPojoAsParam_ShouldReturnMap() {
-        Optional<Map<String, Object>> optionalMap = jsonConverter.pojoToMap(createTestPojo());
+        JsonTester pojo = createTestPojo();
 
-        assertThat(optionalMap)
-                .isNotEmpty()
-                .hasValue(createTestMap());
+        Map<String, JsonTester> map = jsonConverter.pojoToMap(pojo);
+
+        assertThat(map).isEqualTo(createTestMap());
     }
 
     @Test
-    void pojoToMap_NullAsParam_ShouldReturnOptionalEmpty() {
-        Optional<Map<String, Object>> optionalMap = jsonConverter.pojoToMap(null);
+    void pojoToMap_NullAsParam_ShouldThrowException() {
+        JsonTester pojo = null;
 
-        assertThat(optionalMap)
-                .isEmpty();
+        assertThatThrownBy(() -> jsonConverter.pojoToMap(pojo))
+                .isInstanceOf(JsonConverterException.class);
     }
 
     @Test
-    void pojoToMap_InvalidPojoAsParam_ShouldReturnOptionalEmpty() {
-        Optional<Map<String, Object>> optionalMap = jsonConverter.pojoToMap(getInvalidJson());
+    void pojoToMap_InvalidPojoAsParam_ShouldThrowException() {
+        String pojo = getInvalidJson();
 
-        assertThat(optionalMap)
-                .isEmpty();
+        assertThatThrownBy(() -> jsonConverter.pojoToMap(pojo))
+                .isInstanceOf(JsonConverterException.class);
     }
 
     @Test
     void mapToPojo_ValidMapAsParam_ShouldReturnPojo() {
-        Optional<JsonTester> optionalTester = jsonConverter.mapToPojo(createTestMap(), JsonTester.class);
+        Map<String, Object> map = createTestMap();
 
-        JsonTester jsonTester = createTestPojo();
-        assertThat(optionalTester)
-                .isNotEmpty()
-                .hasValue(jsonTester);
+        JsonTester jsonTester = jsonConverter.mapToPojo(map, JsonTester.class);
+
+        assertThat(jsonTester).isEqualTo(createTestPojo());
     }
 
     @Test
-    void mapToPojo_NullMapAsParam_ShouldReturnPojo() {
-        Optional<JsonTester> optionalTester = jsonConverter.mapToPojo(null, JsonTester.class);
+    void mapToPojo_NullMapAsParam_ShouldThrowException() {
+        Map<String, Object> map = null;
 
-        assertThat(optionalTester)
-                .isEmpty();
+        assertThatThrownBy(() -> jsonConverter.mapToPojo(map, JsonTester.class))
+                .isInstanceOf(JsonConverterException.class);
     }
 
     @Test
-    void mapToPojo_NullClassAsParam_ShouldReturnPojo() {
-        Optional<JsonTester> optionalTester = jsonConverter.mapToPojo(createTestMap(), null);
+    void mapToPojo_NullClassAsParam_ShouldThrowException() {
+        Map<String, Object> map = createTestMap();
 
-        assertThat(optionalTester)
-                .isEmpty();
+        assertThatThrownBy(() -> jsonConverter.mapToPojo(map, null))
+                .isInstanceOf(JsonConverterException.class);
     }
 
     @Test
     void isValidJson_ValidParam_ShouldReturnTrue() {
         final boolean isValidJson = jsonConverter.isValidJson(JSON_POJO);
 
-        assertThat(isValidJson)
-                .isTrue();
+        assertThat(isValidJson).isTrue();
     }
 
     @ParameterizedTest
@@ -153,33 +141,29 @@ abstract class AbstractJsonConverterTest {
     void isValidJson_InvalidParam_ShouldReturnFalse(String json) {
         boolean isValidJson = jsonConverter.isValidJson(json);
 
-        assertThat(isValidJson)
-                .isFalse();
+        assertThat(isValidJson).isFalse();
     }
 
     @Test
     void pojoToPrettyJson_ValidPojoAsParam_ShouldReturnJson() {
-        Optional<String> optionalJson = jsonConverter.pojoToPrettyJson(createTestPojo());
+        String json = jsonConverter.pojoToPrettyJson(createTestPojo());
 
-        assertThat(optionalJson)
-                .isNotEmpty();
+        assertThat(json).isNotEmpty();
     }
 
     @Test
     void getNodeAsString_WithValidParams_ShouldReturnResult() {
-        Optional<String> optionalNode = jsonConverter.getNodeAsString(JSON_POJO, NAME_VALUE);
+        String node = jsonConverter.getNodeAsString(JSON_POJO, NAME_VALUE);
 
-        assertThat(optionalNode)
-                .isNotEmpty()
-                .hasValue(NAME_VALUE);
+        assertThat(node).isEqualTo(NAME_VALUE);
     }
 
     @Test
-    void getNodeAsString_WithInValidParams_ShouldReturnOptionalEmpty() {
-        Optional<String> optionalNode = jsonConverter.getNodeAsString(getInvalidJson(), NAME_VALUE);
+    void getNodeAsString_WithInValidParams_ShouldThrowException() {
+        String json = getInvalidJson();
 
-        assertThat(optionalNode)
-                .isEmpty();
+        assertThatThrownBy(() -> jsonConverter.getNodeAsString(json, NAME_VALUE))
+                .isInstanceOf(JsonConverterException.class);
     }
 
     private String getInvalidJson() {

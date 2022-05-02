@@ -20,40 +20,43 @@ public class JacksonJsonConverter implements JsonConverter {
     }
 
     @Override
-    public Optional<String> pojoToJson(Object object) {
+    public <P> String pojoToJson(P pojo) {
         try {
-            return Optional.of(objectMapper.writeValueAsString(object))
-                    .filter(this::isValidJson);
+            String json = objectMapper.writeValueAsString(pojo);
+            return Optional.ofNullable(json)
+                    .filter(this::isValidJson)
+                    .orElseThrow(() -> new JsonConverterException(buildPojoMessage(pojo), buildJsonMessage(json)));
         } catch (Exception exception) {
-            return Optional.empty();
+            throw new JsonConverterException(exception, buildPojoMessage(pojo));
         }
     }
 
     @Override
-    public <T> Optional<T> jsonToPojo(String json, Class<T> targetClass) {
+    public <P> P jsonToPojo(String json, Class<P> targetClass) {
         try {
-            return Optional.of(objectMapper.readValue(json, targetClass));
+            return objectMapper.readValue(json, targetClass);
         } catch (Exception exception) {
-            return Optional.empty();
+            throw new JsonConverterException(exception, buildJsonMessage(json), buildClassMessage(targetClass));
         }
     }
 
     @Override
-    public Optional<Map<String, Object>> pojoToMap(Object object) {
+    public <P, M> Map<String, M> pojoToMap(P pojo) {
         try {
-            return Optional.of(objectMapper.convertValue(object, new TypeReference<Map<String, Object>>() {
-            }));
+            return Optional.ofNullable(objectMapper.convertValue(pojo, new TypeReference<Map<String, M>>() {
+            })).orElseThrow(() -> new JsonConverterException(buildPojoMessage(pojo)));
         } catch (Exception exception) {
-            return Optional.empty();
+            throw new JsonConverterException(exception, buildPojoMessage(pojo));
         }
     }
 
     @Override
-    public <T> Optional<T> mapToPojo(Map<String, Object> map, Class<T> targetClass) {
+    public <P, M> P mapToPojo(Map<String, M> map, Class<P> targetClass) {
         try {
-            return Optional.of(objectMapper.convertValue(map, targetClass));
+            return Optional.ofNullable(objectMapper.convertValue(map, targetClass))
+                    .orElseThrow(() -> new JsonConverterException(buildMapMessage(map), buildClassMessage(targetClass)));
         } catch (Exception exception) {
-            return Optional.empty();
+            throw new JsonConverterException(exception, buildMapMessage(map), buildClassMessage(targetClass));
         }
     }
 
@@ -72,22 +75,23 @@ public class JacksonJsonConverter implements JsonConverter {
     }
 
     @Override
-    public Optional<String> pojoToPrettyJson(Object object) {
+    public <P> String pojoToPrettyJson(P pojo) {
         try {
-            return Optional.of(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object));
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(pojo);
         } catch (Exception exception) {
-            return Optional.empty();
+            throw new JsonConverterException(exception, buildPojoMessage(pojo));
         }
     }
 
     @Override
-    public Optional<String> getNodeAsString(String json, String... nodes) {
+    public String getNodeAsString(String json, String... nodes) {
         try {
-            return Optional.of(objectMapper.readTree(json))
+            return Optional.ofNullable(objectMapper.readTree(json))
                     .map(jsonNode -> getNode(jsonNode, nodes, 0))
-                    .map(JsonNode::textValue);
+                    .map(JsonNode::textValue)
+                    .orElseThrow(() -> new JsonConverterException(buildJsonMessage(json), buildNodesMessage(String.join(",", nodes))));
         } catch (Exception exception) {
-            return Optional.empty();
+            throw new JsonConverterException(exception, buildJsonMessage(json), buildNodesMessage(String.join(",", nodes)));
         }
     }
 
@@ -99,5 +103,29 @@ public class JacksonJsonConverter implements JsonConverter {
                 .map(root::get)
                 .map(jsonNode -> getNode(jsonNode, nodes, index + 1))
                 .orElse(root);
+    }
+
+    private String buildPojoMessage(Object object) {
+        return buildArgumentPattern("pojo", object);
+    }
+
+    private String buildJsonMessage(Object object) {
+        return buildArgumentPattern("json", object);
+    }
+
+    private String buildMapMessage(Object object) {
+        return buildArgumentPattern("map", object);
+    }
+
+    private String buildClassMessage(Object object) {
+        return buildArgumentPattern("class", object);
+    }
+
+    private String buildNodesMessage(Object object) {
+        return buildArgumentPattern("nodes", object);
+    }
+
+    private String buildArgumentPattern(String argument, Object object) {
+        return String.format("%s = [%s]", argument, object);
     }
 }
