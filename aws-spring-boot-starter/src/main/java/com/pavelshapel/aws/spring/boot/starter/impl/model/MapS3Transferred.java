@@ -1,6 +1,6 @@
-package com.pavelshapel.core.spring.boot.starter.impl.model;
+package com.pavelshapel.aws.spring.boot.starter.impl.model;
 
-import com.pavelshapel.core.spring.boot.starter.api.model.S3Transferred;
+import com.pavelshapel.aws.spring.boot.starter.api.model.S3Transferred;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 

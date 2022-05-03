@@ -1,4 +1,4 @@
-package com.pavelshapel.core.spring.boot.starter.api.model;
+package com.pavelshapel.aws.spring.boot.starter.api.model;
 
 public interface S3Transferred {
     String SOURCE_BUCKET_FIELD = "sourceBucket";

@@ -1,11 +1,11 @@
-package com.pavelshapel.aws.spring.boot.starter.util.impl;
+package com.pavelshapel.aws.spring.boot.starter.impl.util;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.pavelshapel.aop.spring.boot.starter.log.method.Loggable;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import com.pavelshapel.aws.spring.boot.starter.properties.nested.S3NestedProperties;
-import com.pavelshapel.aws.spring.boot.starter.util.BucketHandler;
+import com.pavelshapel.aws.spring.boot.starter.api.util.BucketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;

@@ -1,6 +1,6 @@
 package com.pavelshapel.test.spring.boot.starter.layer;
 
-import com.pavelshapel.aws.spring.boot.starter.util.DbHandler;
+import com.pavelshapel.aws.spring.boot.starter.api.util.DbHandler;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.repository.DaoRepository;
 import com.pavelshapel.test.spring.boot.starter.annotation.SpringBootTestProfileTest;

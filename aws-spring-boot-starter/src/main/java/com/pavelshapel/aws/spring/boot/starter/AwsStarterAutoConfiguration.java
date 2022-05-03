@@ -4,10 +4,10 @@ import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyD
 import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyS3;
 import com.pavelshapel.aws.spring.boot.starter.config.AwsLambdaConfig;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
-import com.pavelshapel.aws.spring.boot.starter.util.BucketHandler;
-import com.pavelshapel.aws.spring.boot.starter.util.DbHandler;
-import com.pavelshapel.aws.spring.boot.starter.util.impl.DynamoDbHandler;
-import com.pavelshapel.aws.spring.boot.starter.util.impl.S3BucketHandler;
+import com.pavelshapel.aws.spring.boot.starter.api.util.BucketHandler;
+import com.pavelshapel.aws.spring.boot.starter.api.util.DbHandler;
+import com.pavelshapel.aws.spring.boot.starter.impl.util.DynamoDbHandler;
+import com.pavelshapel.aws.spring.boot.starter.impl.util.S3BucketHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

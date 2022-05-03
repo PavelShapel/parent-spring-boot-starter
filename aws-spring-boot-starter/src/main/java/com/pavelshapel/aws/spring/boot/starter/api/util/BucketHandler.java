@@ -1,4 +1,4 @@
-package com.pavelshapel.aws.spring.boot.starter.util;
+package com.pavelshapel.aws.spring.boot.starter.api.util;
 
 import java.io.File;
 import java.io.InputStream;

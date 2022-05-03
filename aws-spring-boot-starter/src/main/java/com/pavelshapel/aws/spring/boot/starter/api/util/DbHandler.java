@@ -1,4 +1,4 @@
-package com.pavelshapel.aws.spring.boot.starter.util;
+package com.pavelshapel.aws.spring.boot.starter.api.util;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;

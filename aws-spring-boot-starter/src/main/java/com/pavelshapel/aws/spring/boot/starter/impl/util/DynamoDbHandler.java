@@ -1,4 +1,4 @@
-package com.pavelshapel.aws.spring.boot.starter.util.impl;
+package com.pavelshapel.aws.spring.boot.starter.impl.util;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -9,7 +9,7 @@ import com.amazonaws.services.dynamodbv2.model.*;
 import com.pavelshapel.aop.spring.boot.starter.log.method.Loggable;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import com.pavelshapel.aws.spring.boot.starter.properties.nested.DynamoDbNestedProperties;
-import com.pavelshapel.aws.spring.boot.starter.util.DbHandler;
+import com.pavelshapel.aws.spring.boot.starter.api.util.DbHandler;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
