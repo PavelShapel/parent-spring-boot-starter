@@ -70,9 +70,10 @@ public class S3BucketHandler implements BucketHandler {
     }
 
     @Override
-    public void clearBucket(String bucketName) {
+    public String clearBucket(String bucketName) {
         deleteAllObjects(bucketName);
         deleteAllObjectVersions(bucketName);
+        return bucketName;
     }
 
     @Override
@@ -88,20 +89,26 @@ public class S3BucketHandler implements BucketHandler {
     }
 
     @Override
-    public void uploadObject(String bucketName, String key, String payload) {
+    public String uploadObject(String bucketName, String key, String payload) {
         amazonS3.putObject(bucketName, key, payload);
+        return buildObjectPath(bucketName, key);
     }
 
     @Override
-    public void uploadObject(String bucketName, String key, File payload) {
+    public String uploadObject(String bucketName, String key, File payload) {
         amazonS3.putObject(bucketName, key, payload);
+        return buildObjectPath(bucketName, key);
     }
 
     @Override
     public InputStream downloadObject(String bucketName, String key) {
         return Optional.of(amazonS3.getObject(bucketName, key))
                 .map(S3Object::getObjectContent)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("bucketName [%s], key [%s]", bucketName, key)));
+                .orElseThrow(() -> new IllegalArgumentException(buildObjectPath(bucketName, key)));
+    }
+
+    private String buildObjectPath(String bucketName, String key) {
+        return String.format("s3://%s/%s", bucketName, key);
     }
 
     @Override

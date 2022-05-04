@@ -15,15 +15,15 @@ public interface BucketHandler {
 
     String deleteBucketIfExists(String bucketName);
 
-    void clearBucket(String bucketName);
+    String clearBucket(String bucketName);
 
     String deleteBucket(String bucketName);
 
     boolean isObjectExist(String bucketName, String key);
 
-    void uploadObject(String bucketName, String key, String payload);
+    String uploadObject(String bucketName, String key, String payload);
 
-    void uploadObject(String bucketName, String key, File payload);
+    String uploadObject(String bucketName, String key, File payload);
 
     InputStream downloadObject(String bucketName, String key);
 
