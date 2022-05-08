@@ -10,7 +10,6 @@ import com.pavelshapel.web.spring.boot.starter.html.element.simple.AttributeHtml
 import com.pavelshapel.web.spring.boot.starter.html.element.simple.StringHtml;
 import com.pavelshapel.web.spring.boot.starter.html.element.simple.TagHtml;
 import lombok.EqualsAndHashCode;
-import lombok.SneakyThrows;
 import lombok.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +28,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static org.springframework.util.ReflectionUtils.getField;
 import static org.springframework.util.ReflectionUtils.makeAccessible;
 
 @Value
@@ -138,16 +138,18 @@ public class TableHtml extends AbstractHtml {
         return getEntityFields().stream()
                 .sorted(reorderIdFieldAsFirst())
                 .map(field -> getFieldValue(entity, field))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .map(this::createStringHtml)
                 .map(Collections::singletonList)
                 .map(this::createTdTagHtml)
                 .collect(toList());
     }
 
-    @SneakyThrows
-    private String getFieldValue(Object entity, Field field) {
+    private Optional<String> getFieldValue(Object entity, Field field) {
         makeAccessible(field);
-        return field.get(entity).toString();
+        return Optional.ofNullable(getField(field, entity))
+                .map(Object::toString);
     }
 
     private LinkedHashSet<Field> getEntityFields() {

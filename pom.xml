@@ -16,13 +16,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <testcontainers.version>1.16.3</testcontainers.version>
         <springdoc.version>1.6.6</springdoc.version>
-        <amazonaws.version>1.12.206</amazonaws.version>
+        <amazonaws.version>1.12.213</amazonaws.version>
         <derjust.version>5.1.0</derjust.version>
         <aws-lambda-java-events.version>3.11.0</aws-lambda-java-events.version>
         <aws-lambda-java-core.version>1.2.1</aws-lambda-java-core.version>
         <aws-lambda-java-serialization.version>1.0.0</aws-lambda-java-serialization.version>
         <spring-cloud-dependencies.version>2021.0.1</spring-cloud-dependencies.version>
-        <aws-serverless-java-container-springboot2.version>1.8</aws-serverless-java-container-springboot2.version>
+        <aws-serverless-java-container-springboot2.version>1.8.1</aws-serverless-java-container-springboot2.version>
         <commons-text.version>1.9</commons-text.version>
         <aws-lambda-java-tests.version>1.1.1</aws-lambda-java-tests.version>
     </properties>
