@@ -42,7 +42,7 @@ public abstract class AbstractDynamoDbAwsConfig extends AbstractAwsConfig {
                 .standard()
                 .withRegion(getAwsProperties().getRegion())
                 .withCredentials(awsCredentialsProvider())
-                .withEndpointConfiguration(createEndpointConfiguration(getAwsProperties().getDynamoDb().getEndpoint()))
+                .withEndpointConfiguration(createEndpointConfiguration())
                 .build();
     }
 }

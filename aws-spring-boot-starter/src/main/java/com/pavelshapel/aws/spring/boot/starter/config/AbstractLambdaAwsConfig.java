@@ -1,5 +1,6 @@
 package com.pavelshapel.aws.spring.boot.starter.config;
 
+import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyS3;
@@ -9,7 +10,7 @@ import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
-public abstract class AbstractS3AwsConfig extends AbstractAwsConfig {
+public abstract class AbstractLambdaAwsConfig extends AbstractAwsConfig {
     @Bean
     @ConditionalOnPropertyS3
     public AmazonS3 amazonS3() {
@@ -17,12 +18,12 @@ public abstract class AbstractS3AwsConfig extends AbstractAwsConfig {
                 .filter(properties -> isEmpty(properties.getProfile()))
                 .filter(properties -> isEmpty(properties.getAccessKey()))
                 .filter(properties -> isEmpty(properties.getSecretKey()))
-                .map(unused -> AmazonS3ClientBuilder.defaultClient())
+                .map(unused -> AWSLambdaClientBuilder.defaultClient())
                 .orElseGet(this::buildClientWithCredentials);
     }
 
     private AmazonS3 buildClientWithCredentials() {
-        return AmazonS3ClientBuilder
+        return AWSLambdaClientBuilder
                 .standard()
                 .withRegion(getAwsProperties().getRegion())
                 .withCredentials(awsCredentialsProvider())

@@ -5,16 +5,28 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.client.builder.AwsSyncClientBuilder;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
-public abstract class AbstractAwsConfig {
-    @Getter
+import static com.pavelshapel.aws.spring.boot.starter.properties.nested.AbstractServiceProperties.SERVICE_ENDPOINT_PATTERN;
+
+@Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public abstract class AbstractAwsConfig<S extends AwsSyncClientBuilder, T> {
     @Autowired
-    private AwsProperties awsProperties;
+    AwsProperties awsProperties;
+
+    AwsSyncClientBuilder<S, T> clientBuilder;
+
+    protected AbstractAwsConfig(AwsSyncClientBuilder<S, T> clientBuilder) {
+        this.clientBuilder = clientBuilder;
+    }
 
     protected AWSCredentialsProvider awsCredentialsProvider() {
         return Optional.ofNullable(awsProperties.getProfile())
@@ -31,7 +43,8 @@ public abstract class AbstractAwsConfig {
         return new BasicAWSCredentials(awsProperties.getAccessKey(), awsProperties.getSecretKey());
     }
 
-    protected AwsClientBuilder.EndpointConfiguration createEndpointConfiguration(String serviceEndpoint) {
+    protected AwsClientBuilder.EndpointConfiguration createEndpointConfiguration() {
+        String serviceEndpoint = String.format(SERVICE_ENDPOINT_PATTERN, awsProperties.getService(), awsProperties.getRegion());
         return new AwsClientBuilder.EndpointConfiguration(serviceEndpoint, awsProperties.getRegion());
     }
 }
