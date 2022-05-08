@@ -1,25 +1,28 @@
 package com.pavelshapel.core.spring.boot.starter.impl.service.decorator;
 
 import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
+import org.springframework.lang.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.util.StringUtils.uncapitalize;
 
-@SuppressWarnings("NullableProblems")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class DecorateDaoServiceAnnotationBeanPostProcessor implements BeanPostProcessor {
-    private final Map<String, Class<?>> daoDecorateBeans = new HashMap<>();
+    final Map<String, Class<?>> daoDecorateBeans = new HashMap<>();
 
     @Autowired
-    private ApplicationContext applicationContext;
+    ApplicationContext applicationContext;
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
         Class<?> beanClass = bean.getClass();
         boolean isDaoService = bean instanceof DaoService;
         boolean isNotAbstractDecoratorDaoService = !(bean instanceof AbstractDecoratorDaoService);
@@ -31,7 +34,7 @@ public class DecorateDaoServiceAnnotationBeanPostProcessor implements BeanPostPr
     }
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
         return daoDecorateBeans.containsKey(beanName)
                 ? getDecoratedBean(bean, beanName)
                 : bean;

@@ -3,19 +3,19 @@ package com.pavelshapel.core.spring.boot.starter.impl.web.search;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-@SuppressWarnings("NullableProblems")
 @Data
 public abstract class SearchSpecification<T extends Entity<?>> implements Specification<T> {
     private transient SearchCriteria searchCriteria;
 
     @Override
-    public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+    public Predicate toPredicate(@NonNull Root<T> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
         String field = searchCriteria.getField();
         Comparable value = searchCriteria.getCastedValue();
         switch (searchCriteria.getOperation()) {

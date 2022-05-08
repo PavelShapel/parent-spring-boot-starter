@@ -6,4 +6,6 @@ public interface ClassUtils {
     Optional<Class<?>> getGenericSuperclass(Class<?> sourceClass);
 
     Optional<Class<?>> getGenericSuperclass(Class<?> sourceClass, int index);
+
+    void copyFields(Object source, Object destination);
 }

@@ -2,6 +2,8 @@ package com.pavelshapel.core.spring.boot.starter.impl.bean;
 
 import com.pavelshapel.core.spring.boot.starter.api.bean.BeansCollection;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -10,11 +12,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AbstractBeansCollection<T> implements BeansCollection<T> {
     @Autowired
-    private StreamUtils streamUtils;
+    StreamUtils streamUtils;
     @Autowired
-    private ObjectFactory<Map<String, T>> beans;
+    ObjectFactory<Map<String, T>> beans;
 
     @Override
     public Map<String, T> getBeans() {

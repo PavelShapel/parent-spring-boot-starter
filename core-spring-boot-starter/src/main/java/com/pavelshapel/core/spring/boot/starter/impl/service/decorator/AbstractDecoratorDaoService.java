@@ -6,16 +6,18 @@ import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriteria;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 
+@Getter(AccessLevel.PROTECTED)
+@Setter(AccessLevel.PROTECTED)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AbstractDecoratorDaoService<ID, T extends Entity<ID>> implements DaoService<ID, T> {
-    @Getter(AccessLevel.PROTECTED)
-    @Setter(AccessLevel.PROTECTED)
-    private DaoService<ID, T> wrapped;
+    DaoService<ID, T> wrapped;
 
     @Override
     public T create() {

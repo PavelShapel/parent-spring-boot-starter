@@ -3,6 +3,7 @@ package com.pavelshapel.core.spring.boot.starter.bpp;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
+import org.springframework.lang.NonNull;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -12,12 +13,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-@SuppressWarnings("NullableProblems")
 public class SelfAutowiredAnnotationBeanPostProcessor implements BeanPostProcessor, Ordered {
     private final Map<String, Object> selfAutowiredBeans = new HashMap<>();
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
         getFilteredSelfAutowiredFieldsStream(bean)
                 .flatMap(Stream::findFirst)
                 .ifPresent(unused -> selfAutowiredBeans.put(beanName, bean));
@@ -25,7 +25,7 @@ public class SelfAutowiredAnnotationBeanPostProcessor implements BeanPostProcess
     }
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessAfterInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
         Object originalBean = selfAutowiredBeans.get(beanName);
         getFilteredSelfAutowiredFieldsStream(originalBean)
                 .ifPresent(fieldStream -> fieldStream.forEach(field -> setField(field, originalBean, bean)));
@@ -33,7 +33,7 @@ public class SelfAutowiredAnnotationBeanPostProcessor implements BeanPostProcess
     }
 
     private void setField(Field field, Object target, Object value) {
-        field.setAccessible(true);
+        ReflectionUtils.makeAccessible(field);
         ReflectionUtils.setField(field, target, value);
     }
 

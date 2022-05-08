@@ -9,13 +9,12 @@ import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriteria;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.SneakyThrows;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,14 +24,15 @@ import java.util.stream.Collectors;
 import static java.util.Objects.nonNull;
 import static org.springframework.util.ReflectionUtils.*;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements DaoService<ID, T> {
     @Getter(AccessLevel.PROTECTED)
     @Autowired
-    private DaoRepository<ID, T> daoRepository;
+    DaoRepository<ID, T> daoRepository;
     @Autowired
-    private ClassUtils classUtils;
+    ClassUtils classUtils;
     @Autowired
-    private StreamUtils streamUtils;
+    StreamUtils streamUtils;
 
     @Override
     public T createAndSave() {
@@ -48,35 +48,8 @@ public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements Da
     public T update(ID id, T entity) {
         entity.setId(null);
         T entityFromDatabase = findById(id);
-        copyFields(entity, entityFromDatabase);
+        classUtils.copyFields(entity, entityFromDatabase);
         return save(entityFromDatabase);
-    }
-
-    private void copyFields(Object source, Object destination) {
-        if (isSameOrSubclass(source, destination)) {
-            doWithFields(source.getClass(), field -> copyField(source, destination, field), this::filterField);
-        } else {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private boolean isSameOrSubclass(Object source, Object destination) {
-        return source.getClass().isAssignableFrom(destination.getClass());
-    }
-
-    @SneakyThrows
-    private void copyField(Object source, Object destination, Field field) {
-        makeAccessible(field);
-        Object value = field.get(source);
-        if (nonNull(value)) {
-            field.set(destination, value);
-        }
-    }
-
-    private boolean filterField(Field field) {
-        return !Modifier.isStatic(field.getModifiers()) &&
-                !Modifier.isFinal(field.getModifiers()) &&
-                !Modifier.isTransient(field.getModifiers());
     }
 
     @Override
@@ -115,11 +88,14 @@ public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements Da
                 .collect(Collectors.toList());
     }
 
-    @SneakyThrows
     private Comparable<Object> getFieldValue(T entity, SearchCriteria searchCriteria) {
         Field field = findField(entity.getClass(), searchCriteria.getField());
-        makeAccessible(field);
-        return ((Comparable<Object>) field.get(entity));
+        if (nonNull(field)) {
+            makeAccessible(field);
+            return ((Comparable<Object>) getField(field, entity));
+        } else {
+            throw new IllegalArgumentException(searchCriteria.getField());
+        }
     }
 
     @Override

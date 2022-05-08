@@ -1,7 +1,9 @@
 package com.pavelshapel.core.spring.boot.starter.enums;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.time.LocalDate;
@@ -14,6 +16,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Getter
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public enum PrimitiveType {
     BOOLEAN(PrimitiveType::getRandomBoolean, PrimitiveType::castToBoolean),
@@ -23,8 +26,8 @@ public enum PrimitiveType {
     DOUBLE(PrimitiveType::getRandomDouble, PrimitiveType::castToDouble),
     DATE(PrimitiveType::getRandomDate, PrimitiveType::castToDate);
 
-    private final Supplier<Object> randomValueSupplier;
-    private final Function<String, Comparable<?>> castFunction;
+    Supplier<Object> randomValueSupplier;
+    Function<String, Comparable<?>> castFunction;
 
     private static Date getRandomDate() {
         Calendar min = new GregorianCalendar(1900, Calendar.JANUARY, 1);
@@ -57,7 +60,7 @@ public enum PrimitiveType {
     }
 
     private static Comparable<?> castToBoolean(String source) {
-        return Boolean.parseBoolean(source);
+        return Boolean.valueOf(source);
     }
 
     private static Comparable<?> castToString(String source) {
@@ -65,15 +68,15 @@ public enum PrimitiveType {
     }
 
     private static Comparable<?> castToLong(String source) {
-        return Long.parseLong(source);
+        return Long.valueOf(source);
     }
 
     private static Comparable<?> castToInteger(String source) {
-        return Integer.parseInt(source);
+        return Integer.valueOf(source);
     }
 
     private static Comparable<?> castToDouble(String source) {
-        return Double.parseDouble(source);
+        return Double.valueOf(source);
     }
 
     private static Comparable<?> castToDate(String source) {

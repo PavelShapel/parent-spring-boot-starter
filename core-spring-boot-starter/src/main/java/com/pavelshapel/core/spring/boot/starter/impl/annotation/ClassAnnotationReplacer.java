@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import static org.springframework.util.ReflectionUtils.makeAccessible;
+
 public class ClassAnnotationReplacer implements AnnotationReplacer {
     private static final String ANNOTATION_METHOD = "annotationData";
     private static final String ANNOTATIONS = "annotations";
@@ -16,10 +18,10 @@ public class ClassAnnotationReplacer implements AnnotationReplacer {
     @Override
     public <T extends Annotation> void replace(Class<?> targetClass, Class<T> annotationClass, T newAnnotation) {
         Method method = Class.class.getDeclaredMethod(ANNOTATION_METHOD);
-        method.setAccessible(true);
+        makeAccessible(method);
         Object annotationData = method.invoke(targetClass);
         Field annotations = annotationData.getClass().getDeclaredField(ANNOTATIONS);
-        annotations.setAccessible(true);
+        makeAccessible(annotations);
         Map<Class<T>, T> map = (Map<Class<T>, T>) annotations.get(annotationData);
         map.put(annotationClass, newAnnotation);
     }
