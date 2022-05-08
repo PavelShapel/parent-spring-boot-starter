@@ -1,8 +1,10 @@
 package com.pavelshapel.jpa.spring.boot.starter.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -18,32 +20,33 @@ import java.util.Date;
 @MappedSuperclass
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AbstractAuditableVersionEntity<ID> extends AbstractVersionEntity<ID> {
     @CreatedBy
     @Column
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private String createdBy;
+    String createdBy;
 
     @CreatedDate
     @Column
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private Date createdDate;
+    Date createdDate;
 
     @LastModifiedBy
     @Column
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private String lastModifiedBy;
+    String lastModifiedBy;
 
     @LastModifiedDate
     @Column
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private Date lastModifiedDate;
+    Date lastModifiedDate;
 }
