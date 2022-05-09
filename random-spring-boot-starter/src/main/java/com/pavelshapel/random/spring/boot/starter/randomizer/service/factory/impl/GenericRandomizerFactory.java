@@ -4,14 +4,17 @@ import com.pavelshapel.random.spring.boot.starter.randomizer.model.Specification
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.RandomizerBeansCollection;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.factory.RandomizerFactory;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.Randomizer;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.function.Predicate;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class GenericRandomizerFactory implements RandomizerFactory {
     @Autowired
-    private RandomizerBeansCollection randomizerBeansCollection;
+    RandomizerBeansCollection randomizerBeansCollection;
 
     @Override
     public Randomizer<?> getRandomizer(Specification specification) {

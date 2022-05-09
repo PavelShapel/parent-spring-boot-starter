@@ -3,6 +3,8 @@ package com.pavelshapel.random.spring.boot.starter.randomizer.service.verifier;
 import com.pavelshapel.random.spring.boot.starter.randomizer.model.Specification;
 import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedType;
 import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedTypeBeansCollection;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.Range;
@@ -12,9 +14,10 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 
 @Log
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class SpecificationVerifier implements Verifier<Specification> {
     @Autowired
-    private BoundedTypeBeansCollection boundedTypeBeansCollection;
+    BoundedTypeBeansCollection boundedTypeBeansCollection;
 
     @Override
     public Specification verify(Specification specification) {

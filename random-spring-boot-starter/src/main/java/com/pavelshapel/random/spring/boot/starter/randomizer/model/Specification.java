@@ -1,16 +1,15 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Specification {
-    private String type;
-    private long min;
-    private long max;
+    String type;
+    long min;
+    long max;
 }

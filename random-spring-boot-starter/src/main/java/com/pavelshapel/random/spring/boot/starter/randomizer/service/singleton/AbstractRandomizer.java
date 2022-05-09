@@ -3,13 +3,16 @@ package com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton;
 import com.pavelshapel.random.spring.boot.starter.randomizer.model.Specification;
 import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedType;
 import com.pavelshapel.random.spring.boot.starter.randomizer.service.verifier.SpecificationVerifier;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AbstractRandomizer<T> implements Randomizer<T> {
     @Autowired
-    private BoundedType<T> boundedType;
+    BoundedType<T> boundedType;
     @Autowired
-    private SpecificationVerifier specificationVerifier;
+    SpecificationVerifier specificationVerifier;
 
     @Override
     public T randomize() {

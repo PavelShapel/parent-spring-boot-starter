@@ -1,8 +1,10 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.enums;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -10,6 +12,7 @@ import java.util.GregorianCalendar;
 @Getter
 @ToString
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum ConstantsRange {
     DEFAULT_MIN_YEAR(1000),
     DEFAULT_MAX_YEAR(3000),
@@ -28,5 +31,5 @@ public enum ConstantsRange {
     DEFAULT_MIN_NATURAL(1),
     DEFAULT_MAX_NATURAL(Byte.MAX_VALUE);
 
-    private final long value;
+    long value;
 }

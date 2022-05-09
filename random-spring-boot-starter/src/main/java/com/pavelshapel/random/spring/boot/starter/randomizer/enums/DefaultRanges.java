@@ -1,8 +1,10 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.enums;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.Range;
 
 import static com.pavelshapel.random.spring.boot.starter.randomizer.enums.ConstantsRange.*;
@@ -10,6 +12,7 @@ import static com.pavelshapel.random.spring.boot.starter.randomizer.enums.Consta
 @Getter
 @ToString
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum DefaultRanges {
     DEFAULT_LONG_RANGE(
             Range.between(
