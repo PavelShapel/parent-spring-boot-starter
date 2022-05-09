@@ -2,17 +2,13 @@ package com.pavelshapel.aws.spring.boot.starter;
 
 import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyDynamoDb;
 import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyS3;
-import com.pavelshapel.aws.spring.boot.starter.config.AwsLambdaConfig;
-import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import com.pavelshapel.aws.spring.boot.starter.api.util.BucketHandler;
 import com.pavelshapel.aws.spring.boot.starter.api.util.DbHandler;
 import com.pavelshapel.aws.spring.boot.starter.impl.util.DynamoDbHandler;
 import com.pavelshapel.aws.spring.boot.starter.impl.util.S3BucketHandler;
+import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-
-import static com.pavelshapel.aws.spring.boot.starter.config.AbstractRequestStreamHandler.LAMBDA;
 
 @Configuration
 public class AwsStarterAutoConfiguration {
@@ -38,11 +34,5 @@ public class AwsStarterAutoConfiguration {
     @ConditionalOnPropertyS3
     public BucketHandler s3BucketHandler() {
         return new S3BucketHandler();
-    }
-
-    @Bean
-    @Profile(LAMBDA)
-    public AwsLambdaConfig awsLambdaConfig() {
-        return new AwsLambdaConfig();
     }
 }

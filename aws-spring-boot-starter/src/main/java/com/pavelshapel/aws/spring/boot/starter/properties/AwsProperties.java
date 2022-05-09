@@ -1,8 +1,9 @@
 package com.pavelshapel.aws.spring.boot.starter.properties;
 
 import com.amazonaws.regions.Regions;
-import com.pavelshapel.aws.spring.boot.starter.properties.nested.DynamoDbNestedProperties;
-import com.pavelshapel.aws.spring.boot.starter.properties.nested.S3NestedProperties;
+import com.pavelshapel.aws.spring.boot.starter.properties.nested.DynamoDbServiceProperties;
+import com.pavelshapel.aws.spring.boot.starter.properties.nested.LambdaServiceProperties;
+import com.pavelshapel.aws.spring.boot.starter.properties.nested.S3ServiceProperties;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -22,6 +23,7 @@ public class AwsProperties {
     String accessKey;
     String secretKey;
     String region = DEFAULT_REGION;
-    DynamoDbNestedProperties dynamoDb;
-    S3NestedProperties s3;
+    DynamoDbServiceProperties dynamoDb;
+    S3ServiceProperties s3;
+    LambdaServiceProperties lambda;
 }

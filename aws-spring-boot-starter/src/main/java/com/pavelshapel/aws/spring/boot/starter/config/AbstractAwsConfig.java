@@ -7,26 +7,24 @@ import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.client.builder.AwsSyncClientBuilder;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
+import com.pavelshapel.aws.spring.boot.starter.properties.nested.AbstractServiceProperties;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
 import static com.pavelshapel.aws.spring.boot.starter.properties.nested.AbstractServiceProperties.SERVICE_ENDPOINT_PATTERN;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
-@Getter
+@Getter(AccessLevel.PROTECTED)
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public abstract class AbstractAwsConfig<S extends AwsSyncClientBuilder, T> {
-    @Autowired
-    AwsProperties awsProperties;
-
-    AwsSyncClientBuilder<S, T> clientBuilder;
-
-    protected AbstractAwsConfig(AwsSyncClientBuilder<S, T> clientBuilder) {
-        this.clientBuilder = clientBuilder;
-    }
+    final AwsProperties awsProperties;
+    final AbstractServiceProperties serviceProperties;
+    final AwsSyncClientBuilder<S, T> clientBuilder;
 
     protected AWSCredentialsProvider awsCredentialsProvider() {
         return Optional.ofNullable(awsProperties.getProfile())
@@ -43,8 +41,25 @@ public abstract class AbstractAwsConfig<S extends AwsSyncClientBuilder, T> {
         return new BasicAWSCredentials(awsProperties.getAccessKey(), awsProperties.getSecretKey());
     }
 
-    protected AwsClientBuilder.EndpointConfiguration createEndpointConfiguration() {
-        String serviceEndpoint = String.format(SERVICE_ENDPOINT_PATTERN, awsProperties.getService(), awsProperties.getRegion());
+    protected T buildClient() {
+        return Optional.of(awsProperties)
+                .filter(properties -> isEmpty(properties.getProfile()))
+                .filter(properties -> isEmpty(properties.getAccessKey()))
+                .filter(properties -> isEmpty(properties.getSecretKey()))
+                .map(unused -> clientBuilder.build())
+                .orElseGet(this::buildClientWithCredentials);
+    }
+
+    private T buildClientWithCredentials() {
+        return (T) clientBuilder
+                .withRegion(awsProperties.getRegion())
+                .withCredentials(awsCredentialsProvider())
+                .withEndpointConfiguration(createEndpointConfiguration())
+                .build();
+    }
+
+    private AwsClientBuilder.EndpointConfiguration createEndpointConfiguration() {
+        String serviceEndpoint = String.format(SERVICE_ENDPOINT_PATTERN, serviceProperties.getName(), awsProperties.getRegion());
         return new AwsClientBuilder.EndpointConfiguration(serviceEndpoint, awsProperties.getRegion());
     }
 }

@@ -8,10 +8,12 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.pavelshapel.aop.spring.boot.starter.log.method.Loggable;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
-import com.pavelshapel.aws.spring.boot.starter.properties.nested.DynamoDbNestedProperties;
+import com.pavelshapel.aws.spring.boot.starter.properties.nested.DynamoDbServiceProperties;
 import com.pavelshapel.aws.spring.boot.starter.api.util.DbHandler;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
+import lombok.AccessLevel;
 import lombok.SneakyThrows;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -23,20 +25,21 @@ import static com.pavelshapel.core.spring.boot.starter.api.model.Entity.ID_FIELD
 import static java.util.Collections.singletonList;
 
 @Loggable
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class DynamoDbHandler implements DbHandler {
     public static final Long CAPACITY = 10L;
     @Autowired
-    private AmazonDynamoDB amazonDynamoDB;
+    AmazonDynamoDB amazonDynamoDB;
     @Autowired
-    private DynamoDBMapper dynamoDBMapper;
+    DynamoDBMapper dynamoDBMapper;
     @Autowired
-    private AwsProperties awsProperties;
+    AwsProperties awsProperties;
 
     @PostConstruct
     private void postConstruct() {
         Optional.ofNullable(awsProperties)
                 .map(AwsProperties::getDynamoDb)
-                .map(DynamoDbNestedProperties::getTable)
+                .map(DynamoDbServiceProperties::getObject)
                 .ifPresent(this::createDefaultTableIfNotExists);
     }
 
