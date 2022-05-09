@@ -2,6 +2,8 @@ package com.pavelshapel.kafka.spring.boot.starter.config;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Dto;
 import com.pavelshapel.kafka.spring.boot.starter.properties.KafkaProperties;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @EnableConfigurationProperties(KafkaProperties.class)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AbstractKafkaProducerConfiguration<T extends Dto<String>> {
     @Autowired
-    private KafkaProperties kafkaProperties;
+    KafkaProperties kafkaProperties;
 
     @Bean
     public Map<String, Object> producerConfigs() {

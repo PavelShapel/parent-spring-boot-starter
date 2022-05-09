@@ -2,6 +2,8 @@ package com.pavelshapel.kafka.spring.boot.starter.config;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Dto;
 import com.pavelshapel.kafka.spring.boot.starter.properties.KafkaProperties;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +22,13 @@ import java.util.Map;
 
 @EnableKafka
 @EnableConfigurationProperties(KafkaProperties.class)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AbstractKafkaConsumerConfiguration<T extends Dto<String>> {
     public static final String BATCH_FACTORY = "batchFactory";
     public static final String SINGLE_FACTORY = "singleFactory";
 
     @Autowired
-    private KafkaProperties kafkaProperties;
+    KafkaProperties kafkaProperties;
 
     @Bean
     public KafkaListenerContainerFactory<?> batchFactory() {

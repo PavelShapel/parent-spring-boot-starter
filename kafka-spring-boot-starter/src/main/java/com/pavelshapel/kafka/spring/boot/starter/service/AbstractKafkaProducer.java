@@ -1,6 +1,8 @@
 package com.pavelshapel.kafka.spring.boot.starter.service;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Dto;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -11,12 +13,13 @@ import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.WARNING;
 
 @Log
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AbstractKafkaProducer<T extends Dto<String>> implements KafkaProducer<T> {
     public static final String SENDING_SUCCESS = "sending.success";
     public static final String SENDING_FAIL = "sending.fail";
 
     @Autowired
-    private KafkaTemplate<String, T> kafkaTemplate;
+    KafkaTemplate<String, T> kafkaTemplate;
 
     @Override
     public ListenableFuture<SendResult<String, T>> send(String topic, T value) {

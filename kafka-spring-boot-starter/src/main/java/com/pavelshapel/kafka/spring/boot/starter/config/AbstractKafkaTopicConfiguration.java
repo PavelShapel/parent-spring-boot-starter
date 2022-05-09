@@ -1,6 +1,8 @@
 package com.pavelshapel.kafka.spring.boot.starter.config;
 
 import com.pavelshapel.kafka.spring.boot.starter.properties.KafkaProperties;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +19,12 @@ import java.util.Map;
 import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
 @EnableConfigurationProperties(KafkaProperties.class)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AbstractKafkaTopicConfiguration {
     @Autowired
-    private GenericApplicationContext context;
+    GenericApplicationContext context;
     @Autowired
-    private KafkaProperties kafkaProperties;
+    KafkaProperties kafkaProperties;
 
     @PostConstruct
     private void postConstruct() {
