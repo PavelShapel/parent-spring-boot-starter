@@ -4,20 +4,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pavelshapel.json.spring.boot.starter.converter.JsonConverter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import java.util.Map;
 import java.util.Optional;
 
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequiredArgsConstructor
 public class JacksonJsonConverter implements JsonConverter {
-    private final ObjectMapper objectMapper;
-
-    @Autowired
-    public JacksonJsonConverter(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+    ObjectMapper objectMapper;
 
     @Override
     public <P> String pojoToJson(P pojo) {
