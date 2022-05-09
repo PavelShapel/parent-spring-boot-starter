@@ -6,8 +6,8 @@ import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyS
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import org.springframework.context.annotation.Bean;
 
-public abstract class AbstractS3AwsConfig extends AbstractAwsConfig<AmazonS3ClientBuilder, AmazonS3> {
-    protected AbstractS3AwsConfig(AwsProperties awsProperties) {
+public abstract class AbstractS3AwsConfiguration extends AbstractAwsConfiguration<AmazonS3ClientBuilder, AmazonS3> {
+    protected AbstractS3AwsConfiguration(AwsProperties awsProperties) {
         super(awsProperties, awsProperties.getS3(), AmazonS3ClientBuilder.standard());
     }
 

@@ -9,8 +9,8 @@ import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
-public abstract class AbstractDynamoDbAwsConfig extends AbstractAwsConfig<AmazonDynamoDBClientBuilder, AmazonDynamoDB> {
-    protected AbstractDynamoDbAwsConfig(AwsProperties awsProperties) {
+public abstract class AbstractDynamoDbAwsConfiguration extends AbstractAwsConfiguration<AmazonDynamoDBClientBuilder, AmazonDynamoDB> {
+    protected AbstractDynamoDbAwsConfiguration(AwsProperties awsProperties) {
         super(awsProperties, awsProperties.getDynamoDb(), AmazonDynamoDBClientBuilder.standard());
     }
 

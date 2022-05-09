@@ -21,7 +21,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @Getter(AccessLevel.PROTECTED)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public abstract class AbstractAwsConfig<S extends AwsSyncClientBuilder, T> {
+public abstract class AbstractAwsConfiguration<S extends AwsSyncClientBuilder, T> {
     final AwsProperties awsProperties;
     final AbstractServiceProperties serviceProperties;
     final AwsSyncClientBuilder<S, T> clientBuilder;

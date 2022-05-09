@@ -6,8 +6,8 @@ import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyL
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import org.springframework.context.annotation.Bean;
 
-public abstract class AbstractLambdaAwsConfig extends AbstractAwsConfig<AWSLambdaClientBuilder, AWSLambda> {
-    protected AbstractLambdaAwsConfig(AwsProperties awsProperties) {
+public abstract class AbstractLambdaAwsConfiguration extends AbstractAwsConfiguration<AWSLambdaClientBuilder, AWSLambda> {
+    protected AbstractLambdaAwsConfiguration(AwsProperties awsProperties) {
         super(awsProperties, awsProperties.getLambda(), AWSLambdaClientBuilder.standard());
     }
 
