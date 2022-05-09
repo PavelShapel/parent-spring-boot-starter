@@ -6,10 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.pavelshapel.json.spring.boot.starter.converter.JsonConverter;
 import com.pavelshapel.json.spring.boot.starter.converter.jackson.JacksonJsonConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 import java.text.SimpleDateFormat;
 
@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 public class JsonStarterAutoConfiguration {
     public static final String TYPE = "json";
     public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String CUSTOM_OBJECT_MAPPER = "customObjectMapper";
 
     @Bean
     public JsonContextRefreshedListener jsonContextRefreshedListener() {
@@ -25,13 +26,12 @@ public class JsonStarterAutoConfiguration {
 
     @Bean
     @ConditionalOnClass(ObjectMapper.class)
-    public JsonConverter jacksonJsonConverter(ObjectMapper objectMapper) {
-        return new JacksonJsonConverter(objectMapper);
+    public JsonConverter jacksonJsonConverter(@Qualifier(CUSTOM_OBJECT_MAPPER) ObjectMapper customObjectMapper) {
+        return new JacksonJsonConverter(customObjectMapper);
     }
 
-    @Primary
     @Bean
-    public ObjectMapper objectMapper() {
+    public ObjectMapper customObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);

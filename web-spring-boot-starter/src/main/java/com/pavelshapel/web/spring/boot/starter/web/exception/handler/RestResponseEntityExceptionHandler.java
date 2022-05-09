@@ -4,6 +4,7 @@ import com.pavelshapel.web.spring.boot.starter.web.exception.ErrorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -12,7 +13,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.persistence.EntityNotFoundException;
 
-@SuppressWarnings("NullableProblems")
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -28,7 +28,8 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @Override
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<Object> handleExceptionInternal(Exception exception, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    @NonNull
+    protected ResponseEntity<Object> handleExceptionInternal(@NonNull Exception exception, Object body,@NonNull HttpHeaders headers,@NonNull HttpStatus status,@NonNull WebRequest request) {
         return createErrorResponseEntity(exception, headers, HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
