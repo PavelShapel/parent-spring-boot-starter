@@ -20,7 +20,7 @@ import java.util.Map;
 
 @EnableKafka
 @EnableConfigurationProperties(KafkaProperties.class)
-public abstract class AbstractKafkaConsumerConfig<T extends Dto<String>> {
+public abstract class AbstractKafkaConsumerConfiguration<T extends Dto<String>> {
     public static final String BATCH_FACTORY = "batchFactory";
     public static final String SINGLE_FACTORY = "singleFactory";
 

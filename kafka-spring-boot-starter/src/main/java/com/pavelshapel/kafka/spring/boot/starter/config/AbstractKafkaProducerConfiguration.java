@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @EnableConfigurationProperties(KafkaProperties.class)
-public abstract class AbstractKafkaProducerConfig<T extends Dto<String>> {
+public abstract class AbstractKafkaProducerConfiguration<T extends Dto<String>> {
     @Autowired
     private KafkaProperties kafkaProperties;
 

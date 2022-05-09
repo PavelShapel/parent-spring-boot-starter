@@ -17,7 +17,7 @@ import java.util.Map;
 import static org.apache.commons.lang3.StringUtils.uncapitalize;
 
 @EnableConfigurationProperties(KafkaProperties.class)
-public abstract class AbstractKafkaTopicConfig {
+public abstract class AbstractKafkaTopicConfiguration {
     @Autowired
     private GenericApplicationContext context;
     @Autowired

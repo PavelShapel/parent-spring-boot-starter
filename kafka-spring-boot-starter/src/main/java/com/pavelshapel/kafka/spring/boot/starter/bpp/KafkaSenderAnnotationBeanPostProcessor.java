@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.lang.NonNull;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -21,7 +22,7 @@ public class KafkaSenderAnnotationBeanPostProcessor implements BeanPostProcessor
     KafkaProducer<Dto<String>> kafkaProducer;
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
         List<Method> methods = Arrays.stream(bean.getClass().getDeclaredMethods())
                 .filter(this::isAnnotationKafkaSenderPresent)
                 .collect(Collectors.toList());
@@ -36,7 +37,7 @@ public class KafkaSenderAnnotationBeanPostProcessor implements BeanPostProcessor
     }
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) {
+    public Object postProcessAfterInitialization(@NonNull Object bean, @NonNull String beanName) {
         return Optional.ofNullable(kafkaSenderBeans.get(beanName))
                 .map(methods -> createProxyInstance(bean, methods))
                 .orElse(bean);
