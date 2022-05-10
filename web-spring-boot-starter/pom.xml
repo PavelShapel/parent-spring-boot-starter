@@ -14,10 +14,6 @@
     <artifactId>web-spring-boot-starter</artifactId>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-webflux</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.pavelshapel</groupId>
             <artifactId>json-spring-boot-starter</artifactId>

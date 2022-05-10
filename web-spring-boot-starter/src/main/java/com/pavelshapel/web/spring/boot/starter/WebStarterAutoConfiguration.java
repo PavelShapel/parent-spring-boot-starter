@@ -10,8 +10,6 @@ import com.pavelshapel.web.spring.boot.starter.html.element.simple.TagHtml;
 import com.pavelshapel.web.spring.boot.starter.html.element.table.TableHtml;
 import com.pavelshapel.web.spring.boot.starter.html.element.template.TemplateHtml;
 import com.pavelshapel.web.spring.boot.starter.html.factory.impl.*;
-import com.pavelshapel.web.spring.boot.starter.properties.WebClientProperties;
-import com.pavelshapel.web.spring.boot.starter.properties.WebProperties;
 import com.pavelshapel.web.spring.boot.starter.web.exception.handler.RestResponseEntityExceptionHandler;
 import com.pavelshapel.web.spring.boot.starter.wrapper.TypedResponseWrapperRestControllerAdvice;
 import lombok.AccessLevel;
@@ -25,15 +23,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static com.pavelshapel.json.spring.boot.starter.JsonStarterAutoConfiguration.CUSTOM_OBJECT_MAPPER;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Configuration
@@ -73,49 +68,6 @@ public class WebStarterAutoConfiguration implements WebMvcConfigurer {
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setObjectMapper(customObjectMapper);
         return converter;
-    }
-
-    @Bean
-    public WebProperties webProperties() {
-        return new WebProperties();
-    }
-
-//    @Bean
-//    public WebClient webClient(WebProperties webProperties) {
-//        int timeout = getTimeout(webProperties);
-//        String baseUrl = getBaseUrl(webProperties);
-//        HttpClient httpClient = createHttpClient(timeout);
-//        return WebClient.builder()
-//                .baseUrl(baseUrl)
-//                .clientConnector(new ReactorClientHttpConnector(httpClient))
-//                .build();
-//    }
-//
-//    private HttpClient createHttpClient(int timeout) {
-//        return HttpClient
-//                .create()
-//                .option(CONNECT_TIMEOUT_MILLIS, timeout)
-//                .responseTimeout(ofMillis(timeout))
-//                .doOnConnected(connection -> {
-//                    connection.addHandlerLast(new ReadTimeoutHandler(timeout, MILLISECONDS));
-//                    connection.addHandlerLast(new WriteTimeoutHandler(timeout, MILLISECONDS));
-//                });
-//    }
-
-    private int getTimeout(WebProperties webProperties) {
-        return Optional.ofNullable(webProperties)
-                .map(WebProperties::getWebClient)
-                .map(WebClientProperties::getTimeout)
-                .filter(timeout -> timeout >= 0)
-                .orElse(0);
-    }
-
-    private String getBaseUrl(WebProperties webProperties) {
-        return Optional.ofNullable(webProperties)
-                .map(WebProperties::getWebClient)
-                .map(WebClientProperties::getBaseUrl)
-                .filter(StringUtils::hasLength)
-                .orElse(EMPTY);
     }
 
     //html
