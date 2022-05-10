@@ -2,7 +2,6 @@ package com.pavelshapel.web.spring.boot.starter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
-import com.pavelshapel.web.spring.boot.starter.annotation.ConditionalOnPropertyWebClient;
 import com.pavelshapel.web.spring.boot.starter.html.constant.TagId;
 import com.pavelshapel.web.spring.boot.starter.html.element.Html;
 import com.pavelshapel.web.spring.boot.starter.html.element.simple.AttributeHtml;
@@ -11,37 +10,30 @@ import com.pavelshapel.web.spring.boot.starter.html.element.simple.TagHtml;
 import com.pavelshapel.web.spring.boot.starter.html.element.table.TableHtml;
 import com.pavelshapel.web.spring.boot.starter.html.element.template.TemplateHtml;
 import com.pavelshapel.web.spring.boot.starter.html.factory.impl.*;
+import com.pavelshapel.web.spring.boot.starter.properties.WebClientProperties;
 import com.pavelshapel.web.spring.boot.starter.properties.WebProperties;
 import com.pavelshapel.web.spring.boot.starter.web.exception.handler.RestResponseEntityExceptionHandler;
 import com.pavelshapel.web.spring.boot.starter.wrapper.TypedResponseWrapperRestControllerAdvice;
-import io.netty.handler.timeout.ReadTimeoutHandler;
-import io.netty.handler.timeout.WriteTimeoutHandler;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import reactor.netty.http.client.HttpClient;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.pavelshapel.json.spring.boot.starter.JsonStarterAutoConfiguration.CUSTOM_OBJECT_MAPPER;
-import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
-import static java.time.Duration.ofMillis;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Configuration
@@ -54,10 +46,6 @@ public class WebStarterAutoConfiguration implements WebMvcConfigurer {
     @Autowired
     @Qualifier(CUSTOM_OBJECT_MAPPER)
     ObjectMapper customObjectMapper;
-    @Value("${spring.application.name:[spring.application.name] property not set}")
-    String applicationName;
-    @Value("${spring.application.description:[spring.application.description] property not set}")
-    String applicationDescription;
 
     @Bean
     public WebContextRefreshedListener webContextRefreshedListener() {
@@ -87,38 +75,47 @@ public class WebStarterAutoConfiguration implements WebMvcConfigurer {
         return converter;
     }
 
-    //swagger
-    @Bean
-    public OpenAPI openApi() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title(applicationName)
-                        .description(applicationDescription));
-    }
-
     @Bean
     public WebProperties webProperties() {
         return new WebProperties();
     }
 
-    @Bean
-    @ConditionalOnPropertyWebClient
-    public WebClient webClient(WebProperties webProperties) {
-        Integer timeout = webProperties.getWebClient().getTimeout();
-        String baseUrl = webProperties.getWebClient().getBaseUrl();
-        HttpClient httpClient = HttpClient
-                .create()
-                .option(CONNECT_TIMEOUT_MILLIS, timeout)
-                .responseTimeout(ofMillis(timeout))
-                .doOnConnected(connection -> {
-                    connection.addHandlerLast(new ReadTimeoutHandler(timeout, MILLISECONDS));
-                    connection.addHandlerLast(new WriteTimeoutHandler(timeout, MILLISECONDS));
-                });
+//    @Bean
+//    public WebClient webClient(WebProperties webProperties) {
+//        int timeout = getTimeout(webProperties);
+//        String baseUrl = getBaseUrl(webProperties);
+//        HttpClient httpClient = createHttpClient(timeout);
+//        return WebClient.builder()
+//                .baseUrl(baseUrl)
+//                .clientConnector(new ReactorClientHttpConnector(httpClient))
+//                .build();
+//    }
+//
+//    private HttpClient createHttpClient(int timeout) {
+//        return HttpClient
+//                .create()
+//                .option(CONNECT_TIMEOUT_MILLIS, timeout)
+//                .responseTimeout(ofMillis(timeout))
+//                .doOnConnected(connection -> {
+//                    connection.addHandlerLast(new ReadTimeoutHandler(timeout, MILLISECONDS));
+//                    connection.addHandlerLast(new WriteTimeoutHandler(timeout, MILLISECONDS));
+//                });
+//    }
 
-        return WebClient.builder()
-                .baseUrl(baseUrl)
-                .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .build();
+    private int getTimeout(WebProperties webProperties) {
+        return Optional.ofNullable(webProperties)
+                .map(WebProperties::getWebClient)
+                .map(WebClientProperties::getTimeout)
+                .filter(timeout -> timeout >= 0)
+                .orElse(0);
+    }
+
+    private String getBaseUrl(WebProperties webProperties) {
+        return Optional.ofNullable(webProperties)
+                .map(WebProperties::getWebClient)
+                .map(WebClientProperties::getBaseUrl)
+                .filter(StringUtils::hasLength)
+                .orElse(EMPTY);
     }
 
     //html
