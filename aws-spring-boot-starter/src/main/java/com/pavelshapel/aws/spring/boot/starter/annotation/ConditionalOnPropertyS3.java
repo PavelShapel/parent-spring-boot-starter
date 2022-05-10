@@ -11,7 +11,7 @@ import static com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties.P
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Documented
 @Inherited
-@ConditionalOnProperty(prefix = PREFIX, name = S3 + ".name", havingValue = S3)
+@ConditionalOnProperty(prefix = PREFIX, name = S3 + ".enabled", havingValue = "true")
 public @interface ConditionalOnPropertyS3 {
     String S3 = "s3";
 }

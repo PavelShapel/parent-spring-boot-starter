@@ -18,6 +18,7 @@ import static com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties.P
 public class AwsProperties {
     public static final String PREFIX = "spring." + TYPE;
     public static final String DEFAULT_REGION = Regions.EU_WEST_1.getName();
+    public static final String SERVICE_ENDPOINT_PATTERN = "https://%s." + DEFAULT_REGION + ".amazonaws.com/";
 
     String profile;
     String accessKey;

@@ -11,7 +11,7 @@ import static com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties.P
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Documented
 @Inherited
-@ConditionalOnProperty(prefix = PREFIX, name = DYNAMO_DB + ".name", havingValue = DYNAMO_DB)
+@ConditionalOnProperty(prefix = PREFIX, name = DYNAMO_DB + ".enabled", havingValue = "true")
 public @interface ConditionalOnPropertyDynamoDb {
     String DYNAMO_DB = "dynamodb";
 }

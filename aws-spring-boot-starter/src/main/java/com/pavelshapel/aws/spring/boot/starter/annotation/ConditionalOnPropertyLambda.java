@@ -11,7 +11,7 @@ import static com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties.P
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Documented
 @Inherited
-@ConditionalOnProperty(prefix = PREFIX, name = LAMBDA + ".name", havingValue = LAMBDA)
+@ConditionalOnProperty(prefix = PREFIX, name = LAMBDA + ".enabled", havingValue = "true")
 public @interface ConditionalOnPropertyLambda {
     String LAMBDA = "lambda";
 }

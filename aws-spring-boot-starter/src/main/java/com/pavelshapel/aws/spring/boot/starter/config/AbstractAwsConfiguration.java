@@ -15,7 +15,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.Optional;
 
-import static com.pavelshapel.aws.spring.boot.starter.properties.nested.AbstractServiceProperties.SERVICE_ENDPOINT_PATTERN;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 @Getter(AccessLevel.PROTECTED)
@@ -52,14 +51,12 @@ public abstract class AbstractAwsConfiguration<S extends AwsSyncClientBuilder, T
 
     private T buildClientWithCredentials() {
         return (T) clientBuilder
-                .withRegion(awsProperties.getRegion())
                 .withCredentials(awsCredentialsProvider())
                 .withEndpointConfiguration(createEndpointConfiguration())
                 .build();
     }
 
     private AwsClientBuilder.EndpointConfiguration createEndpointConfiguration() {
-        String serviceEndpoint = String.format(SERVICE_ENDPOINT_PATTERN, serviceProperties.getName(), awsProperties.getRegion());
-        return new AwsClientBuilder.EndpointConfiguration(serviceEndpoint, awsProperties.getRegion());
+        return new AwsClientBuilder.EndpointConfiguration(serviceProperties.getEndpoint(), awsProperties.getRegion());
     }
 }
