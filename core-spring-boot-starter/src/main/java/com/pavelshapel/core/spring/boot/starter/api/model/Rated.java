@@ -5,7 +5,8 @@ import java.time.LocalDate;
 public interface Rated {
     String DATE_FIELD = "date";
     String ABBREVIATION_FIELD = "abbreviation";
-    String VOLUME_FIELD = "volume";
+    String AMOUNT_FIELD = "amount";
+    String PRECISION_FIELD = "precision";
 
     LocalDate getDate();
 
@@ -15,7 +16,11 @@ public interface Rated {
 
     void setAbbreviation(String abbreviation);
 
-    Double getVolume();
+    double getAmount();
 
-    void setVolume(Double volume);
+    void setAmount(double amount);
+
+    int getPrecision();
+
+    void setPrecision(int precision);
 }

@@ -10,7 +10,8 @@ import java.time.LocalDate;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RatedDto implements Rated {
-    LocalDate date;
+    LocalDate date = LocalDate.now();
     String abbreviation;
-    Double volume;
+    double amount = 1.0;
+    int precision = 2;
 }
