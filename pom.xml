@@ -15,7 +15,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <testcontainers.version>1.16.3</testcontainers.version>
-        <springdoc.version>1.6.6</springdoc.version>
+        <springdoc.version>1.6.8</springdoc.version>
         <amazonaws.version>1.12.213</amazonaws.version>
         <derjust.version>5.1.0</derjust.version>
         <aws-lambda-java-events.version>3.11.0</aws-lambda-java-events.version>
@@ -38,6 +38,7 @@
         <module>cache-spring-boot-starter</module>
         <module>kafka-spring-boot-starter</module>
         <module>aws-spring-boot-starter</module>
+        <module>webflux-spring-boot-starter</module>
     </modules>
 
     <dependencyManagement>

@@ -1,4 +1,4 @@
-package com.pavelshapel.web.spring.boot.starter.properties;
+package com.pavelshapel.webflux.spring.boot.starter.properties;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -8,5 +8,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WebClientProperties {
     String baseUrl;
-    Integer timeout = 1000;
+    int timeout = 1000;
+    Boolean enabled;
 }
