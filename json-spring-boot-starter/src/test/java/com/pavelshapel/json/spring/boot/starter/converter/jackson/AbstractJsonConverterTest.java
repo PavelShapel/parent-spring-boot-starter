@@ -1,6 +1,8 @@
 package com.pavelshapel.json.spring.boot.starter.converter.jackson;
 
 import com.pavelshapel.json.spring.boot.starter.converter.JsonConverter;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
@@ -11,13 +13,16 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 abstract class AbstractJsonConverterTest {
     private static final String ID = "id";
     private static final String NAME = "name";
@@ -28,9 +33,8 @@ abstract class AbstractJsonConverterTest {
 
     private final JsonConverter jsonConverter;
 
-    protected AbstractJsonConverterTest(JsonConverter jsonConverter) {
-        this.jsonConverter = jsonConverter;
-    }
+    @TempDir
+    Path tempDir;
 
     @Test
     void pojoToJson_ValidPojoAsParam_ShouldReturnJson() {
@@ -175,7 +179,7 @@ abstract class AbstractJsonConverterTest {
 
     @SneakyThrows
     @Test
-    void inputStreamToPojo_WithValidParams_ShouldReturnResult(@TempDir Path tempDir) {
+    void inputStreamToPojo_WithValidParams_ShouldReturnResult() {
         Path templatePath = tempDir.resolve(SOURCE_JSON);
         Files.write(templatePath, singleton(JSON_POJO));
 
@@ -188,12 +192,41 @@ abstract class AbstractJsonConverterTest {
 
     @SneakyThrows
     @Test
-    void inputStreamToPojo_NullClassAsParam_ShouldThrowException(@TempDir Path tempDir) {
+    void inputStreamToPojo_NullClassAsParam_ShouldThrowException() {
         Path templatePath = tempDir.resolve(SOURCE_JSON);
         Files.write(templatePath, singleton(JSON_POJO));
 
         try (InputStream inputStream = Files.newInputStream(templatePath)) {
             assertThatThrownBy(() -> jsonConverter.inputStreamToPojo(inputStream, null))
+                    .isInstanceOf(JsonConverterException.class);
+        }
+    }
+
+    @SneakyThrows
+    @Test
+    void inputStreamToPojos_WithValidParams_ShouldReturnResult() {
+        JsonTester testPojo = createTestPojo();
+        Path templatePath = tempDir.resolve(SOURCE_JSON);
+        Files.write(templatePath, singleton(jsonConverter.pojoToJson(Arrays.asList(testPojo, testPojo))));
+
+        try (InputStream inputStream = Files.newInputStream(templatePath)) {
+            List<JsonTester> result = jsonConverter.inputStreamToPojos(inputStream, JsonTester[].class);
+
+            assertThat(result)
+                    .asList()
+                    .hasSize(2);
+        }
+    }
+
+    @SneakyThrows
+    @Test
+    void inputStreamToPojos_NullClassAsParam_ShouldThrowException() {
+        JsonTester testPojo = createTestPojo();
+        Path templatePath = tempDir.resolve(SOURCE_JSON);
+        Files.write(templatePath, singleton(jsonConverter.pojoToJson(Arrays.asList(testPojo, testPojo))));
+
+        try (InputStream inputStream = Files.newInputStream(templatePath)) {
+            assertThatThrownBy(() -> jsonConverter.inputStreamToPojos(inputStream, null))
                     .isInstanceOf(JsonConverterException.class);
         }
     }

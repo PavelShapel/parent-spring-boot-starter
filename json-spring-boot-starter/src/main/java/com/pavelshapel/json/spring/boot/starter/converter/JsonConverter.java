@@ -1,6 +1,7 @@
 package com.pavelshapel.json.spring.boot.starter.converter;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 public interface JsonConverter {
@@ -9,6 +10,8 @@ public interface JsonConverter {
     <P> P jsonToPojo(String json, Class<P> targetClass);
 
     <P> P inputStreamToPojo(InputStream inputStream, Class<P> targetClass);
+
+    <P> List<P> inputStreamToPojos(InputStream inputStream, Class<P[]> targetClass);
 
     <P, M> Map<String, M> pojoToMap(P pojo);
 

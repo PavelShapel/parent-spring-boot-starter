@@ -11,6 +11,8 @@ import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -44,6 +46,15 @@ public class JacksonJsonConverter implements JsonConverter {
     public <P> P inputStreamToPojo(InputStream inputStream, Class<P> targetClass) {
         try {
             return customObjectMapper.readValue(inputStream, targetClass);
+        } catch (Exception exception) {
+            throw new JsonConverterException(exception, buildInputStreamMessage(inputStream), buildClassMessage(targetClass));
+        }
+    }
+
+    @Override
+    public <P> List<P> inputStreamToPojos(InputStream inputStream, Class<P[]> targetClass) {
+        try {
+            return Arrays.asList(customObjectMapper.readValue(inputStream, targetClass));
         } catch (Exception exception) {
             throw new JsonConverterException(exception, buildInputStreamMessage(inputStream), buildClassMessage(targetClass));
         }
