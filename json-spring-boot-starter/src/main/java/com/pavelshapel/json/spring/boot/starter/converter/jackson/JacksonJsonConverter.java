@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
 
@@ -36,6 +37,15 @@ public class JacksonJsonConverter implements JsonConverter {
             return customObjectMapper.readValue(json, targetClass);
         } catch (Exception exception) {
             throw new JsonConverterException(exception, buildJsonMessage(json), buildClassMessage(targetClass));
+        }
+    }
+
+    @Override
+    public <P> P inputStreamToPojo(InputStream inputStream, Class<P> targetClass) {
+        try {
+            return customObjectMapper.readValue(inputStream, targetClass);
+        } catch (Exception exception) {
+            throw new JsonConverterException(exception, buildInputStreamMessage(inputStream), buildClassMessage(targetClass));
         }
     }
 
@@ -110,6 +120,10 @@ public class JacksonJsonConverter implements JsonConverter {
 
     private String buildJsonMessage(Object object) {
         return buildArgumentPattern("json", object);
+    }
+
+    private String buildInputStreamMessage(Object object) {
+        return buildArgumentPattern("inputStream", object);
     }
 
     private String buildMapMessage(Object object) {

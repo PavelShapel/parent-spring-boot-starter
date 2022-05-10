@@ -1,11 +1,14 @@
 package com.pavelshapel.json.spring.boot.starter.converter;
 
+import java.io.InputStream;
 import java.util.Map;
 
 public interface JsonConverter {
     <P> String pojoToJson(P pojo);
 
     <P> P jsonToPojo(String json, Class<P> targetClass);
+
+    <P> P inputStreamToPojo(InputStream inputStream, Class<P> targetClass);
 
     <P, M> Map<String, M> pojoToMap(P pojo);
 
