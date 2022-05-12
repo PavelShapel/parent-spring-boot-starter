@@ -1,16 +1,12 @@
 package com.pavelshapel.aws.spring.boot.starter.impl.util;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.VersionListing;
-import com.amazonaws.services.s3.model.ListVersionsRequest;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.model.*;
 import com.pavelshapel.aop.spring.boot.starter.log.method.Loggable;
-import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
-import com.pavelshapel.aws.spring.boot.starter.properties.nested.S3ServiceProperties;
 import com.pavelshapel.aws.spring.boot.starter.api.util.BucketHandler;
+import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
+import com.pavelshapel.aws.spring.boot.starter.properties.nested.AbstractServiceProperties;
+import com.pavelshapel.aws.spring.boot.starter.properties.nested.S3ServiceProperties;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +31,7 @@ public class S3BucketHandler implements BucketHandler {
     private void postConstruct() {
         Optional.ofNullable(awsProperties)
                 .map(AwsProperties::getS3)
+                .filter(AbstractServiceProperties::getEnabled)
                 .map(S3ServiceProperties::getObject)
                 .ifPresent(this::createBucketIfNotExists);
     }

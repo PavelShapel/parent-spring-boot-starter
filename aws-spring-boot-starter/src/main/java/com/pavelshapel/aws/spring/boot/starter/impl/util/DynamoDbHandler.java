@@ -8,6 +8,7 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.pavelshapel.aop.spring.boot.starter.log.method.Loggable;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
+import com.pavelshapel.aws.spring.boot.starter.properties.nested.AbstractServiceProperties;
 import com.pavelshapel.aws.spring.boot.starter.properties.nested.DynamoDbServiceProperties;
 import com.pavelshapel.aws.spring.boot.starter.api.util.DbHandler;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
@@ -39,6 +40,7 @@ public class DynamoDbHandler implements DbHandler {
     private void postConstruct() {
         Optional.ofNullable(awsProperties)
                 .map(AwsProperties::getDynamoDb)
+                .filter(AbstractServiceProperties::getEnabled)
                 .map(DynamoDbServiceProperties::getObject)
                 .ifPresent(this::createDefaultTableIfNotExists);
     }
