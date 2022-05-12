@@ -31,6 +31,7 @@ import static org.apache.logging.log4j.util.Strings.EMPTY;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WebFluxStarterAutoConfiguration {
     public static final String TYPE = "webflux";
+    public static final int DEFAULT_TIMEOUT = 1000;
 
     @Bean
     public WebFluxContextRefreshedListener webFluxContextRefreshedListener() {
@@ -80,7 +81,7 @@ public class WebFluxStarterAutoConfiguration {
                 .map(WebFluxProperties::getWebClient)
                 .map(WebClientProperties::getTimeout)
                 .filter(timeout -> timeout >= 0)
-                .orElse(0);
+                .orElse(DEFAULT_TIMEOUT);
     }
 
     private String getBaseUrl(WebFluxProperties webFluxProperties) {
