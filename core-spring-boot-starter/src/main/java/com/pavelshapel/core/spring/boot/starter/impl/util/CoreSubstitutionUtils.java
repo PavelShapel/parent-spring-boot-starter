@@ -7,8 +7,8 @@ import org.apache.commons.text.StringSubstitutor;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 
@@ -17,12 +17,10 @@ public class CoreSubstitutionUtils implements SubstitutionUtils {
 
     @Override
     public String replace(InputStream source, SubstitutionProperties properties) {
-        Optional<String> template = Optional.ofNullable(source)
-                .map(InputStreamReader::new)
-                .map(BufferedReader::new)
-                .map(BufferedReader::lines)
-                .map(stream -> stream.collect(Collectors.joining(System.lineSeparator())));
-        return replace(template.orElse(null), properties);
+        try (Stream<String> lines = new BufferedReader(new InputStreamReader(source)).lines()) {
+            String template = lines.collect(Collectors.joining(System.lineSeparator()));
+            return replace(template, properties);
+        }
     }
 
     @Override
