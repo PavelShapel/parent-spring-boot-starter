@@ -19,9 +19,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -35,6 +37,7 @@ public abstract class AbstractDaoRestController<ID, E extends Entity<ID>, D exte
     public static final String PARENTAGE_PATH = ID_PATH + "/parentage";
     public static final String FORM_PATH = ID_PATH + "/form";
     public static final String TABLE_PATH = "/table" + EMPTY;
+    public static final String BULK_PATH = "/bulk" + EMPTY;
 
     private final DaoService<ID, E> daoService;
     private final FromDtoConverter<ID, D, E> fromDtoConverter;
@@ -45,15 +48,48 @@ public abstract class AbstractDaoRestController<ID, E extends Entity<ID>, D exte
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<D> save(@RequestBody @Valid D dto) {
-        dto = fromDtoConverter
+        D responseDto = fromDtoConverter
                 .andThen(daoService::save)
                 .andThen(toDtoConverter)
                 .convert(dto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path(ID_PATH)
-                .buildAndExpand(dto.getId()).toUri();
-        return ResponseEntity.created(location).body(dto);
+                .buildAndExpand(Optional.ofNullable(responseDto).map(Dto::getId).orElse(null)).toUri();
+        return ResponseEntity.created(location).body(responseDto);
+    }
+
+    @PostMapping(path = BULK_PATH, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<D>> saveAll(@RequestBody @Valid List<D> dtos) {
+        List<D> responseDtos = ((Converter<List<D>, List<E>>) this::fromDtoListConverter)
+                .andThen(daoService::saveAll)
+                .andThen(this::toDtoListConverter)
+                .convert(dtos);
+        List<ID> responseIds = getIds(responseDtos);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path(ID_PATH)
+                .buildAndExpand(responseIds).toUri();
+        return ResponseEntity.created(location).body(responseDtos);
+    }
+
+    private List<ID> getIds(List<D> responseDtos) {
+        return Optional.ofNullable(responseDtos)
+                .orElseGet(Collections::emptyList).stream()
+                .map(Dto::getId)
+                .collect(Collectors.toList());
+    }
+
+    private List<E> fromDtoListConverter(List<D> dtos) {
+        return dtos.stream()
+                .map(fromDtoConverter::convert)
+                .collect(Collectors.toList());
+    }
+
+    private List<D> toDtoListConverter(List<E> entities) {
+        return entities.stream()
+                .map(toDtoConverter::convert)
+                .collect(Collectors.toList());
     }
 
     @PutMapping(path = ID_PATH, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
