@@ -82,31 +82,26 @@ public class WebStarterAutoConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    @Scope
     public AttributeHtmlFactory attributeHtmlFactory() {
         return new AttributeHtmlFactory();
     }
 
     @Bean
-    @Scope
     public TagHtmlFactory tagHtmlFactory() {
         return new TagHtmlFactory();
     }
 
     @Bean
-    @Scope
     public StringHtmlFactory stringHtmlFactory() {
         return new StringHtmlFactory();
     }
 
     @Bean
-    @Scope
     public TemplateHtmlFactory templateHtmlFactory() {
         return new TemplateHtmlFactory();
     }
 
     @Bean
-    @Scope
     public TableHtmlFactory tableHtmlFactory() {
         return new TableHtmlFactory();
     }

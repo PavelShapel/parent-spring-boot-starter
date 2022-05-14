@@ -7,7 +7,7 @@ import com.pavelshapel.core.spring.boot.starter.api.model.Dto;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
-import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriteria;
+import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriterion;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -60,7 +59,7 @@ public abstract class AbstractDaoRestController<ID, E extends Entity<ID>, D exte
     }
 
     @PostMapping(path = BULK_PATH, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<D>> saveAll(@RequestBody @Valid List<D> dtos) {
+    public ResponseEntity<List<D>> saveAll(@RequestBody List<@Valid D> dtos) {
         List<D> responseDtos = ((Converter<List<D>, List<E>>) this::fromDtoListConverter)
                 .andThen(daoService::saveAll)
                 .andThen(this::toDtoListConverter)
@@ -93,7 +92,8 @@ public abstract class AbstractDaoRestController<ID, E extends Entity<ID>, D exte
     }
 
     @PutMapping(path = ID_PATH, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<D> update(@PathVariable ID id, @RequestBody @Valid D dto) {
+    public ResponseEntity<D> update(@PathVariable ID id,
+                                    @RequestBody @Valid D dto) {
         return fromDtoConverter
                 .andThen(entity -> daoService.update(id, entity))
                 .andThen(toDtoConverter)
@@ -111,11 +111,8 @@ public abstract class AbstractDaoRestController<ID, E extends Entity<ID>, D exte
     }
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<D>> findAll(@Valid SearchCriteria searchCriteria) {
+    public ResponseEntity<List<D>> findAll(List<@Valid SearchCriterion> searchCriteria) {
         return Optional.ofNullable(searchCriteria)
-                .filter(criteria -> Objects.nonNull(criteria.getField()))
-                .filter(criteria -> Objects.nonNull(criteria.getValue()))
-                .filter(criteria -> Objects.nonNull(criteria.getOperation()))
                 .map(criteria -> daoService.findAll(searchCriteria))
                 .orElseGet(daoService::findAll)
                 .stream()
