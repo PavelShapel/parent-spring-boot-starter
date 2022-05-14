@@ -1,7 +1,9 @@
 package com.pavelshapel.core.spring.boot.starter.impl.web.search;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Setter;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 
@@ -10,15 +12,16 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-@Data
-public abstract class SearchSpecification<T extends Entity<?>> implements Specification<T> {
-    private transient SearchCriteria searchCriteria;
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Setter
+public abstract class AbstractSearchSpecification<T extends Entity<?>> implements Specification<T> {
+    transient SearchCriterion searchCriterion;
 
     @Override
     public Predicate toPredicate(@NonNull Root<T> root, @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder builder) {
-        String field = searchCriteria.getField();
-        Comparable value = searchCriteria.getCastedValue();
-        switch (searchCriteria.getOperation()) {
+        String field = searchCriterion.getField();
+        Comparable value = searchCriterion.getCastedValue();
+        switch (searchCriterion.getOperation()) {
             case EQUALS:
                 return builder.equal(root.get(field), value);
             case NOT_EQUALS:
@@ -42,7 +45,7 @@ public abstract class SearchSpecification<T extends Entity<?>> implements Specif
             case IS_NOT_NULL:
                 return builder.isNotNull(root.get(field));
             default:
-                throw new UnsupportedOperationException(String.format("search criteria operation [%s] not implemented", searchCriteria.getOperation()));
+                throw new UnsupportedOperationException(String.format("search criteria operation [%s] not implemented", searchCriterion.getOperation()));
         }
     }
 }

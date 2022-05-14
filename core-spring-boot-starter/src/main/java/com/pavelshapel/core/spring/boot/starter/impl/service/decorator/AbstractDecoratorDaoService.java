@@ -2,7 +2,7 @@ package com.pavelshapel.core.spring.boot.starter.impl.service.decorator;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
-import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriteria;
+import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriterion;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -66,7 +66,7 @@ public abstract class AbstractDecoratorDaoService<ID, T extends Entity<ID>> impl
     }
 
     @Override
-    public List<T> findAll(SearchCriteria searchCriteria) {
+    public List<T> findAll(List<SearchCriterion> searchCriteria) {
         return wrapped.findAll(searchCriteria);
     }
 

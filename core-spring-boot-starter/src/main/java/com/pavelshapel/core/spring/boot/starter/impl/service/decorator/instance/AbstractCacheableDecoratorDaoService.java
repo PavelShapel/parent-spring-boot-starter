@@ -51,30 +51,30 @@ public abstract class AbstractCacheableDecoratorDaoService<ID, T extends Entity<
         super.deleteAll();
     }
 
-    private String getCacheName() {
+    protected String getCacheName() {
         return getEntityClass().getSimpleName();
     }
 
-    private Cache getCache() {
+    protected Cache getCache() {
         String cacheName = getCacheName();
         return Optional.ofNullable(cacheManager.getCache(cacheName))
                 .orElseGet(() -> new ConcurrentMapCache(cacheName));
     }
 
-    private T putToCache(T entity) {
+    protected T putToCache(T entity) {
         getCache().put(entity.getId(), entity);
         return entity;
     }
 
-    private void evictFromCache(ID id) {
+    protected void evictFromCache(ID id) {
         getCache().evict(id);
     }
 
-    private void clearCache() {
+    protected void clearCache() {
         getCache().clear();
     }
 
-    private Optional<T> getFromCache(ID id) {
+    protected Optional<T> getFromCache(ID id) {
         return Optional.ofNullable(getCache().get(id, getEntityClass()));
     }
 }

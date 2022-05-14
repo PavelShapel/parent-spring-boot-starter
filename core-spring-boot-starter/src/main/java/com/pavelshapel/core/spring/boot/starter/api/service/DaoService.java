@@ -1,7 +1,7 @@
 package com.pavelshapel.core.spring.boot.starter.api.service;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
-import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriteria;
+import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriterion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -27,7 +27,7 @@ public interface DaoService<ID, T extends Entity<ID>> {
 
     Page<T> findAll(Pageable pageable);
 
-    List<T> findAll(SearchCriteria searchCriteria);
+    List<T> findAll(List<SearchCriterion> searchCriteria);
 
 
     void deleteById(ID id);

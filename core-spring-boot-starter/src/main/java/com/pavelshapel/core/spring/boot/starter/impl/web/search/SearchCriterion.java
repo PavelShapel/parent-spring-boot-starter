@@ -7,7 +7,7 @@ import org.springframework.data.util.Pair;
 import java.util.Optional;
 
 @Data
-public class SearchCriteria {
+public class SearchCriterion {
     public static final String SPLIT_REGEX = "[,.:;]";
 
     private String field;

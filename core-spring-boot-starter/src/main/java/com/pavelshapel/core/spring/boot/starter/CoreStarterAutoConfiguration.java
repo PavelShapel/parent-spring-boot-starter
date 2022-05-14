@@ -1,6 +1,7 @@
 package com.pavelshapel.core.spring.boot.starter;
 
 import com.pavelshapel.core.spring.boot.starter.api.util.*;
+import com.pavelshapel.core.spring.boot.starter.bpp.SearchSpecificationBeanFactoryPostProcessor;
 import com.pavelshapel.core.spring.boot.starter.bpp.SelfAutowiredAnnotationBeanPostProcessor;
 import com.pavelshapel.core.spring.boot.starter.api.annotation.AnnotationReplacer;
 import com.pavelshapel.core.spring.boot.starter.impl.annotation.ClassAnnotationReplacer;
@@ -44,7 +45,7 @@ public class CoreStarterAutoConfiguration {
     }
 
     @Bean
-    public SubstitutionUtils substitutionUtils(){
+    public SubstitutionUtils substitutionUtils() {
         return new CoreSubstitutionUtils();
     }
 
@@ -56,5 +57,10 @@ public class CoreStarterAutoConfiguration {
     @Bean
     public DecorateDaoServiceAnnotationBeanPostProcessor daoDecorateAnnotationBeanPostProcessor() {
         return new DecorateDaoServiceAnnotationBeanPostProcessor();
+    }
+
+    @Bean
+    public SearchSpecificationBeanFactoryPostProcessor searchSpecificationBeanFactoryPostProcessor() {
+        return new SearchSpecificationBeanFactoryPostProcessor();
     }
 }

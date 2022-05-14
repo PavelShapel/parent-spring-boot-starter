@@ -6,7 +6,7 @@ import com.pavelshapel.core.spring.boot.starter.api.repository.DaoRepository;
 import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
 import com.pavelshapel.core.spring.boot.starter.api.util.ClassUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
-import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriteria;
+import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriterion;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 import static org.springframework.util.ReflectionUtils.*;
@@ -80,21 +81,34 @@ public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements Da
     }
 
     @Override
-    public List<T> findAll(SearchCriteria searchCriteria) {
-        Comparable<?> value = searchCriteria.getCastedValue();
-        Predicate<Comparable<Object>> predicate = searchCriteria.getOperation().getFunction().apply(value);
-        return findAll().stream()
-                .filter(entity -> predicate.test(getFieldValue(entity, searchCriteria)))
+    public List<T> findAll(List<SearchCriterion> searchCriteria) {
+        Stream<T> stream = findAll().stream();
+        return filterStream(searchCriteria, stream)
                 .collect(Collectors.toList());
     }
 
-    private Comparable<Object> getFieldValue(T entity, SearchCriteria searchCriteria) {
-        Field field = findField(entity.getClass(), searchCriteria.getField());
+    private Stream<T> filterStream(List<SearchCriterion> searchCriteria, Stream<T> stream) {
+        for (SearchCriterion searchCriterion : searchCriteria) {
+            stream.filter(entity -> isApplicableEntity(entity, searchCriterion));
+        }
+        return stream;
+    }
+
+    private boolean isApplicableEntity(T entity, SearchCriterion searchCriterion) {
+        return getSearchCriterionPredicate(searchCriterion).test(getFieldValue(entity, searchCriterion));
+    }
+
+    private Predicate<Comparable<Object>> getSearchCriterionPredicate(SearchCriterion searchCriterion) {
+        return searchCriterion.getOperation().getFunction().apply(searchCriterion.getCastedValue());
+    }
+
+    private Comparable<Object> getFieldValue(T entity, SearchCriterion searchCriterion) {
+        Field field = findField(entity.getClass(), searchCriterion.getField());
         if (nonNull(field)) {
             makeAccessible(field);
             return ((Comparable<Object>) getField(field, entity));
         } else {
-            throw new IllegalArgumentException(searchCriteria.getField());
+            throw new IllegalArgumentException(searchCriterion.getField());
         }
     }
 

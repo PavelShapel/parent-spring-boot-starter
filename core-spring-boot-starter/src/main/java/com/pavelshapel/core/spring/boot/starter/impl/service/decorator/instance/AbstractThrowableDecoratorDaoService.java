@@ -3,7 +3,7 @@ package com.pavelshapel.core.spring.boot.starter.impl.service.decorator.instance
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity;
 import com.pavelshapel.core.spring.boot.starter.impl.service.decorator.AbstractDecoratorSpecificationDaoService;
-import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriteria;
+import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriterion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -62,7 +62,7 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
     }
 
     @Override
-    public List<T> findAll(SearchCriteria searchCriteria) {
+    public List<T> findAll(List<SearchCriterion> searchCriteria) {
         List<T> entities = super.findAll(searchCriteria);
         verifyCollection(entities);
         return entities;
@@ -153,10 +153,10 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
     }
 
     private boolean rootExists(ID id) {
-        SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setField(ParentalEntity.PARENT_FIELD);
-        searchCriteria.setOperation(IS_NULL);
-        return super.findAll(searchCriteria).stream()
+        SearchCriterion searchCriterion = new SearchCriterion();
+        searchCriterion.setField(ParentalEntity.PARENT_FIELD);
+        searchCriterion.setOperation(IS_NULL);
+        return super.findAll(singletonList(searchCriterion)).stream()
                 .findFirst()
                 .map(Entity::getId)
                 .map(rootId -> Objects.equals(id, rootId))
