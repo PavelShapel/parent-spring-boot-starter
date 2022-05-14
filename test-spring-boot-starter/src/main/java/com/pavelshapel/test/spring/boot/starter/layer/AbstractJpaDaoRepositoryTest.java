@@ -3,7 +3,7 @@ package com.pavelshapel.test.spring.boot.starter.layer;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.repository.DaoRepository;
 import com.pavelshapel.core.spring.boot.starter.api.repository.SpecificationDaoRepository;
-import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchSpecification;
+import com.pavelshapel.core.spring.boot.starter.impl.web.search.AbstractSearchSpecification;
 import com.pavelshapel.jpa.spring.boot.starter.JpaAuditingConfiguration;
 import com.pavelshapel.test.spring.boot.starter.container.PostgreSQLExtension;
 import lombok.AccessLevel;
@@ -27,7 +27,7 @@ public abstract class AbstractJpaDaoRepositoryTest<ID, T extends Entity<ID>> {
     @Autowired
     private DaoRepository<ID, T> daoRepository;
     @Autowired
-    private SearchSpecification<T> searchSpecification;
+    private AbstractSearchSpecification<T> searchSpecification;
     @Autowired
     private TestEntityManager testEntityManager;
 
