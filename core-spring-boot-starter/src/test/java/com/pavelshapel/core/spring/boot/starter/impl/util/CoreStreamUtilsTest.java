@@ -8,26 +8,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(classes = {CoreStarterAutoConfiguration.class})
 class CoreStreamUtilsTest {
     public static final String COLLECTION_ELEMENT = "collection element";
+    public static final Predicate<String> startsWithC = input -> input.startsWith("c");
+    public static final Predicate<String> endsWithT = input -> input.endsWith("t");
 
     @Autowired
     private StreamUtils streamUtils;
 
     @Test
-    void toOptionalList_WithValidParam_ShouldReturnResult() {
+    void toOptionalList_WithValidParameter_ShouldReturnResult() {
         List<Object> list = singletonList(COLLECTION_ELEMENT);
 
         Optional<List<Object>> optionalList = list.stream().collect(streamUtils.toOptionalList());
@@ -59,7 +64,7 @@ class CoreStreamUtilsTest {
 
     @Test
     void toSingleton_WithMultiCollection_ShouldReturnOptionalEmpty() {
-        List<Object> list = Arrays.asList(COLLECTION_ELEMENT, COLLECTION_ELEMENT);
+        List<Object> list = asList(COLLECTION_ELEMENT, COLLECTION_ELEMENT);
 
         Optional<Object> singleton = list.stream().collect(streamUtils.toSingleton());
 
@@ -94,8 +99,8 @@ class CoreStreamUtilsTest {
     }
 
     @Test
-    void toReverseList_WithTrueParam_ShouldReturnReverseCollection() {
-        List<String> list = Arrays.asList(
+    void toReverseList_WithTrueParameter_ShouldReturnReverseCollection() {
+        List<String> list = asList(
                 String.format("%s%d", COLLECTION_ELEMENT, 1),
                 String.format("%s%d", COLLECTION_ELEMENT, 2)
         );
@@ -111,8 +116,8 @@ class CoreStreamUtilsTest {
     }
 
     @Test
-    void toReverseList_WithFalseParam_ShouldReturnNotReverseCollection() {
-        List<String> list = Arrays.asList(
+    void toReverseList_WithFalseParameter_ShouldReturnNotReverseCollection() {
+        List<String> list = asList(
                 String.format("%s%d", COLLECTION_ELEMENT, 1),
                 String.format("%s%d", COLLECTION_ELEMENT, 2)
         );
@@ -211,5 +216,69 @@ class CoreStreamUtilsTest {
                 .asList()
                 .hasSize(1)
                 .contains(COLLECTION_ELEMENT);
+    }
+
+    @Test
+    void filterStream_WithValidParameters_ShouldReturnStream() {
+        List<String> filteredList = Stream.of(COLLECTION_ELEMENT)
+                .filter(startsWithC)
+                .filter(endsWithT)
+                .collect(Collectors.toList());
+        List<Predicate<String>> predicates = asList(startsWithC, endsWithT);
+
+        List<String> resultList = streamUtils.filterStream(predicates, Stream.of(COLLECTION_ELEMENT)).collect(Collectors.toList());
+
+        assertThat(resultList)
+                .isNotNull()
+                .isEqualTo(filteredList);
+    }
+
+    @Test
+    void filterStream_WithNullParameters_ShouldThrowException() {
+        assertThatThrownBy(() -> streamUtils.filterStream(null, null))
+                .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void composePredicate_WithValidParameter_ShouldReturnPredicate() {
+        List<Predicate<String>> predicates = asList(startsWithC, endsWithT);
+
+        Predicate<String> predicate = streamUtils.composePredicate(predicates);
+
+        assertThat(predicate)
+                .isNotNull();
+        assertThat(predicate.test(COLLECTION_ELEMENT))
+                .isEqualTo(startsWithC.and(endsWithT).test(COLLECTION_ELEMENT));
+    }
+
+    @Test
+    void composePredicate_WithNullParameter_ShouldThrowException() {
+        assertThatThrownBy(() -> streamUtils.composePredicate(null))
+                .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void composePredicate_WithValidParameters_ShouldReturnPredicate() {
+        Predicate<String> predicate = streamUtils.composePredicate(startsWithC, endsWithT);
+
+        assertThat(predicate)
+                .isNotNull();
+        assertThat(predicate.test(COLLECTION_ELEMENT))
+                .isEqualTo(startsWithC.and(endsWithT).test(COLLECTION_ELEMENT));
+    }
+
+    @Test
+    void composePredicate_WithOneValidParameter_ShouldReturnPredicate() {
+        Predicate<String> predicate = streamUtils.composePredicate(null, endsWithT);
+
+        assertThat(predicate)
+                .isNotNull()
+                .isEqualTo(endsWithT);
+    }
+
+    @Test
+    void composePredicate_WithNullParameters_ShouldThrowException() {
+        assertThatThrownBy(() -> streamUtils.composePredicate(null, null))
+                .isInstanceOf(NullPointerException.class);
     }
 }

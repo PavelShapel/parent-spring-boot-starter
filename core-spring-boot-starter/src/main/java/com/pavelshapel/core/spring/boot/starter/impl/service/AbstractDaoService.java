@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -81,15 +82,16 @@ public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements Da
     }
 
     @Override
-    public List<T> findAll(List<SearchCriterion> searchCriteria) {
+    public List<T> findAll(Collection<SearchCriterion> searchCriteria) {
         Stream<T> stream = findAll().stream();
         return filterStream(searchCriteria, stream)
                 .collect(Collectors.toList());
     }
 
-    private Stream<T> filterStream(List<SearchCriterion> searchCriteria, Stream<T> stream) {
+    @Override
+    public Stream<T> filterStream(Collection<SearchCriterion> searchCriteria, Stream<T> stream) {
         for (SearchCriterion searchCriterion : searchCriteria) {
-            stream.filter(entity -> isApplicableEntity(entity, searchCriterion));
+            stream = stream.filter(entity -> isApplicableEntity(entity, searchCriterion));
         }
         return stream;
     }

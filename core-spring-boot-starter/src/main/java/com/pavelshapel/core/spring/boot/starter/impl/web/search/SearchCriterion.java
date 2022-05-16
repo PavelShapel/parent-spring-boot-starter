@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Data
 public class SearchCriterion {
-    public static final String SPLIT_REGEX = "[,.:;]";
+    public static final String SPLIT_REGEX = "[,;]";
 
     private String field;
     private String value;

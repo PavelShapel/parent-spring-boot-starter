@@ -2,11 +2,13 @@ package com.pavelshapel.core.spring.boot.starter.api.util;
 
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
@@ -28,4 +30,10 @@ public interface StreamUtils {
     <T> Stream<T> iterableToStream(Iterable<T> iterable);
 
     <T> List<T> iterableToList(Iterable<T> iterable);
+
+    <T> Stream<T> filterStream(Collection<Predicate<T>> predicates, Stream<T> stream);
+
+    <T> Predicate<T> composePredicate(Collection<Predicate<T>> predicates);
+
+    <T> Predicate<T> composePredicate(Predicate<T> first, Predicate<T> second);
 }

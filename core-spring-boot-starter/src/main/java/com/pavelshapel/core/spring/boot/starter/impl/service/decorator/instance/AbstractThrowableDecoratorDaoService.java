@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -62,7 +63,7 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
     }
 
     @Override
-    public List<T> findAll(List<SearchCriterion> searchCriteria) {
+    public List<T> findAll(Collection<SearchCriterion> searchCriteria) {
         List<T> entities = super.findAll(searchCriteria);
         verifyCollection(entities);
         return entities;

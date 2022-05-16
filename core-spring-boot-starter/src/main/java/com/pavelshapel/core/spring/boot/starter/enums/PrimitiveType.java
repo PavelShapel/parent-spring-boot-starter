@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -24,19 +25,29 @@ public enum PrimitiveType {
     LONG(PrimitiveType::getRandomLong, PrimitiveType::castToLong),
     INTEGER(PrimitiveType::getRandomInteger, PrimitiveType::castToInteger),
     DOUBLE(PrimitiveType::getRandomDouble, PrimitiveType::castToDouble),
-    DATE(PrimitiveType::getRandomDate, PrimitiveType::castToDate);
+    DATE(PrimitiveType::getRandomDate, PrimitiveType::castToDate),
+    LOCAL_DATE(PrimitiveType::getRandomLocalDate, PrimitiveType::castToLocalDate);
 
     Supplier<Object> randomValueSupplier;
     Function<String, Comparable<?>> castFunction;
 
     private static Date getRandomDate() {
+        return new Date(getRandomizedMillis());
+    }
+
+    private static LocalDate getRandomLocalDate() {
+        return Instant.ofEpochMilli(getRandomizedMillis())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+
+    private static long getRandomizedMillis() {
         Calendar min = new GregorianCalendar(1900, Calendar.JANUARY, 1);
         Calendar max = new GregorianCalendar(3000, Calendar.DECEMBER, 31);
-        final long randomizedLong = ThreadLocalRandom.current().nextLong(
+        return ThreadLocalRandom.current().nextLong(
                 min.getTimeInMillis(),
                 max.getTimeInMillis()
         );
-        return new Date(randomizedLong);
     }
 
     private static double getRandomDouble() {
@@ -85,5 +96,9 @@ public enum PrimitiveType {
                 .atZone(ZoneId.systemDefault())
                 .toInstant()
         );
+    }
+
+    private static Comparable<?> castToLocalDate(String source) {
+        return LocalDate.parse(source);
     }
 }

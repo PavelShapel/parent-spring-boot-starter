@@ -5,7 +5,9 @@ import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriterion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 public interface DaoService<ID, T extends Entity<ID>> {
     T create();
@@ -27,8 +29,10 @@ public interface DaoService<ID, T extends Entity<ID>> {
 
     Page<T> findAll(Pageable pageable);
 
-    List<T> findAll(List<SearchCriterion> searchCriteria);
+    List<T> findAll(Collection<SearchCriterion> searchCriteria);
 
+
+    Stream<T> filterStream(Collection<SearchCriterion> searchCriteria, Stream<T> stream);
 
     void deleteById(ID id);
 

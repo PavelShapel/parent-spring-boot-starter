@@ -6,12 +6,15 @@ import org.springframework.http.ResponseEntity;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static java.util.Collections.reverse;
+import static org.apache.commons.lang3.ObjectUtils.allNotNull;
+import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
 public class CoreStreamUtils implements StreamUtils {
     @Override
@@ -95,5 +98,29 @@ public class CoreStreamUtils implements StreamUtils {
     @Override
     public <T> List<T> iterableToList(Iterable<T> iterable) {
         return iterableToStream(iterable).collect(Collectors.toList());
+    }
+
+    @Override
+    public <T> Stream<T> filterStream(Collection<Predicate<T>> predicates, Stream<T> stream) {
+        return stream.filter(composePredicate(predicates));
+    }
+
+    @Override
+    public <T> Predicate<T> composePredicate(Collection<Predicate<T>> predicates) {
+        Predicate<T> result = null;
+        for (Predicate<T> predicate : predicates) {
+            result = composePredicate(result, predicate);
+        }
+        return result;
+    }
+
+    @Override
+    public <T> Predicate<T> composePredicate(Predicate<T> first, Predicate<T> second) {
+        if (allNotNull(first, second)) {
+            return first.and(second);
+        } else {
+            return Optional.ofNullable(firstNonNull(first, second))
+                    .orElseThrow(NullPointerException::new);
+        }
     }
 }

@@ -32,7 +32,7 @@ class CoreSubstitutionUtilsTest {
     private SubstitutionUtils coreSubstitutionUtils;
 
     @Test
-    void replace_WithValidParams_ShouldReturnFilledInString() {
+    void replace_WithValidParameters_ShouldReturnFilledInString() {
         String result = coreSubstitutionUtils.replace(SOURCE, PROPERTIES);
 
         assertThat(result).contains(HELLO, WORLD);
@@ -47,7 +47,7 @@ class CoreSubstitutionUtilsTest {
 
     @SneakyThrows
     @Test
-    void replace_WithValidParams_ShouldReturnFilledInString(@TempDir Path tempDir) {
+    void replace_WithValidParameters_ShouldReturnFilledInString(@TempDir Path tempDir) {
         Path templatePath = tempDir.resolve(SOURCE_TXT);
         Files.write(templatePath, singleton(SOURCE));
 

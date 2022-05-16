@@ -10,7 +10,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 
 @Getter(AccessLevel.PROTECTED)
@@ -66,10 +68,14 @@ public abstract class AbstractDecoratorDaoService<ID, T extends Entity<ID>> impl
     }
 
     @Override
-    public List<T> findAll(List<SearchCriterion> searchCriteria) {
+    public List<T> findAll(Collection<SearchCriterion> searchCriteria) {
         return wrapped.findAll(searchCriteria);
     }
 
+    @Override
+    public Stream<T> filterStream(Collection<SearchCriterion> searchCriteria, Stream<T> stream) {
+        return wrapped.filterStream(searchCriteria, stream);
+    }
 
     @Override
     public void deleteById(ID id) {
