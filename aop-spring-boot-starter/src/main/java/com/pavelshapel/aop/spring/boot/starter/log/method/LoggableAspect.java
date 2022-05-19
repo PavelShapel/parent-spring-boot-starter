@@ -33,18 +33,18 @@ public class LoggableAspect {
 
     @AfterReturning(pointcut = POINTCUT, returning = "result")
     public void onSuccess(JoinPoint joinPoint, Object result) {
-        LoggableMethodSpecification loggableMethodSpecification = new LoggableMethodSpecification(joinPoint);
-        if (isContainingLoggableType(loggableMethodSpecification, LoggableType.METHOD_RESULT)) {
-            logSuccess(loggableMethodSpecification, result);
+        LoggableJoinPointSpecification loggableJoinPointSpecification = new LoggableJoinPointSpecification(joinPoint);
+        if (isContainingLoggableType(loggableJoinPointSpecification, LoggableType.METHOD_RESULT)) {
+            logSuccess(loggableJoinPointSpecification, result);
         }
     }
 
-    private void logSuccess(LoggableMethodSpecification loggableMethodSpecification, Object result) {
-        if (isResponseEntityErrorNotLogged(loggableMethodSpecification, result)) {
-            Level level = Level.parse(loggableMethodSpecification.getLoggable().level());
+    private void logSuccess(LoggableJoinPointSpecification loggableJoinPointSpecification, Object result) {
+        if (isResponseEntityErrorNotLogged(loggableJoinPointSpecification, result)) {
+            Level level = Level.parse(loggableJoinPointSpecification.getLoggable().level());
             Object[] params = {
-                    loggableMethodSpecification.getMethodDeclaringClassName(),
-                    loggableMethodSpecification.getMethodName(),
+                    loggableJoinPointSpecification.getClassName(),
+                    loggableJoinPointSpecification.getMethodName(),
                     LoggableType.METHOD_RESULT.getPrefix(),
                     getVerifiedLogResult(result)
             };
@@ -52,13 +52,13 @@ public class LoggableAspect {
         }
     }
 
-    private boolean isResponseEntityErrorNotLogged(LoggableMethodSpecification loggableMethodSpecification, Object result) {
+    private boolean isResponseEntityErrorNotLogged(LoggableJoinPointSpecification loggableJoinPointSpecification, Object result) {
         if (result instanceof ResponseEntity) {
             ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
             if (responseEntity.getStatusCode().isError()) {
                 Object[] params = {
-                        loggableMethodSpecification.getMethodDeclaringClassName(),
-                        loggableMethodSpecification.getMethodName(),
+                        loggableJoinPointSpecification.getClassName(),
+                        loggableJoinPointSpecification.getMethodName(),
                         LoggableType.METHOD_EXCEPTION.getPrefix(),
                         getVerifiedLogResult(responseEntity)
                 };
@@ -71,15 +71,15 @@ public class LoggableAspect {
 
     @AfterThrowing(pointcut = POINTCUT, throwing = "throwable")
     public void onFailed(JoinPoint joinPoint, Throwable throwable) {
-        LoggableMethodSpecification loggableMethodSpecification = new LoggableMethodSpecification(joinPoint);
-        if (isContainingLoggableType(loggableMethodSpecification, LoggableType.METHOD_EXCEPTION)) {
-            logException(loggableMethodSpecification, throwable);
+        LoggableJoinPointSpecification loggableJoinPointSpecification = new LoggableJoinPointSpecification(joinPoint);
+        if (isContainingLoggableType(loggableJoinPointSpecification, LoggableType.METHOD_EXCEPTION)) {
+            logException(loggableJoinPointSpecification, throwable);
         }
     }
 
-    private void logException(LoggableMethodSpecification loggableMethodSpecification, Throwable throwable) {
-        Object[] params = {loggableMethodSpecification.getMethodDeclaringClassName(),
-                loggableMethodSpecification.getMethodName(),
+    private void logException(LoggableJoinPointSpecification loggableJoinPointSpecification, Throwable throwable) {
+        Object[] params = {loggableJoinPointSpecification.getClassName(),
+                loggableJoinPointSpecification.getMethodName(),
                 LoggableType.METHOD_EXCEPTION.getPrefix(),
                 getVerifiedLogResult(throwable)};
         log.log(SEVERE, LOG_PATTERN, params);
@@ -91,24 +91,24 @@ public class LoggableAspect {
         long startTimeMillis = System.currentTimeMillis();
         Object proceed = joinPoint.proceed();
         long duration = System.currentTimeMillis() - startTimeMillis;
-        LoggableMethodSpecification loggableMethodSpecification = new LoggableMethodSpecification(joinPoint);
-        if (isContainingLoggableType(loggableMethodSpecification, LoggableType.METHOD_DURATION)) {
-            logDuration(loggableMethodSpecification, duration);
+        LoggableJoinPointSpecification loggableJoinPointSpecification = new LoggableJoinPointSpecification(joinPoint);
+        if (isContainingLoggableType(loggableJoinPointSpecification, LoggableType.METHOD_DURATION)) {
+            logDuration(loggableJoinPointSpecification, duration);
         }
         return proceed;
     }
 
-    private void logDuration(LoggableMethodSpecification loggableMethodSpecification, long duration) {
-        Level level = Level.parse(loggableMethodSpecification.getLoggable().level());
-        Object[] params = {loggableMethodSpecification.getMethodDeclaringClassName(),
-                loggableMethodSpecification.getMethodName(),
+    private void logDuration(LoggableJoinPointSpecification loggableJoinPointSpecification, long duration) {
+        Level level = Level.parse(loggableJoinPointSpecification.getLoggable().level());
+        Object[] params = {loggableJoinPointSpecification.getClassName(),
+                loggableJoinPointSpecification.getMethodName(),
                 LoggableType.METHOD_DURATION.getPrefix(),
                 getVerifiedLogResult(String.format("%d ms", duration))};
         log.log(level, LOG_PATTERN, params);
     }
 
-    private boolean isContainingLoggableType(LoggableMethodSpecification loggableMethodSpecification, LoggableType loggableType) {
-        return asList(loggableMethodSpecification.getLoggable().value())
+    private boolean isContainingLoggableType(LoggableJoinPointSpecification loggableJoinPointSpecification, LoggableType loggableType) {
+        return asList(loggableJoinPointSpecification.getLoggable().value())
                 .contains(loggableType);
     }
 

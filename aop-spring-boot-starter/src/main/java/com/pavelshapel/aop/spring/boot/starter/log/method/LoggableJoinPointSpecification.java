@@ -12,19 +12,18 @@ import java.util.Optional;
 
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class LoggableMethodSpecification {
-    Method method;
-    String methodDeclaringClassName;
+public class LoggableJoinPointSpecification {
+    String className;
     String methodName;
     Loggable loggable;
 
-    public LoggableMethodSpecification(@NonNull JoinPoint joinPoint) {
-        method = getMethod(joinPoint);
-        Class<?> declaringClass = method.getDeclaringClass();
-        methodDeclaringClassName = declaringClass.getSimpleName();
+    public LoggableJoinPointSpecification(@NonNull JoinPoint joinPoint) {
+        Method method = getMethod(joinPoint);
         methodName = method.getName();
+        Class<?> joinPointClass = joinPoint.getTarget().getClass();
+        className = joinPointClass.getSimpleName();
         loggable = Optional.ofNullable(method.getAnnotation(Loggable.class))
-                .orElseGet(() -> declaringClass.getAnnotation(Loggable.class));
+                .orElseGet(() -> joinPointClass.getAnnotation(Loggable.class));
     }
 
     private Method getMethod(JoinPoint joinPoint) {
