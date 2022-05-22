@@ -111,7 +111,7 @@ public abstract class AbstractDaoRestController<ID, E extends Entity<ID>, D exte
     }
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<D>> findAll(List<@Valid SearchCriterion> searchCriteria) {
+    public ResponseEntity<List<D>> findAll(@RequestBody List<@Valid SearchCriterion> searchCriteria) {
         return Optional.ofNullable(searchCriteria)
                 .map(criteria -> daoService.findAll(searchCriteria))
                 .orElseGet(daoService::findAll)

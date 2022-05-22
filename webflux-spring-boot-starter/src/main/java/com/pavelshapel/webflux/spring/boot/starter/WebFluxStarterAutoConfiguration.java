@@ -11,7 +11,6 @@ import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -27,7 +26,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.apache.logging.log4j.util.Strings.EMPTY;
 
 @Configuration
-@ConditionalOnWebApplication
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class WebFluxStarterAutoConfiguration {
     public static final String TYPE = "webflux";
