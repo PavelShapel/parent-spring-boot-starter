@@ -14,5 +14,4 @@ public enum LoggableType {
     METHOD_EXCEPTION("threw an exception");
 
     String prefix;
-
 }
