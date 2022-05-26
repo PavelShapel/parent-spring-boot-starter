@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 import java.util.function.Predicate;
 
 @Getter
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public abstract class AbstractPredicate implements Predicate<Comparable<Object>> {
     Object pattern;

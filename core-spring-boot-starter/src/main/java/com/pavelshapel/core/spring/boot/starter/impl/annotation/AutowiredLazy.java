@@ -1,4 +1,4 @@
-package com.pavelshapel.core.spring.boot.starter.api.annotation;
+package com.pavelshapel.core.spring.boot.starter.impl.annotation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;

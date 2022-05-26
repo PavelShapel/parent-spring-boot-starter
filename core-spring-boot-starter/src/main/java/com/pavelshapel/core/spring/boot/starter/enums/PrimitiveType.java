@@ -28,7 +28,7 @@ public enum PrimitiveType {
     DATE(PrimitiveType::getRandomDate, PrimitiveType::castToDate),
     LOCAL_DATE(PrimitiveType::getRandomLocalDate, PrimitiveType::castToLocalDate);
 
-    Supplier<Object> randomValueSupplier;
+    Supplier<?> randomValueSupplier;
     Function<String, Comparable<?>> castFunction;
 
     private static Date getRandomDate() {
@@ -70,27 +70,27 @@ public enum PrimitiveType {
         return ThreadLocalRandom.current().nextBoolean();
     }
 
-    private static Comparable<?> castToBoolean(String source) {
+    private static Boolean castToBoolean(String source) {
         return Boolean.valueOf(source);
     }
 
-    private static Comparable<?> castToString(String source) {
+    private static String castToString(String source) {
         return source;
     }
 
-    private static Comparable<?> castToLong(String source) {
+    private static Long castToLong(String source) {
         return Long.valueOf(source);
     }
 
-    private static Comparable<?> castToInteger(String source) {
+    private static Integer castToInteger(String source) {
         return Integer.valueOf(source);
     }
 
-    private static Comparable<?> castToDouble(String source) {
+    private static Double castToDouble(String source) {
         return Double.valueOf(source);
     }
 
-    private static Comparable<?> castToDate(String source) {
+    private static Date castToDate(String source) {
         return Date.from(LocalDate.parse(source)
                 .atStartOfDay()
                 .atZone(ZoneId.systemDefault())
@@ -98,7 +98,7 @@ public enum PrimitiveType {
         );
     }
 
-    private static Comparable<?> castToLocalDate(String source) {
+    private static LocalDate castToLocalDate(String source) {
         return LocalDate.parse(source);
     }
 }

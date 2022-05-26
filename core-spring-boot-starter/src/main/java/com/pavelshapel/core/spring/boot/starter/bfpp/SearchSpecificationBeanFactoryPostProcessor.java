@@ -1,4 +1,4 @@
-package com.pavelshapel.core.spring.boot.starter.bpp;
+package com.pavelshapel.core.spring.boot.starter.bfpp;
 
 import com.pavelshapel.core.spring.boot.starter.impl.web.search.AbstractSearchSpecification;
 import lombok.SneakyThrows;

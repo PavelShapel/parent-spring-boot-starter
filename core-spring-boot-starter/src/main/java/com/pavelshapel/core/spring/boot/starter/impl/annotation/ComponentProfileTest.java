@@ -1,4 +1,4 @@
-package com.pavelshapel.core.spring.boot.starter.impl.bean;
+package com.pavelshapel.core.spring.boot.starter.impl.annotation;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -10,6 +10,6 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 @Component
-@Profile("!test")
-public @interface ComponentProfileNotTest {
+@Profile("test")
+public @interface ComponentProfileTest {
 }

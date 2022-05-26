@@ -1,7 +1,7 @@
 package com.pavelshapel.core.spring.boot.starter;
 
 import com.pavelshapel.core.spring.boot.starter.api.util.*;
-import com.pavelshapel.core.spring.boot.starter.bpp.SearchSpecificationBeanFactoryPostProcessor;
+import com.pavelshapel.core.spring.boot.starter.bfpp.SearchSpecificationBeanFactoryPostProcessor;
 import com.pavelshapel.core.spring.boot.starter.bpp.SelfAutowiredAnnotationBeanPostProcessor;
 import com.pavelshapel.core.spring.boot.starter.api.annotation.AnnotationReplacer;
 import com.pavelshapel.core.spring.boot.starter.impl.annotation.ClassAnnotationReplacer;
@@ -60,7 +60,7 @@ public class CoreStarterAutoConfiguration {
     }
 
     @Bean
-    public SearchSpecificationBeanFactoryPostProcessor searchSpecificationBeanFactoryPostProcessor() {
+    public static SearchSpecificationBeanFactoryPostProcessor searchSpecificationBeanFactoryPostProcessor() {
         return new SearchSpecificationBeanFactoryPostProcessor();
     }
 }

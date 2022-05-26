@@ -1,10 +1,10 @@
 package com.pavelshapel.core.spring.boot.starter.impl.service.decorator;
 
+import com.pavelshapel.core.spring.boot.starter.impl.annotation.AutowiredLazy;
 import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.lang.NonNull;
@@ -18,7 +18,7 @@ import static org.springframework.util.StringUtils.uncapitalize;
 public class DecorateDaoServiceAnnotationBeanPostProcessor implements BeanPostProcessor {
     final Map<String, Class<?>> daoDecorateBeans = new HashMap<>();
 
-    @Autowired
+    @AutowiredLazy
     ApplicationContext applicationContext;
 
     @Override
