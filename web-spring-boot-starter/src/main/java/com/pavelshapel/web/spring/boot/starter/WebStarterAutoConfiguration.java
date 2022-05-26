@@ -16,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -32,6 +33,7 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ConditionalOnWebApplication
 public class WebStarterAutoConfiguration implements WebMvcConfigurer {
     public static final String TYPE = "web";
 

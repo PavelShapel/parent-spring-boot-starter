@@ -61,8 +61,8 @@ public class TableHtml extends AbstractHtml {
         LinkedHashSet<Field> entityFields = getEntityFields();
         List<Html> bodies = asList(
                 createTHeadTagHtml(createTableHeaderTagHtml(entityFields)),
-                createTBodyTagHtml(createTableBodyTagHtml()),
-                createTFootTagHtml(createTableFooterTagHtml(entityFields)));
+                createTBodyTagHtml(createTableBodyTagHtml())/*,
+                createTFootTagHtml(createTableFooterTagHtml(entityFields))*/);
         return createTagHtml(TABLE, attributes, bodies);
     }
 
