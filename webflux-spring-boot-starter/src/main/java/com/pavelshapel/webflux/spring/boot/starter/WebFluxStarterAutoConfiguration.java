@@ -21,9 +21,11 @@ import reactor.netty.http.client.HttpClient;
 import java.util.Optional;
 
 import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
+import static io.netty.handler.logging.LogLevel.DEBUG;
 import static java.time.Duration.ofMillis;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.apache.logging.log4j.util.Strings.EMPTY;
+import static reactor.netty.transport.logging.AdvancedByteBufFormat.TEXTUAL;
 
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -57,6 +59,7 @@ public class WebFluxStarterAutoConfiguration {
         SslContext sslContext = createSslContext();
         return HttpClient
                 .create()
+                .wiretap("reactor.netty.http.client.HttpClient", DEBUG, TEXTUAL)
                 .secure(sslContextSpec -> sslContextSpec.sslContext(sslContext))
                 .option(CONNECT_TIMEOUT_MILLIS, timeout)
                 .responseTimeout(ofMillis(timeout))
