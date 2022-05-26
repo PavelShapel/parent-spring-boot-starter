@@ -2,10 +2,10 @@ package com.pavelshapel.aws.spring.boot.starter;
 
 import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyDynamoDb;
 import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyS3;
-import com.pavelshapel.aws.spring.boot.starter.api.util.BucketHandler;
-import com.pavelshapel.aws.spring.boot.starter.api.util.DbHandler;
-import com.pavelshapel.aws.spring.boot.starter.impl.util.DynamoDbHandler;
-import com.pavelshapel.aws.spring.boot.starter.impl.util.S3BucketHandler;
+import com.pavelshapel.aws.spring.boot.starter.api.service.BucketHandler;
+import com.pavelshapel.aws.spring.boot.starter.api.service.DbHandler;
+import com.pavelshapel.aws.spring.boot.starter.impl.service.DynamoDbHandler;
+import com.pavelshapel.aws.spring.boot.starter.impl.service.S3BucketHandler;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,4 +35,9 @@ public class AwsStarterAutoConfiguration {
     public BucketHandler s3BucketHandler() {
         return new S3BucketHandler();
     }
+
+//    @Bean
+//    public DbBackup scheduledDbBackup(){
+//        return new ScheduledDbBackup();
+//    }
 }

@@ -1,9 +1,8 @@
-package com.pavelshapel.aws.spring.boot.starter.impl.util;
+package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
-import com.pavelshapel.aop.spring.boot.starter.log.method.Loggable;
-import com.pavelshapel.aws.spring.boot.starter.api.util.BucketHandler;
+import com.pavelshapel.aws.spring.boot.starter.api.service.BucketHandler;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import com.pavelshapel.aws.spring.boot.starter.properties.nested.AbstractServiceProperties;
 import com.pavelshapel.aws.spring.boot.starter.properties.nested.S3ServiceProperties;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Loggable
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class S3BucketHandler implements BucketHandler {
     @Autowired

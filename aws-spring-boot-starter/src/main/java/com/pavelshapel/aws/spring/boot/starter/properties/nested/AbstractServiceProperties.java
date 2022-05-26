@@ -9,13 +9,17 @@ import static com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties.S
 @Getter
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractServiceProperties {
     final String name;
     @Setter
     String object;
     @Setter
-    String endpoint = String.format(SERVICE_ENDPOINT_PATTERN, getName());
+    String endpoint;
     @Setter
     Boolean enabled;
+
+    protected AbstractServiceProperties(String name) {
+        this.name = name;
+        this.endpoint = String.format(SERVICE_ENDPOINT_PATTERN, name);
+    }
 }

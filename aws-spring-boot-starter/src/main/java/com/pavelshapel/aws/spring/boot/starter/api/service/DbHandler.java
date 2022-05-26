@@ -1,4 +1,4 @@
-package com.pavelshapel.aws.spring.boot.starter.api.util;
+package com.pavelshapel.aws.spring.boot.starter.api.service;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
@@ -26,6 +26,8 @@ public interface DbHandler {
     String deleteTable(String tableName);
 
     <ID, T extends Entity<ID>> T save(T entity);
+
+    <ID, T extends Entity<ID>> List<T> saveAll(List<T> entities);
 
     <ID, T extends Entity<ID>> T findById(Class<T> targetClass, ID id);
 
