@@ -1,13 +1,12 @@
 package com.pavelshapel.kafka.spring.boot.starter.bpp;
 
+import com.pavelshapel.core.spring.boot.starter.api.annotation.AutowiredLazy;
 import com.pavelshapel.core.spring.boot.starter.api.model.Dto;
 import com.pavelshapel.kafka.spring.boot.starter.service.KafkaProducer;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.lang.NonNull;
 
 import java.lang.reflect.InvocationHandler;
@@ -19,8 +18,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class KafkaSenderAnnotationBeanPostProcessor implements BeanPostProcessor {
     final Map<String, List<Method>> kafkaSenderBeans = new HashMap<>();
-    @Autowired
-    @Lazy
+    @AutowiredLazy
     KafkaProducer<Dto<String>> kafkaProducer;
 
     @Override
