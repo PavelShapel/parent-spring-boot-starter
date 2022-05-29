@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest(classes = {CoreStarterAutoConfiguration.class})
 class CoreSubstitutionUtilsTest {
@@ -24,7 +23,8 @@ class CoreSubstitutionUtilsTest {
     public static final String HELLO = "Hello";
     public static final String WHO = "who";
     public static final String WORLD = "world";
-    public static final String SOURCE = String.format("%s ${%s}!", HELLO, WHO);
+    public static final String SOURCE = HELLO + " ${" + WHO + "}!";
+    public static final String SOURCE_WITH_DEFAULT_PROPERTIES = HELLO + " ${0}!";
     public static final SubstitutionProperties PROPERTIES = new SubstitutionProperties(singletonMap(WHO, WORLD));
     public static final String SOURCE_TXT = "source.txt";
 
@@ -39,10 +39,10 @@ class CoreSubstitutionUtilsTest {
     }
 
     @Test
-    void replace_WithNullProperties_ShouldThrowException() {
-        assertThatThrownBy(() -> coreSubstitutionUtils.replace(SOURCE, null))
-                .hasMessageContainingAll(SOURCE, NULL)
-                .isInstanceOf(IllegalArgumentException.class);
+    void replace_WithValidDefaultParameters_ShouldReturnFilledInString() {
+        String result = coreSubstitutionUtils.replace(SOURCE_WITH_DEFAULT_PROPERTIES, WORLD);
+
+        assertThat(result).contains(HELLO, WORLD);
     }
 
     @SneakyThrows

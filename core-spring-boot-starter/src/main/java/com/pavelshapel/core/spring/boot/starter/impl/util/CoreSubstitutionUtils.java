@@ -2,19 +2,17 @@ package com.pavelshapel.core.spring.boot.starter.impl.util;
 
 import com.pavelshapel.core.spring.boot.starter.api.util.SubstitutionProperties;
 import com.pavelshapel.core.spring.boot.starter.api.util.SubstitutionUtils;
+import lombok.NonNull;
 import org.apache.commons.text.StringSubstitutor;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.util.Objects.isNull;
-
 public class CoreSubstitutionUtils implements SubstitutionUtils {
-    public static final String MESSAGE_PATTERN = "template [%s], properties [%s]";
-
     @Override
     public String replace(InputStream source, SubstitutionProperties properties) {
         try (Stream<String> lines = new BufferedReader(new InputStreamReader(source)).lines()) {
@@ -24,15 +22,20 @@ public class CoreSubstitutionUtils implements SubstitutionUtils {
     }
 
     @Override
-    public String replace(String source, SubstitutionProperties properties) {
-        if (isNull(source) || isNull(properties)) {
-            throw createIllegalArgumentException(source, properties);
-        }
-        return new StringSubstitutor(properties).replace(source);
+    public String replace(@NonNull String source, @NonNull SubstitutionProperties properties) {
+        return StringSubstitutor.replace(source, properties);
     }
 
-    private IllegalArgumentException createIllegalArgumentException(String template, SubstitutionProperties properties) {
-        String message = String.format(MESSAGE_PATTERN, template, properties);
-        return new IllegalArgumentException(message);
+    @Override
+    public String replace(String source, String... properties) {
+        SubstitutionProperties substitutionProperties = IntStream.range(0, properties.length)
+                .boxed()
+                .collect(Collectors.toMap(
+                        String::valueOf,
+                        index -> properties[index],
+                        (existing, replacement) -> existing,
+                        SubstitutionProperties::new)
+                );
+        return replace(source, substitutionProperties);
     }
 }

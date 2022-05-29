@@ -6,4 +6,6 @@ public interface SubstitutionUtils {
     String replace(InputStream source, SubstitutionProperties properties);
 
     String replace(String source, SubstitutionProperties properties);
+
+    String replace(String source, String... properties);
 }
