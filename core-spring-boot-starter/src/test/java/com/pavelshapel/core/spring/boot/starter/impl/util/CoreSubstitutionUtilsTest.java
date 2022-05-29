@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = {CoreStarterAutoConfiguration.class})
 class CoreSubstitutionUtilsTest {
-    public static final String NULL = "null";
     public static final String HELLO = "Hello";
     public static final String WHO = "who";
     public static final String WORLD = "world";
