@@ -103,7 +103,7 @@ public class LoggableAspect {
         Object[] params = {loggableJoinPointSpecification.getClassName(),
                 loggableJoinPointSpecification.getMethodName(),
                 LoggableType.METHOD_DURATION.getPrefix(),
-                getVerifiedLogResult(String.format("%d ms", duration))};
+                getVerifiedLogResult(new StringBuilder(String.valueOf(duration)).append(" ms"))};
         log.log(level, LOG_PATTERN, params);
     }
 
