@@ -48,11 +48,7 @@
         </dependency>
         <dependency>
             <groupId>com.pavelshapel</groupId>
-            <artifactId>core-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.pavelshapel</groupId>
-            <artifactId>jpa-spring-boot-starter</artifactId>
+            <artifactId>rdbms-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.pavelshapel</groupId>

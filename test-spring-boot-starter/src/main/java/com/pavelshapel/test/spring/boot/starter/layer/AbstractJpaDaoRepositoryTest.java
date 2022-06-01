@@ -1,10 +1,10 @@
 package com.pavelshapel.test.spring.boot.starter.layer;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
-import com.pavelshapel.core.spring.boot.starter.api.repository.DaoRepository;
-import com.pavelshapel.core.spring.boot.starter.api.repository.SpecificationDaoRepository;
-import com.pavelshapel.core.spring.boot.starter.impl.web.search.AbstractSearchSpecification;
-import com.pavelshapel.jpa.spring.boot.starter.JpaAuditingConfiguration;
+import com.pavelshapel.jpa.spring.boot.starter.repository.DaoRepository;
+import com.pavelshapel.jpa.spring.boot.starter.repository.SpecificationDaoRepository;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.AbstractSearchSpecification;
+import com.pavelshapel.rdbms.spring.boot.starter.RdbmsStarterAutoConfiguration;
 import com.pavelshapel.test.spring.boot.starter.container.PostgreSQLExtension;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 
 
 @DataJpaTest
-@Import(JpaAuditingConfiguration.class)
+@Import(RdbmsStarterAutoConfiguration.class)
 @AutoConfigureTestDatabase(replace = NONE)
 @ExtendWith(PostgreSQLExtension.class)
 @Getter(AccessLevel.PROTECTED)

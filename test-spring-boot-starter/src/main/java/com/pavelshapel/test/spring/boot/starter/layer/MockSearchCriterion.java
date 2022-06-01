@@ -5,8 +5,8 @@ import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.model.Named;
 import com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity;
 import com.pavelshapel.core.spring.boot.starter.enums.PrimitiveType;
-import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchCriterion;
-import com.pavelshapel.core.spring.boot.starter.impl.web.search.SearchOperation;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchOperation;
 
 public interface MockSearchCriterion {
     default SearchCriterion getMockSearchCriterion(String value, PrimitiveType valueType, String field, SearchOperation searchOperation) {
