@@ -39,6 +39,7 @@
         <module>kafka-spring-boot-starter</module>
         <module>aws-spring-boot-starter</module>
         <module>webflux-spring-boot-starter</module>
+        <module>rdbms-spring-boot-starter</module>
     </modules>
 
     <dependencyManagement>
@@ -132,6 +133,11 @@
             <dependency>
                 <groupId>com.pavelshapel</groupId>
                 <artifactId>aws-spring-boot-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.pavelshapel</groupId>
+                <artifactId>rdbms-spring-boot-starter</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

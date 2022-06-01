@@ -1,4 +1,4 @@
-package com.pavelshapel.jpa.spring.boot.starter.model;
+package com.pavelshapel.rdbms.spring.boot.starter.model;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import lombok.AccessLevel;
@@ -19,5 +19,9 @@ public abstract class AbstractEntity<ID> implements Entity<ID> {
     @Override
     public int compareTo(Entity<ID> entity) {
         return ((Comparable<ID>) getId()).compareTo(entity.getId());
+    }
+
+    protected void throwUnsupportedOperationException() {
+        throw new UnsupportedOperationException();
     }
 }
