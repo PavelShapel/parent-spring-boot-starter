@@ -1,5 +1,7 @@
 package com.pavelshapel.web.spring.boot.starter.wrapper;
 
+import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
+import com.pavelshapel.json.spring.boot.starter.JsonStarterAutoConfiguration;
 import com.pavelshapel.web.spring.boot.starter.WebStarterAutoConfiguration;
 import com.pavelshapel.web.spring.boot.starter.wrapper.controller.TestRestController;
 import com.pavelshapel.web.spring.boot.starter.wrapper.provider.TypesProvider;
@@ -14,9 +16,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@WebMvcTest(TestRestController.class)
 @ContextConfiguration(classes = {
         WebStarterAutoConfiguration.class,
+        JsonStarterAutoConfiguration.class,
+        CoreStarterAutoConfiguration.class,
         TestRestController.class
 })
 class JpaRestControllerTest {
