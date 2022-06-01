@@ -3,7 +3,7 @@ package com.pavelshapel.aws.spring.boot.starter.converter;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverter;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity;
-import com.pavelshapel.core.spring.boot.starter.api.service.DaoService;
+import com.pavelshapel.jpa.spring.boot.starter.service.DaoService;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
