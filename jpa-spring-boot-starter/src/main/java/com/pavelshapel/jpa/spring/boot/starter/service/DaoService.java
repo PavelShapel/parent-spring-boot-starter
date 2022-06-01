@@ -1,0 +1,55 @@
+package com.pavelshapel.jpa.spring.boot.starter.service;
+
+import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
+
+public interface DaoService<ID, T extends Entity<ID>> {
+    T create();
+
+    T createAndSave();
+
+    T save(T entity);
+
+    T update(ID id, T entity);
+
+    List<T> saveAll(Iterable<T> entities);
+
+
+    T findById(ID id);
+
+    List<T> findAllById(Iterable<ID> ids);
+
+    List<T> findAll();
+
+    Page<T> findAll(Pageable pageable);
+
+    List<T> findAll(Collection<SearchCriterion> searchCriteria);
+
+    Stream<T> filterStream(Collection<SearchCriterion> searchCriteria, Stream<T> stream);
+
+
+    void deleteById(ID id);
+
+    void deleteAll();
+
+
+    boolean existsById(ID id);
+
+    long getCount();
+
+
+    List<T> getChildren(T entity);
+
+    boolean hasChildren(T entity);
+
+    List<T> getParentage(ID id);
+
+
+    Class<T> getEntityClass();
+}

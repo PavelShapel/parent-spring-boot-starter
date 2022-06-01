@@ -1,3 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.pavelshapel.jpa.spring.boot.starter.JpaStarterAutoConfiguration,\
-com.pavelshapel.jpa.spring.boot.starter.JpaAuditingConfiguration
+com.pavelshapel.jpa.spring.boot.starter.JpaStarterAutoConfiguration
