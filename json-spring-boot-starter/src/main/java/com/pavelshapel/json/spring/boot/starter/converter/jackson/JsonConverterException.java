@@ -16,6 +16,6 @@ public class JsonConverterException extends IllegalArgumentException {
     }
 
     private static String joinArguments(String... arguments) {
-        return String.join(",", arguments);
+        return String.join(", ", arguments);
     }
 }
