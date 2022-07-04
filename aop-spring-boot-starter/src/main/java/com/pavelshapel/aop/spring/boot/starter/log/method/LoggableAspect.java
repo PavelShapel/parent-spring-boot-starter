@@ -4,7 +4,11 @@ import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 
@@ -103,7 +107,7 @@ public class LoggableAspect {
         Object[] params = {loggableJoinPointSpecification.getClassName(),
                 loggableJoinPointSpecification.getMethodName(),
                 LoggableType.METHOD_DURATION.getPrefix(),
-                getVerifiedLogResult(new StringBuilder(String.valueOf(duration)).append(" ms"))};
+                getVerifiedLogResult(String.format("%d ms", duration))};
         log.log(level, LOG_PATTERN, params);
     }
 
