@@ -13,7 +13,7 @@ import java.util.GregorianCalendar;
 @ToString
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public enum ConstantsRange {
+public enum Bound {
     DEFAULT_MIN_YEAR(1000),
     DEFAULT_MAX_YEAR(3000),
 

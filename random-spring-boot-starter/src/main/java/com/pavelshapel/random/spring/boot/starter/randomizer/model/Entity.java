@@ -14,7 +14,7 @@ public class Entity extends TreeMap<String, Specification> {
         super(Comparator.naturalOrder());
     }
 
-    public Entity(Map<? extends String, ? extends Specification> map) {
+    public Entity(Map<String, ? extends Specification> map) {
         super(map);
     }
 }

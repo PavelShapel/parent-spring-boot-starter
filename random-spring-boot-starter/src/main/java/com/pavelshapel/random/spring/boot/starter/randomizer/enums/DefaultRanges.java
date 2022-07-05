@@ -7,7 +7,7 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.Range;
 
-import static com.pavelshapel.random.spring.boot.starter.randomizer.enums.ConstantsRange.*;
+import static com.pavelshapel.random.spring.boot.starter.randomizer.enums.Bound.*;
 
 @Getter
 @ToString
@@ -33,5 +33,5 @@ public enum DefaultRanges {
             )
     );
 
-    private final Range<Long> value;
+    Range<Long> value;
 }
