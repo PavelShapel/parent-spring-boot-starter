@@ -22,24 +22,22 @@ public class SpecificationVerifier implements Verifier<Specification> {
     @Override
     public Specification verify(Specification specification) {
         BoundedType<?> boundedType = getBoundedType(specification);
-
         try {
             Range<Long> range = Range.between(specification.getMin(), specification.getMax());
             Range<Long> intersection = boundedType.getRange().intersectionWith(range);
-
-            return Specification.builder()
-                    .type(specification.getType())
-                    .min(intersection.getMinimum())
-                    .max(intersection.getMaximum())
-                    .build();
+            return createSpecification(specification, intersection);
         } catch (Exception exception) {
             log.log(Level.WARNING, "implemented default range on exception [{}]", exception.toString());
-            return Specification.builder()
-                    .type(specification.getType())
-                    .min(boundedType.getRange().getMinimum())
-                    .max(boundedType.getRange().getMaximum())
-                    .build();
+            return createSpecification(specification, boundedType.getRange());
         }
+    }
+
+    private Specification createSpecification(Specification specification, Range<Long> range) {
+        return Specification.builder()
+                .type(specification.getType())
+                .min(range.getMinimum())
+                .max(range.getMaximum())
+                .build();
     }
 
     private BoundedType<?> getBoundedType(Specification specification) {
