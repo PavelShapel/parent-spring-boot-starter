@@ -1,6 +1,7 @@
 package com.pavelshapel.test.spring.boot.starter.provider;
 
 import com.pavelshapel.core.spring.boot.starter.enums.PrimitiveType;
+import org.apache.commons.lang3.NotImplementedException;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
@@ -48,6 +49,10 @@ public abstract class AbstractProvider implements ArgumentsProvider {
                 .map(Supplier::get)
                 .filter(targetClass::isInstance)
                 .findFirst()
-                .orElseThrow(() -> new UnsupportedOperationException(String.format(ERROR_MESSAGE_PATTERN, targetClass.getSimpleName())));
+                .orElseThrow(() -> createNotImplementedException(targetClass));
+    }
+
+    private NotImplementedException createNotImplementedException(Class<?> targetClass) {
+        return new NotImplementedException(String.format(ERROR_MESSAGE_PATTERN, targetClass.getSimpleName()));
     }
 }
