@@ -1,14 +1,25 @@
 package com.pavelshapel.jpa.spring.boot.starter.service.search;
 
-import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.*;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.ContainsPredicate;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.EndsWithPredicate;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.EqualsPredicate;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.GreaterThanPredicate;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.IsNullPredicate;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.LessThanPredicate;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.StartsWithPredicate;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Getter
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@ToString
 public enum SearchOperation {
     EQUALS(SearchOperation::equalsPredicate),
     NOT_EQUALS(SearchOperation::notEqualsPredicate),
@@ -22,7 +33,7 @@ public enum SearchOperation {
     IS_NULL(SearchOperation::isNullPredicate),
     IS_NOT_NULL(SearchOperation::isNotNullPredicate);
 
-    private final Function<Comparable<?>, Predicate<Comparable<Object>>> function;
+    Function<Comparable<?>, Predicate<Comparable<Object>>> function;
 
     private static Predicate<Comparable<Object>> equalsPredicate(Object pattern) {
         return new EqualsPredicate(pattern);

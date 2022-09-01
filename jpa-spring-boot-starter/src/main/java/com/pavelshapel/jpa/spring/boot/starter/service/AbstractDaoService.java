@@ -12,10 +12,12 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.CrudRepository;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -23,7 +25,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
-import static org.springframework.util.ReflectionUtils.*;
+import static org.springframework.util.ReflectionUtils.findField;
+import static org.springframework.util.ReflectionUtils.getField;
+import static org.springframework.util.ReflectionUtils.makeAccessible;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements DaoService<ID, T> {
@@ -55,7 +59,10 @@ public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements Da
 
     @Override
     public List<T> saveAll(Iterable<T> entities) {
-        return streamUtils.iterableToList(daoRepository.saveAll(entities));
+        return Optional.of(entities)
+                .map(daoRepository::saveAll)
+                .map(streamUtils::iterableToList)
+                .orElseGet(Collections::emptyList);
     }
 
 
@@ -67,12 +74,18 @@ public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements Da
 
     @Override
     public List<T> findAllById(Iterable<ID> ids) {
-        return streamUtils.iterableToList(daoRepository.findAllById(ids));
+        return Optional.of(ids)
+                .map(daoRepository::findAllById)
+                .map(streamUtils::iterableToList)
+                .orElseGet(Collections::emptyList);
     }
 
     @Override
     public List<T> findAll() {
-        return streamUtils.iterableToList(daoRepository.findAll());
+        return Optional.of(daoRepository)
+                .map(CrudRepository::findAll)
+                .map(streamUtils::iterableToList)
+                .orElseGet(Collections::emptyList);
     }
 
     @Override
