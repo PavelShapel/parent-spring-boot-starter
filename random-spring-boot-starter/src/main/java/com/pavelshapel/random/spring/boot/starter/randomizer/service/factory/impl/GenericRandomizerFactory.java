@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.function.Predicate;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class GenericRandomizerFactory implements RandomizerFactory {
+public final class GenericRandomizerFactory implements RandomizerFactory {
     @Autowired
     RandomizerBeansCollection randomizerBeansCollection;
 

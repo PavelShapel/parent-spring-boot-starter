@@ -15,6 +15,13 @@ public abstract class AbstractRandomizer<T> implements Randomizer<T> {
     SpecificationVerifier specificationVerifier;
 
     @Override
+    public T randomize(Specification specification) {
+        return rawRandomize(specificationVerifier.verify(specification));
+    }
+
+    protected abstract T rawRandomize(Specification specification);
+
+    @Override
     public T randomize() {
         return randomize(createDefaultSpecification());
     }

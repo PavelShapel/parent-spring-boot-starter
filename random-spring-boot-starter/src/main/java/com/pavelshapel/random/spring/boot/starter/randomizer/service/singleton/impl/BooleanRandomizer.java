@@ -5,9 +5,9 @@ import com.pavelshapel.random.spring.boot.starter.randomizer.service.singleton.A
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class BooleanRandomizer extends AbstractRandomizer<Boolean> {
+public final class BooleanRandomizer extends AbstractRandomizer<Boolean> {
     @Override
-    public Boolean randomize(Specification specification) {
+    public Boolean rawRandomize(Specification specification) {
         return ThreadLocalRandom.current().nextBoolean();
     }
 }

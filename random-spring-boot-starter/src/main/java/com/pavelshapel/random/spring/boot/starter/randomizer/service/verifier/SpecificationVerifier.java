@@ -27,7 +27,7 @@ public class SpecificationVerifier implements Verifier<Specification> {
             Range<Long> intersection = boundedType.getRange().intersectionWith(range);
             return createSpecification(specification, intersection);
         } catch (Exception exception) {
-            log.log(Level.WARNING, "implemented default range on exception [{}]", exception.toString());
+            log.log(Level.WARNING, "implemented default range on exception [{0}]", exception.toString());
             return createSpecification(specification, boundedType.getRange());
         }
     }

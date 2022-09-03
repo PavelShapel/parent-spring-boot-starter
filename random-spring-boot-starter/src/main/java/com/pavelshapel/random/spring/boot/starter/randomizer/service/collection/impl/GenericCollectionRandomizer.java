@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class GenericCollectionRandomizer implements CollectionRandomizer {
+public final class GenericCollectionRandomizer implements CollectionRandomizer {
     @Autowired
     RandomizerFactory genericRandomizerFactory;
 

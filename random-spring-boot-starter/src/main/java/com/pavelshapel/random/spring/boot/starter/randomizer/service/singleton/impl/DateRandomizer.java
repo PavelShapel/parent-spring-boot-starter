@@ -9,9 +9,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class DateRandomizer extends AbstractRandomizer<Date> {
+public final class DateRandomizer extends AbstractRandomizer<Date> {
     @Override
-    public Date randomize(Specification specification) {
+    public Date rawRandomize(Specification specification) {
         Range<Calendar> dateRange = getDateRange(specification);
         long randomizedLong = ThreadLocalRandom.current().nextLong(
                 dateRange.getMinimum().getTimeInMillis(),
