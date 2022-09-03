@@ -1,4 +1,4 @@
-package com.pavelshapel.jpa.spring.boot.starter.service.decorator.instance;
+package com.pavelshapel.jpa.spring.boot.starter.service.decorator.impl;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity;
