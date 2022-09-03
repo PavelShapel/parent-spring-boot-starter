@@ -31,7 +31,7 @@ public abstract class AbstractBeansCollection<T> implements BeansCollection<T> {
     }
 
     @Override
-    public Optional<T> getBean(Class<?> beanClass) {
+    public <E extends T> Optional<T> getBean(Class<E> beanClass) {
         return Optional.ofNullable(beanClass)
                 .map(Class::getSimpleName)
                 .map(StringUtils::uncapitalize)

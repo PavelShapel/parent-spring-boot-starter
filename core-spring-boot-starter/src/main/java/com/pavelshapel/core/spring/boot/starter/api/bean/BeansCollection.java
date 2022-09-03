@@ -9,7 +9,7 @@ public interface BeansCollection<T> {
 
     Optional<T> getBean(String beanName);
 
-    Optional<T> getBean(Class<?> beanClass);
+    <E extends T> Optional<T> getBean(Class<E> beanClass);
 
     Optional<T> getBean(Predicate<T> predicate);
 }

@@ -2,7 +2,6 @@ package com.pavelshapel.core.spring.boot.starter.impl.util;
 
 import com.pavelshapel.core.spring.boot.starter.api.util.SubstitutionProperties;
 import com.pavelshapel.core.spring.boot.starter.api.util.SubstitutionUtils;
-import lombok.NonNull;
 import org.apache.commons.text.StringSubstitutor;
 
 import java.io.BufferedReader;
@@ -22,7 +21,7 @@ public class CoreSubstitutionUtils implements SubstitutionUtils {
     }
 
     @Override
-    public String replace(@NonNull String source, @NonNull SubstitutionProperties properties) {
+    public String replace(String source, SubstitutionProperties properties) {
         return StringSubstitutor.replace(source, properties);
     }
 
