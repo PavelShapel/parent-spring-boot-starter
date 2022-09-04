@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.function.Predicate.not;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class GenericCollectionRandomizer implements CollectionRandomizer {
@@ -22,8 +25,27 @@ public final class GenericCollectionRandomizer implements CollectionRandomizer {
         return map.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> randomize(entry.getValue()))
+                        this::randomize)
                 );
+    }
+
+    private Object randomize(Map.Entry<String, Specification> entry) {
+        Specification specification = entry.getValue();
+        return Optional.of(specification)
+                .filter(not(this::isEntity))
+                .map(this::randomize)
+                .orElseGet(() -> randomize(getSpecificationBody(specification)));
+    }
+
+    private Entity getSpecificationBody(Specification specification) {
+        return Optional.ofNullable(specification)
+                .map(Specification::getBody)
+                .orElseThrow(() -> new IllegalArgumentException("set correct entity field with body"));
+    }
+
+    private boolean isEntity(Specification specification) {
+        String className = Entity.class.getSimpleName();
+        return className.equalsIgnoreCase(specification.getType());
     }
 
     @Override

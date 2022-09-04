@@ -9,4 +9,5 @@ public class Specification {
     String type;
     long min;
     long max;
+    Entity body;
 }
