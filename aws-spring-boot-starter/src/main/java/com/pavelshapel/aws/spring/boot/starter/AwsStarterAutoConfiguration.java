@@ -1,6 +1,7 @@
 package com.pavelshapel.aws.spring.boot.starter;
 
 import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyDynamoDb;
+import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyLambda;
 import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyS3;
 import com.pavelshapel.aws.spring.boot.starter.api.service.BucketHandler;
 import com.pavelshapel.aws.spring.boot.starter.api.service.DbHandler;
@@ -22,6 +23,9 @@ public class AwsStarterAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnPropertyS3
+    @ConditionalOnPropertyDynamoDb
+    @ConditionalOnPropertyLambda
     public AwsProperties awsProperties() {
         return new AwsProperties();
     }
