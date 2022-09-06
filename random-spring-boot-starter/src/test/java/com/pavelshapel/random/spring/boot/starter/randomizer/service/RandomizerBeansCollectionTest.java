@@ -1,12 +1,15 @@
 package com.pavelshapel.random.spring.boot.starter.randomizer.service;
 
 import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
+import com.pavelshapel.core.spring.boot.starter.impl.bean.AbstractBeansCollection;
 import com.pavelshapel.random.spring.boot.starter.RandomStarterAutoConfiguration;
-import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedTypeBeansCollection;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,31 +20,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 class RandomizerBeansCollectionTest {
     @Autowired
     private RandomizerBeansCollection randomizerBeansCollection;
-    @Autowired
-    private BoundedTypeBeansCollection boundedTypeBeansCollection;
 
     @Test
     void initialization() {
-        Assertions.assertThat(boundedTypeBeansCollection).isNotNull();
-        Assertions.assertThat(randomizerBeansCollection).isNotNull();
+        assertThat(randomizerBeansCollection).isNotNull();
+        assertThat(randomizerBeansCollection.getBeans()).isNotEmpty();
     }
 
     @Test
-    void getBeans_WithoutParams_ShouldReturnBeansCollection() {
-        Assertions.assertThat(randomizerBeansCollection.getBeans())
-                .isNotEmpty()
-                .hasSameSizeAs(boundedTypeBeansCollection.getBeans());
+    void getBean_WithValidStringParameter_ShouldReturnBean() {
+        Optional.of(randomizerBeansCollection)
+                .map(AbstractBeansCollection::getBeans)
+                .map(Map::keySet)
+                .orElseGet(Collections::emptySet)
+                .forEach(beanName ->
+                        assertThat(randomizerBeansCollection.getBean(beanName)).isNotEmpty()
+                );
     }
 
     @Test
-    void getBean_WithValidStringParam_ShouldReturnBean() {
-        randomizerBeansCollection.getBeans().keySet()
-                .forEach(beanName -> assertThat(randomizerBeansCollection.getBean(beanName)).isNotEmpty());
-    }
-
-    @Test
-    void getBean_WithValidClassParam_ShouldReturnBean() {
-        randomizerBeansCollection.getBeans().values()
-                .forEach(bean -> assertThat(randomizerBeansCollection.getBean(bean.getClass())).isNotEmpty());
+    void getBean_WithValidClassParameter_ShouldReturnBean() {
+        Optional.of(randomizerBeansCollection)
+                .map(AbstractBeansCollection::getBeans)
+                .map(Map::values)
+                .orElseGet(Collections::emptySet)
+                .forEach(bean ->
+                        assertThat(randomizerBeansCollection.getBean(bean.getClass())).isNotEmpty()
+                );
     }
 }

@@ -2,7 +2,6 @@ package com.pavelshapel.random.spring.boot.starter;
 
 import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.BoundedTypeBeansCollection;
 import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.impl.BooleanBoundedType;
-import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.impl.EntityBoundedType;
 import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.impl.DateBoundedType;
 import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.impl.DoubleBoundedType;
 import com.pavelshapel.random.spring.boot.starter.randomizer.model.bounded.impl.LongBoundedType;
@@ -51,11 +50,6 @@ public class RandomStarterAutoConfiguration {
     @Bean
     public DoubleBoundedType doubleBoundedType() {
         return new DoubleBoundedType();
-    }
-
-    @Bean
-    public EntityBoundedType entityBoundedType() {
-        return new EntityBoundedType();
     }
 
     @Bean

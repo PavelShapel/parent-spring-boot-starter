@@ -17,6 +17,8 @@ import static java.util.function.Predicate.not;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public final class GenericCollectionRandomizer implements CollectionRandomizer {
+    public static final String SET_CORRECT_ENTITY_EXCEPTION = "set correct entity field with body";
+
     @Autowired
     RandomizerFactory genericRandomizerFactory;
 
@@ -40,7 +42,7 @@ public final class GenericCollectionRandomizer implements CollectionRandomizer {
     private Entity getSpecificationBody(Specification specification) {
         return Optional.ofNullable(specification)
                 .map(Specification::getBody)
-                .orElseThrow(() -> new IllegalArgumentException("set correct entity field with body"));
+                .orElseThrow(() -> new IllegalArgumentException(SET_CORRECT_ENTITY_EXCEPTION));
     }
 
     private boolean isEntity(Specification specification) {
