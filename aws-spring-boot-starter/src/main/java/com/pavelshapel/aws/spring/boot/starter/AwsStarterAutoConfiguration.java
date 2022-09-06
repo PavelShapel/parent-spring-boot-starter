@@ -5,7 +5,9 @@ import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyL
 import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyS3;
 import com.pavelshapel.aws.spring.boot.starter.api.service.BucketHandler;
 import com.pavelshapel.aws.spring.boot.starter.api.service.DbHandler;
+import com.pavelshapel.aws.spring.boot.starter.api.service.RequestHandler;
 import com.pavelshapel.aws.spring.boot.starter.api.service.ResponseHandler;
+import com.pavelshapel.aws.spring.boot.starter.impl.service.ApiGatewayProxyRequestHandler;
 import com.pavelshapel.aws.spring.boot.starter.impl.service.ApiGatewayProxyResponseHandler;
 import com.pavelshapel.aws.spring.boot.starter.impl.service.DynamoDbHandler;
 import com.pavelshapel.aws.spring.boot.starter.impl.service.S3BucketHandler;
@@ -45,5 +47,10 @@ public class AwsStarterAutoConfiguration {
     @Bean
     public ResponseHandler responseHandler() {
         return new ApiGatewayProxyResponseHandler();
+    }
+
+    @Bean
+    public RequestHandler requestHandler() {
+        return new ApiGatewayProxyRequestHandler();
     }
 }
