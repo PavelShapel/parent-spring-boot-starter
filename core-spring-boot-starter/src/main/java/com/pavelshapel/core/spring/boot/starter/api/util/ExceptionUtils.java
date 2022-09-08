@@ -5,5 +5,5 @@ import java.util.Map;
 public interface ExceptionUtils {
     String EXCEPTION_MESSAGE_PATTERN = "illegal argument(s): %s";
 
-    Exception createIllegalArgumentException(Map<String, String> arguments);
+    RuntimeException createIllegalArgumentException(Map<String, Object> arguments);
 }

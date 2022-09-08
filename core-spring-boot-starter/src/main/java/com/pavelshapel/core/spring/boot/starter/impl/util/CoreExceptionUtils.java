@@ -8,11 +8,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.function.Predicate.not;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class CoreExceptionUtils implements ExceptionUtils {
     @Override
-    public Exception createIllegalArgumentException(Map<String, String> arguments) {
+    public RuntimeException createIllegalArgumentException(Map<String, Object> arguments) {
         return Optional.of(joinArguments(arguments))
                 .filter(StringUtils::isNotEmpty)
                 .map(joinArguments -> String.format("illegal argument(s): %s", joinArguments))
@@ -20,8 +21,9 @@ public class CoreExceptionUtils implements ExceptionUtils {
                 .orElseGet(IllegalArgumentException::new);
     }
 
-    private String joinArguments(Map<String, String> arguments) {
+    private String joinArguments(Map<String, Object> arguments) {
         return Optional.ofNullable(arguments)
+                .filter(not(Map::isEmpty))
                 .map(Map::entrySet)
                 .map(Collection::stream)
                 .map(stream -> stream.map(this::entryToString))
@@ -29,7 +31,7 @@ public class CoreExceptionUtils implements ExceptionUtils {
                 .orElse(EMPTY);
     }
 
-    private String entryToString(Map.Entry<String, String> entry) {
+    private String entryToString(Map.Entry<String, Object> entry) {
         return String.format("%s [%s]", entry.getKey(), entry.getValue());
     }
 }
