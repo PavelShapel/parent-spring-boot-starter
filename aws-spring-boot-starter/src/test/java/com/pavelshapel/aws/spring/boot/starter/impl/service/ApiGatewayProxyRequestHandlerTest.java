@@ -91,7 +91,9 @@ class ApiGatewayProxyRequestHandlerTest {
 
     private APIGatewayProxyRequestEvent createRequestWithHttpMethod(HttpMethod httpMethod) {
         APIGatewayProxyRequestEvent request = new APIGatewayProxyRequestEvent();
-        request.withHttpMethod(httpMethod.name());
+        APIGatewayProxyRequestEvent.ProxyRequestContext requestContext = new APIGatewayProxyRequestEvent.ProxyRequestContext();
+        requestContext.setHttpMethod(httpMethod.name());
+        request.withRequestContext(requestContext);
         return request;
     }
 }

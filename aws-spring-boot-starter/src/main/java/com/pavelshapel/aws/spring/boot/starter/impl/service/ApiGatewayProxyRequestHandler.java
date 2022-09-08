@@ -14,7 +14,7 @@ public class ApiGatewayProxyRequestHandler implements RequestHandler {
         return Optional.ofNullable(httpMethod)
                 .filter(unused -> nonNull(request))
                 .map(Enum::name)
-                .map(httpMethodName -> request.getHttpMethod().equalsIgnoreCase(httpMethodName))
+                .map(httpMethodName -> request.getRequestContext().getHttpMethod().equalsIgnoreCase(httpMethodName))
                 .orElseThrow(IllegalArgumentException::new);
     }
 }
