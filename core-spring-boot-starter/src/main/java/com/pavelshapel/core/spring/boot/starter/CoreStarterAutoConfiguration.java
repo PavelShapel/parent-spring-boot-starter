@@ -3,6 +3,7 @@ package com.pavelshapel.core.spring.boot.starter;
 import com.pavelshapel.core.spring.boot.starter.api.annotation.AnnotationReplacer;
 import com.pavelshapel.core.spring.boot.starter.api.util.ClassUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.CompletableFutureUtils;
+import com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.HttpUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.RandomUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
@@ -11,6 +12,7 @@ import com.pavelshapel.core.spring.boot.starter.bpp.SelfAutowiredAnnotationBeanP
 import com.pavelshapel.core.spring.boot.starter.impl.annotation.ClassAnnotationReplacer;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreClassUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreCompletableFutureUtils;
+import com.pavelshapel.core.spring.boot.starter.impl.util.CoreExceptionUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreHttpUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreRandomUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreStreamUtils;
@@ -55,6 +57,11 @@ public class CoreStarterAutoConfiguration {
     @Bean
     public SubstitutionUtils substitutionUtils() {
         return new CoreSubstitutionUtils();
+    }
+
+    @Bean
+    public ExceptionUtils exceptionUtils() {
+        return new CoreExceptionUtils();
     }
 
     @Bean
