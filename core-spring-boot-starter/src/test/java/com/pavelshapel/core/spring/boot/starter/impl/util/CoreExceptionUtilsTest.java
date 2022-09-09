@@ -4,31 +4,23 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Map;
-
-import static com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils.EXCEPTION_MESSAGE_PATTERN;
-import static java.util.Collections.singletonMap;
+import static com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@SuppressWarnings("ThrowableNotThrown")
 @ExtendWith(MockitoExtension.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class CoreExceptionUtilsTest {
-    private static final String KEY = "key";
-    private static final String VALUE = "value";
-    private static final Map<String, Object> ARGUMENTS = singletonMap(KEY, VALUE);
-
     @Spy
     CoreExceptionUtils exceptionUtils;
 
     @Test
-    void createIllegalArgumentException_WithValidParameter_ShouldCreateExceptionWithMessage() {
-        RuntimeException result = exceptionUtils.createIllegalArgumentException(ARGUMENTS);
+    void createIllegalArgumentException_WithValidParameters_ShouldCreateExceptionWithMessage() {
+        RuntimeException result = exceptionUtils.createIllegalArgumentException(KEY, VALUE);
 
         assertThat(result)
                 .isNotNull()
@@ -37,10 +29,16 @@ class CoreExceptionUtilsTest {
                 .isEqualTo(String.format(EXCEPTION_MESSAGE_PATTERN, String.format("%s [%s]", KEY, VALUE)));
     }
 
-    @ParameterizedTest
-    @NullSource
-    void createIllegalArgumentException_WithNullParameter_ShouldCreateExceptionWithMessage(Map<String, Object> arguments) {
-        RuntimeException result = exceptionUtils.createIllegalArgumentException(arguments);
+    @Test
+    void createIllegalArgumentException_WithOddParametersLength_ShouldThrowException() {
+        assertThatThrownBy(() -> exceptionUtils.createIllegalArgumentException(KEY))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(String.format(EXCEPTION_MESSAGE_PATTERN, String.format("%s [%d]", ARGUMENTS_LENGTH, 1)));
+    }
+
+    @Test
+    void createIllegalArgumentException_WithEmptyParameter_ShouldCreateExceptionWithoutMessage() {
+        RuntimeException result = exceptionUtils.createIllegalArgumentException();
 
         assertThat(result)
                 .isNotNull()
@@ -49,15 +47,17 @@ class CoreExceptionUtilsTest {
                 .isNull();
     }
 
-    @ParameterizedTest
-    @EmptySource
-    void createIllegalArgumentException_WithEmptyParameter_ShouldCreateExceptionWithoutMessage(Map<String, Object> arguments) {
-        RuntimeException result = exceptionUtils.createIllegalArgumentException(arguments);
-
-        assertThat(result)
-                .isNotNull()
+    @Test
+    void createIllegalArgumentException_WithNullKeyParameter_ShouldThrowException() {
+        assertThatThrownBy(() -> exceptionUtils.createIllegalArgumentException(null, VALUE))
                 .isInstanceOf(IllegalArgumentException.class)
-                .extracting(Throwable::getMessage)
-                .isNull();
+                .hasMessage(String.format(EXCEPTION_MESSAGE_PATTERN, String.format("%s [null]", KEY)));
+    }
+
+    @Test
+    void createIllegalArgumentException_WithNullValueParameter_ShouldThrowException() {
+        assertThatThrownBy(() -> exceptionUtils.createIllegalArgumentException(KEY, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(String.format(EXCEPTION_MESSAGE_PATTERN, String.format("%s [null]", VALUE)));
     }
 }
