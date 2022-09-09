@@ -25,8 +25,8 @@ public class ApiGatewayProxyRequestHandler implements RequestHandler {
                 .map(httpMethodName -> getRequestHttpMethod(request).equalsIgnoreCase(httpMethodName))
                 .orElseThrow(() ->
                         exceptionUtils.createIllegalArgumentException(
-                                "request", request,
-                                "httpMethod", httpMethod)
+                                REQUEST, request,
+                                HTTP_METHOD, httpMethod)
                 );
     }
 
@@ -36,7 +36,7 @@ public class ApiGatewayProxyRequestHandler implements RequestHandler {
                 .map(APIGatewayV2HTTPEvent.RequestContext::getHttp)
                 .map(APIGatewayV2HTTPEvent.RequestContext.Http::getMethod)
                 .orElseThrow(() ->
-                        exceptionUtils.createIllegalArgumentException("request", request)
+                        exceptionUtils.createIllegalArgumentException(REQUEST, request)
                 );
     }
 }

@@ -7,6 +7,9 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 public interface RequestHandler {
+    String REQUEST = "request";
+    String HTTP_METHOD = "httpMethod";
+
     default boolean isPostMethod(APIGatewayV2HTTPEvent request) {
         return isRequestMethod(request, POST);
     }
