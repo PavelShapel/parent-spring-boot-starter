@@ -17,11 +17,12 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
+@SuppressWarnings("ThrowableNotThrown")
 @ExtendWith(MockitoExtension.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class ApiGatewayProxyRequestHandlerTest {
@@ -51,7 +52,7 @@ class ApiGatewayProxyRequestHandlerTest {
     @ParameterizedTest
     @NullSource
     void isRequestMethod_WithNullRequestAsParameter_ShouldThrowException(APIGatewayV2HTTPEvent request) {
-        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(anyMap());
+        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
 
         assertThatThrownBy(() -> requestHandler.isRequestMethod(request, POST))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -60,7 +61,7 @@ class ApiGatewayProxyRequestHandlerTest {
     @ParameterizedTest
     @NullSource
     void isRequestMethod_WithNullHttpMethodAsParameter_ShouldThrowException(HttpMethod httpMethod) {
-        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(anyMap());
+        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
         APIGatewayV2HTTPEvent request = createRequestWithHttpMethod(GET);
 
         assertThatThrownBy(() -> requestHandler.isRequestMethod(request, httpMethod))

@@ -8,8 +8,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
@@ -25,7 +23,11 @@ public class ApiGatewayProxyRequestHandler implements RequestHandler {
                 .filter(unused -> nonNull(request))
                 .map(Enum::name)
                 .map(httpMethodName -> getRequestHttpMethod(request).equalsIgnoreCase(httpMethodName))
-                .orElseThrow(() -> exceptionUtils.createIllegalArgumentException(getRequestArgument(request)));
+                .orElseThrow(() ->
+                        exceptionUtils.createIllegalArgumentException(
+                                "request", request,
+                                "httpMethod", httpMethod)
+                );
     }
 
     private String getRequestHttpMethod(APIGatewayV2HTTPEvent request) {
@@ -33,12 +35,8 @@ public class ApiGatewayProxyRequestHandler implements RequestHandler {
                 .map(APIGatewayV2HTTPEvent::getRequestContext)
                 .map(APIGatewayV2HTTPEvent.RequestContext::getHttp)
                 .map(APIGatewayV2HTTPEvent.RequestContext.Http::getMethod)
-                .orElseThrow(() -> exceptionUtils.createIllegalArgumentException(getRequestArgument(request)));
-    }
-
-    private Map<String, Object> getRequestArgument(APIGatewayV2HTTPEvent request) {
-        return Optional.ofNullable(request)
-                .map(event -> new HashMap<String, Object>(Map.of("request", event)))
-                .orElseGet(HashMap::new);
+                .orElseThrow(() ->
+                        exceptionUtils.createIllegalArgumentException("request", request)
+                );
     }
 }
