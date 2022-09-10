@@ -38,8 +38,7 @@ public abstract class AbstractRandomizer<T> implements Randomizer<T> {
 
 
     private Specification createBoundedSpecification(long minValue, long maxValue) {
-        Specification specification = Specification.builder()
-                .type(boundedType.getType().getSimpleName())
+        Specification specification = Specification.builder(boundedType.getType().getSimpleName())
                 .min(minValue)
                 .max(maxValue)
                 .build();

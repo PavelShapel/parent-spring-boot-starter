@@ -10,8 +10,7 @@ class EntityTest {
     private static final byte MIN = Byte.MIN_VALUE;
     private static final byte MAX = Byte.MAX_VALUE;
 
-    public static final Specification VALUE = Specification.builder()
-            .type(TYPE)
+    public static final Specification VALUE = Specification.builder(TYPE)
             .min(MIN)
             .max(MAX)
             .build();

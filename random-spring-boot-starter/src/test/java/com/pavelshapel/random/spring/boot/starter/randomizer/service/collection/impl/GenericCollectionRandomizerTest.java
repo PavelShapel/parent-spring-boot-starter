@@ -79,7 +79,7 @@ class GenericCollectionRandomizerTest {
     void randomize_MapWithEntityWithoutBodyAsParameter_ShouldThrowException() {
         Entity entity = Optional.of(Entity.class)
                 .map(Class::getSimpleName)
-                .map(className -> Specification.builder().type(className))
+                .map(Specification::builder)
                 .map(Specification.SpecificationBuilder::build)
                 .map(specification -> Collections.singletonMap("", specification))
                 .map(Entity::new)

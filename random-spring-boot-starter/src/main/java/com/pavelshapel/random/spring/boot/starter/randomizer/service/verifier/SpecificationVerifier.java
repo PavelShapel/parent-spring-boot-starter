@@ -33,8 +33,7 @@ public class SpecificationVerifier implements Verifier<Specification> {
     }
 
     private Specification createSpecification(Specification specification, Range<Long> range) {
-        return Specification.builder()
-                .type(specification.getType())
+        return Specification.builder(specification.getType())
                 .min(range.getMinimum())
                 .max(range.getMaximum())
                 .build();
