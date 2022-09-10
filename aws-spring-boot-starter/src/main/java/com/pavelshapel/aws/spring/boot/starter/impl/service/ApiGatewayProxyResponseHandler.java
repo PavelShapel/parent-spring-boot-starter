@@ -28,9 +28,8 @@ public class ApiGatewayProxyResponseHandler implements ResponseHandler {
     @Autowired
     ExceptionUtils exceptionUtils;
 
-    @Override
-    public APIGatewayV2HTTPResponse updateResponseWithOkRequestAndGet(APIGatewayV2HTTPResponse response,
-                                                                      String responseBody) {
+    public APIGatewayV2HTTPResponse updateResponseWithOkAndGet(APIGatewayV2HTTPResponse response,
+                                                               String responseBody) {
         return verifiedResponseWithBodyAndStatusCode(response, responseBody, OK);
     }
 

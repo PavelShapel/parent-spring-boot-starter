@@ -44,11 +44,11 @@ class ApiGatewayProxyResponseHandlerTest {
     ApiGatewayProxyResponseHandler responseHandler;
 
     @Test
-    void updateResponseWithOkRequestAndGet_WithValidParameters_ShouldUpdateAndReturnResponse() {
+    void updateResponseWithOkAndGet_WithValidParameters_ShouldUpdateAndReturnResponse() {
         APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
         String responseBody = RESPONSE_BODY;
 
-        APIGatewayV2HTTPResponse updatedResponse = responseHandler.updateResponseWithOkRequestAndGet(response, responseBody);
+        APIGatewayV2HTTPResponse updatedResponse = responseHandler.updateResponseWithOkAndGet(response, responseBody);
 
         assertThat(updatedResponse)
                 .isNotNull()
@@ -58,20 +58,20 @@ class ApiGatewayProxyResponseHandlerTest {
 
     @ParameterizedTest
     @NullSource
-    void updateResponseWithOkRequestAndGet_WithNullResponseBodyAsParameter_ShouldThrowException(String responseBody) {
+    void updateResponseWithOkAndGet_WithNullResponseBodyAsParameter_ShouldThrowException(String responseBody) {
         doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
         APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
 
-        assertThatThrownBy(() -> responseHandler.updateResponseWithOkRequestAndGet(response, responseBody))
+        assertThatThrownBy(() -> responseHandler.updateResponseWithOkAndGet(response, responseBody))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest
     @NullSource
-    void updateResponseWithOkRequestAndGet_WithNullResponseAsParameter_ShouldThrowException(APIGatewayV2HTTPResponse response) {
+    void updateResponseWithOkAndGet_WithNullResponseAsParameter_ShouldThrowException(APIGatewayV2HTTPResponse response) {
         doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
 
-        assertThatThrownBy(() -> responseHandler.updateResponseWithOkRequestAndGet(response, RESPONSE_BODY))
+        assertThatThrownBy(() -> responseHandler.updateResponseWithOkAndGet(response, RESPONSE_BODY))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

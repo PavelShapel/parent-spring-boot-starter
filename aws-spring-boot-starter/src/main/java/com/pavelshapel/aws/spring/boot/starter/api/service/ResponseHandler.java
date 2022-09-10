@@ -13,7 +13,7 @@ public interface ResponseHandler {
     String STATUS_CODE = "statusCode";
     String EXCEPTION_MESSAGE = "exceptionMessage";
 
-    APIGatewayV2HTTPResponse updateResponseWithOkRequestAndGet(APIGatewayV2HTTPResponse response, String responseBody);
+    APIGatewayV2HTTPResponse updateResponseWithOkAndGet(APIGatewayV2HTTPResponse response, String responseBody);
 
     APIGatewayV2HTTPResponse updateResponseWithBadRequestAndGet(APIGatewayV2HTTPResponse response, Exception exception);
 
