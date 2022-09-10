@@ -1,4 +1,4 @@
-package com.pavelshapel.core.spring.boot.starter.api.util;
+package com.pavelshapel.core.spring.boot.starter.impl.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
