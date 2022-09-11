@@ -3,6 +3,7 @@ package com.pavelshapel.json.spring.boot.starter.converter.jackson;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils;
 import com.pavelshapel.json.spring.boot.starter.converter.JsonConverter;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,16 +21,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JacksonJsonConverter implements JsonConverter {
     ObjectMapper customObjectMapper;
+    ExceptionUtils exceptionUtils;
 
     @Override
     public <P> String pojoToJson(P pojo) {
         try {
-            String json = customObjectMapper.writeValueAsString(pojo);
-            return Optional.ofNullable(json)
+            return Optional.of(customObjectMapper.writeValueAsString(pojo))
                     .filter(this::isValidJson)
-                    .orElseThrow(() -> new JsonConverterException(buildPojoMessage(pojo), buildJsonMessage(json)));
+                    .orElseThrow();
         } catch (Exception exception) {
-            throw new JsonConverterException(exception, buildPojoMessage(pojo));
+            throw createIllegalArgumentExceptionWithPojo(pojo);
         }
     }
 
@@ -38,7 +39,7 @@ public class JacksonJsonConverter implements JsonConverter {
         try {
             return customObjectMapper.readValue(json, targetClass);
         } catch (Exception exception) {
-            throw new JsonConverterException(exception, buildJsonMessage(json), buildClassMessage(targetClass));
+            throw exceptionUtils.createIllegalArgumentException(JSON, json, TARGET_CLASS, targetClass);
         }
     }
 
@@ -47,16 +48,16 @@ public class JacksonJsonConverter implements JsonConverter {
         try {
             return customObjectMapper.readValue(inputStream, targetClass);
         } catch (Exception exception) {
-            throw new JsonConverterException(exception, buildInputStreamMessage(inputStream), buildClassMessage(targetClass));
+            throw exceptionUtils.createIllegalArgumentException(INPUT_STREAM, inputStream, TARGET_CLASS, targetClass);
         }
     }
 
     @Override
-    public <P> List<P> inputStreamToPojos(InputStream inputStream, Class<P[]> targetClass) {
+    public <P> List<P> inputStreamToPojos(InputStream inputStream, Class<P[]> targetClasses) {
         try {
-            return Arrays.asList(customObjectMapper.readValue(inputStream, targetClass));
+            return Arrays.asList(customObjectMapper.readValue(inputStream, targetClasses));
         } catch (Exception exception) {
-            throw new JsonConverterException(exception, buildInputStreamMessage(inputStream), buildClassMessage(targetClass));
+            throw exceptionUtils.createIllegalArgumentException(INPUT_STREAM, inputStream, TARGET_CLASSES, targetClasses);
         }
     }
 
@@ -64,9 +65,9 @@ public class JacksonJsonConverter implements JsonConverter {
     public <P, M> Map<String, M> pojoToMap(P pojo) {
         try {
             return Optional.ofNullable(customObjectMapper.convertValue(pojo, new TypeReference<Map<String, M>>() {
-            })).orElseThrow(() -> new JsonConverterException(buildPojoMessage(pojo)));
+            })).orElseThrow(() -> createIllegalArgumentExceptionWithPojo(pojo));
         } catch (Exception exception) {
-            throw new JsonConverterException(exception, buildPojoMessage(pojo));
+            throw createIllegalArgumentExceptionWithPojo(pojo);
         }
     }
 
@@ -74,9 +75,9 @@ public class JacksonJsonConverter implements JsonConverter {
     public <P, M> P mapToPojo(Map<String, M> map, Class<P> targetClass) {
         try {
             return Optional.ofNullable(customObjectMapper.convertValue(map, targetClass))
-                    .orElseThrow(() -> new JsonConverterException(buildMapMessage(map), buildClassMessage(targetClass)));
+                    .orElseThrow();
         } catch (Exception exception) {
-            throw new JsonConverterException(exception, buildMapMessage(map), buildClassMessage(targetClass));
+            throw exceptionUtils.createIllegalArgumentException(MAP, map, TARGET_CLASS, targetClass);
         }
     }
 
@@ -99,19 +100,19 @@ public class JacksonJsonConverter implements JsonConverter {
         try {
             return customObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(pojo);
         } catch (Exception exception) {
-            throw new JsonConverterException(exception, buildPojoMessage(pojo));
+            throw createIllegalArgumentExceptionWithPojo(pojo);
         }
     }
 
     @Override
     public String getNodeAsString(String json, String... nodes) {
         try {
-            return Optional.ofNullable(customObjectMapper.readTree(json))
+            return Optional.of(customObjectMapper.readTree(json))
                     .map(jsonNode -> getNode(jsonNode, nodes, 0))
                     .map(JsonNode::textValue)
-                    .orElseThrow(() -> new JsonConverterException(buildJsonMessage(json), buildNodesMessage(String.join(",", nodes))));
+                    .orElseThrow();
         } catch (Exception exception) {
-            throw new JsonConverterException(exception, buildJsonMessage(json), buildNodesMessage(String.join(",", nodes)));
+            throw exceptionUtils.createIllegalArgumentException(JSON, json, NODES, nodes);
         }
     }
 
@@ -125,31 +126,7 @@ public class JacksonJsonConverter implements JsonConverter {
                 .orElse(root);
     }
 
-    private String buildPojoMessage(Object object) {
-        return buildArgumentPattern("pojo", object);
-    }
-
-    private String buildJsonMessage(Object object) {
-        return buildArgumentPattern("json", object);
-    }
-
-    private String buildInputStreamMessage(Object object) {
-        return buildArgumentPattern("inputStream", object);
-    }
-
-    private String buildMapMessage(Object object) {
-        return buildArgumentPattern("map", object);
-    }
-
-    private String buildClassMessage(Object object) {
-        return buildArgumentPattern("class", object);
-    }
-
-    private String buildNodesMessage(Object object) {
-        return buildArgumentPattern("nodes", object);
-    }
-
-    private String buildArgumentPattern(String argument, Object object) {
-        return String.format("%s = [%s]", argument, object);
+    private <P> RuntimeException createIllegalArgumentExceptionWithPojo(P pojo) {
+        return exceptionUtils.createIllegalArgumentException(POJO, pojo);
     }
 }

@@ -28,7 +28,6 @@ import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
-@SuppressWarnings("ThrowableNotThrown")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ExtendWith(MockitoExtension.class)
 class ApiGatewayProxyResponseHandlerTest {
@@ -59,7 +58,7 @@ class ApiGatewayProxyResponseHandlerTest {
     @ParameterizedTest
     @NullSource
     void updateResponseWithOkAndGet_WithNullResponseBodyAsParameter_ShouldThrowException(String responseBody) {
-        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
+        mockExceptionUtilsCreateIllegalArgumentException();
         APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
 
         assertThatThrownBy(() -> responseHandler.updateResponseWithOkAndGet(response, responseBody))
@@ -69,7 +68,7 @@ class ApiGatewayProxyResponseHandlerTest {
     @ParameterizedTest
     @NullSource
     void updateResponseWithOkAndGet_WithNullResponseAsParameter_ShouldThrowException(APIGatewayV2HTTPResponse response) {
-        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
+        mockExceptionUtilsCreateIllegalArgumentException();
 
         assertThatThrownBy(() -> responseHandler.updateResponseWithOkAndGet(response, RESPONSE_BODY))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -91,7 +90,7 @@ class ApiGatewayProxyResponseHandlerTest {
     @ParameterizedTest
     @NullSource
     void updateResponseWithBadRequestAndGet_Exception_WithNullExceptionAsParameter_ShouldThrowException(Exception exception) {
-        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
+        mockExceptionUtilsCreateIllegalArgumentException();
         APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
 
         assertThatThrownBy(() -> responseHandler.updateResponseWithBadRequestAndGet(response, exception))
@@ -101,7 +100,7 @@ class ApiGatewayProxyResponseHandlerTest {
     @ParameterizedTest
     @NullSource
     void updateResponseWithBadRequestAndGet_Exception_WithNullResponseAsParameter_ShouldThrowException(APIGatewayV2HTTPResponse response) {
-        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
+        mockExceptionUtilsCreateIllegalArgumentException();
 
         assertThatThrownBy(() -> responseHandler.updateResponseWithBadRequestAndGet(response, EXCEPTION))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -124,7 +123,7 @@ class ApiGatewayProxyResponseHandlerTest {
     @ParameterizedTest
     @NullSource
     void updateResponseWithBadRequestAndGet_SupportedMethods_WithNullSupportedMethodsAsParameter_ShouldThrowException(List<HttpMethod> httpMethods) {
-        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
+        mockExceptionUtilsCreateIllegalArgumentException();
         APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
 
         assertThatThrownBy(() -> responseHandler.updateResponseWithBadRequestAndGet(response, httpMethods))
@@ -134,9 +133,14 @@ class ApiGatewayProxyResponseHandlerTest {
     @ParameterizedTest
     @NullSource
     void updateResponseWithBadRequestAndGet_SupportedMethods_WithNullResponseAsParameter_ShouldThrowException(APIGatewayV2HTTPResponse response) {
-        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
+        mockExceptionUtilsCreateIllegalArgumentException();
 
         assertThatThrownBy(() -> responseHandler.updateResponseWithBadRequestAndGet(response, SUPPORTED_HTTP_METHOD_LIST))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @SuppressWarnings("ThrowableNotThrown")
+    private void mockExceptionUtilsCreateIllegalArgumentException() {
+        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
     }
 }
