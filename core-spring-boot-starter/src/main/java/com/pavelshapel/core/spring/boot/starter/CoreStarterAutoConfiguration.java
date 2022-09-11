@@ -5,6 +5,7 @@ import com.pavelshapel.core.spring.boot.starter.api.util.ClassUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.CompletableFutureUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.HttpUtils;
+import com.pavelshapel.core.spring.boot.starter.api.util.MathUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.RandomUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.SubstitutionUtils;
@@ -14,6 +15,7 @@ import com.pavelshapel.core.spring.boot.starter.impl.util.CoreClassUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreCompletableFutureUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreExceptionUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreHttpUtils;
+import com.pavelshapel.core.spring.boot.starter.impl.util.CoreMathUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreRandomUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreStreamUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreSubstitutionUtils;
@@ -72,5 +74,10 @@ public class CoreStarterAutoConfiguration {
     @Bean
     public HttpUtils httpUtils() {
         return new CoreHttpUtils();
+    }
+
+    @Bean
+    public MathUtils mathUtils() {
+        return new CoreMathUtils();
     }
 }

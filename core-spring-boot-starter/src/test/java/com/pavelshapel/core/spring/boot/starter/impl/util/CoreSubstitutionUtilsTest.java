@@ -1,6 +1,6 @@
 package com.pavelshapel.core.spring.boot.starter.impl.util;
 
-import com.pavelshapel.core.spring.boot.starter.impl.model.SubstitutionProperties;
+import com.pavelshapel.core.spring.boot.starter.impl.model.properties.StringProperties;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +23,7 @@ class CoreSubstitutionUtilsTest {
     private static final String WORLD = "world";
     private static final String SOURCE = HELLO + " ${" + WHO + "}!";
     private static final String SOURCE_WITH_DEFAULT_PROPERTIES = HELLO + " ${0}!";
-    private static final SubstitutionProperties PROPERTIES = new SubstitutionProperties(singletonMap(WHO, WORLD));
+    private static final StringProperties PROPERTIES = new StringProperties(singletonMap(WHO, WORLD));
     private static final String SOURCE_TXT = "source.txt";
 
     @Spy
