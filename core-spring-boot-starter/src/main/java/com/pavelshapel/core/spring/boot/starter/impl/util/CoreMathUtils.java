@@ -3,6 +3,7 @@ package com.pavelshapel.core.spring.boot.starter.impl.util;
 import com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.MathUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.SubstitutionUtils;
+import com.pavelshapel.core.spring.boot.starter.impl.model.properties.NumberProperties;
 import com.pavelshapel.core.spring.boot.starter.impl.model.properties.StringProperties;
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
@@ -25,10 +28,10 @@ public class CoreMathUtils implements MathUtils {
     SubstitutionUtils substitutionUtils;
 
     @Override
-    public BigDecimal evaluate(String rawExpression, StringProperties variables) {
+    public BigDecimal evaluate(String rawExpression, NumberProperties variables) {
         return Optional.ofNullable(rawExpression)
                 .filter(unused -> nonNull(variables))
-                .map(source -> replace(source, variables))
+                .map(expression -> replace(expression, variables))
                 .map(this::eval)
                 .orElseThrow(() -> exceptionUtils.createIllegalArgumentException(
                         RAW_EXPRESSION, rawExpression,
@@ -36,8 +39,20 @@ public class CoreMathUtils implements MathUtils {
                 ));
     }
 
-    private String replace(String source, StringProperties properties) {
-        return substitutionUtils.replace(source, properties);
+    private String replace(String rawExpression, NumberProperties variables) {
+        return Optional.of(variables)
+                .map(this::convertNumberPropertiesToStringProperties)
+                .map(properties -> substitutionUtils.replace(rawExpression, properties))
+                .orElseThrow();
+    }
+
+    private StringProperties convertNumberPropertiesToStringProperties(NumberProperties variables) {
+        Map<String, String> map = variables.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().toString()
+                ));
+        return new StringProperties(map);
     }
 
     @SneakyThrows
