@@ -24,11 +24,11 @@ import static org.springframework.http.HttpMethod.POST;
 
 @ExtendWith(MockitoExtension.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-class ApiGatewayProxyRequestHandlerTest {
+class ApiGatewayRequestHandlerTest {
     @Mock
     ExceptionUtils exceptionUtils;
     @InjectMocks
-    ApiGatewayProxyRequestHandler requestHandler;
+    ApiGatewayRequestHandler requestHandler;
 
     @Test
     void isRequestMethod_WithValidParametersAndEqualsMethods_ShouldReturnTrue() {

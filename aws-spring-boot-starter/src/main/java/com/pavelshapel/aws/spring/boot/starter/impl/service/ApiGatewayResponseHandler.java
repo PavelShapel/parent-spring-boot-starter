@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ApiGatewayProxyResponseHandler implements ResponseHandler {
+public class ApiGatewayResponseHandler implements ResponseHandler {
     @Autowired
     JsonConverter jsonConverter;
     @Autowired

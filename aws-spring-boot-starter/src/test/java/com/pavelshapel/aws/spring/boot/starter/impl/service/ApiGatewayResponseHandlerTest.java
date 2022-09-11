@@ -30,7 +30,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ExtendWith(MockitoExtension.class)
-class ApiGatewayProxyResponseHandlerTest {
+class ApiGatewayResponseHandlerTest {
     private static final String BODY = "body";
     private static final String EXCEPTION_JSON = String.format("{\"%1$s\":\"%1$s\"}", EXCEPTION_MESSAGE);
     private static final Exception EXCEPTION = new Exception(EXCEPTION_MESSAGE);
@@ -40,7 +40,7 @@ class ApiGatewayProxyResponseHandlerTest {
     @Mock
     ExceptionUtils exceptionUtils;
     @InjectMocks
-    ApiGatewayProxyResponseHandler responseHandler;
+    ApiGatewayResponseHandler responseHandler;
 
     @Test
     void updateResponseWithOkAndGet_WithValidParameters_ShouldUpdateAndReturnResponse() {

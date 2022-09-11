@@ -13,7 +13,7 @@ import java.util.Optional;
 import static java.util.Objects.nonNull;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ApiGatewayProxyRequestHandler implements RequestHandler {
+public class ApiGatewayRequestHandler implements RequestHandler {
     @Autowired
     ExceptionUtils exceptionUtils;
 
@@ -23,10 +23,9 @@ public class ApiGatewayProxyRequestHandler implements RequestHandler {
                 .filter(unused -> nonNull(request))
                 .map(Enum::name)
                 .map(httpMethodName -> getRequestHttpMethod(request).equalsIgnoreCase(httpMethodName))
-                .orElseThrow(() ->
-                        exceptionUtils.createIllegalArgumentException(
-                                REQUEST, request,
-                                HTTP_METHOD, httpMethod)
+                .orElseThrow(() -> exceptionUtils.createIllegalArgumentException(
+                        REQUEST, request,
+                        HTTP_METHOD, httpMethod)
                 );
     }
 
@@ -35,8 +34,8 @@ public class ApiGatewayProxyRequestHandler implements RequestHandler {
                 .map(APIGatewayV2HTTPEvent::getRequestContext)
                 .map(APIGatewayV2HTTPEvent.RequestContext::getHttp)
                 .map(APIGatewayV2HTTPEvent.RequestContext.Http::getMethod)
-                .orElseThrow(() ->
-                        exceptionUtils.createIllegalArgumentException(REQUEST, request)
-                );
+                .orElseThrow(() -> exceptionUtils.createIllegalArgumentException(
+                        REQUEST, request
+                ));
     }
 }
