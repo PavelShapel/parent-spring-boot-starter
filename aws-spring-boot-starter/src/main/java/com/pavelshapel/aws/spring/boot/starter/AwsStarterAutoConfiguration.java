@@ -7,8 +7,8 @@ import com.pavelshapel.aws.spring.boot.starter.api.service.BucketHandler;
 import com.pavelshapel.aws.spring.boot.starter.api.service.DbHandler;
 import com.pavelshapel.aws.spring.boot.starter.api.service.RequestHandler;
 import com.pavelshapel.aws.spring.boot.starter.api.service.ResponseHandler;
-import com.pavelshapel.aws.spring.boot.starter.impl.service.ApiGatewayProxyRequestHandler;
-import com.pavelshapel.aws.spring.boot.starter.impl.service.ApiGatewayProxyResponseHandler;
+import com.pavelshapel.aws.spring.boot.starter.impl.service.ApiGatewayRequestHandler;
+import com.pavelshapel.aws.spring.boot.starter.impl.service.ApiGatewayResponseHandler;
 import com.pavelshapel.aws.spring.boot.starter.impl.service.DynamoDbHandler;
 import com.pavelshapel.aws.spring.boot.starter.impl.service.S3BucketHandler;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
@@ -46,11 +46,11 @@ public class AwsStarterAutoConfiguration {
 
     @Bean
     public ResponseHandler responseHandler() {
-        return new ApiGatewayProxyResponseHandler();
+        return new ApiGatewayResponseHandler();
     }
 
     @Bean
     public RequestHandler requestHandler() {
-        return new ApiGatewayProxyRequestHandler();
+        return new ApiGatewayRequestHandler();
     }
 }

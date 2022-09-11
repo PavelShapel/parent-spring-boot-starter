@@ -13,11 +13,13 @@ import org.springframework.http.HttpStatus;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonMap;
 import static java.util.Objects.nonNull;
+import static java.util.function.Predicate.not;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -38,7 +40,7 @@ public class ApiGatewayResponseHandler implements ResponseHandler {
                                                                        Exception exception) {
         return Optional.ofNullable(exception)
                 .map(Throwable::getMessage)
-                .map(exceptionMessage -> singletonMap(EXCEPTION_MESSAGE, exceptionMessage))
+                .map(this::createExceptionResponseBody)
                 .map(jsonConverter::pojoToJson)
                 .map(responseBody -> verifiedResponseWithBodyAndStatusCode(response, responseBody, BAD_REQUEST))
                 .orElseThrow(() -> exceptionUtils.createIllegalArgumentException(
@@ -55,7 +57,10 @@ public class ApiGatewayResponseHandler implements ResponseHandler {
                 .map(Collection::stream)
                 .map(stream -> stream.map(Enum::name))
                 .map(stream -> stream.collect(Collectors.joining(", ")))
-                .map(responseBody -> verifiedResponseWithBodyAndStatusCode(response, String.format("[%s] method(s) not supported", responseBody), BAD_REQUEST))
+                .map(responseBody -> String.format(METHOD_NOT_SUPPORTED_PATTERN, responseBody))
+                .map(this::createExceptionResponseBody)
+                .map(jsonConverter::pojoToJson)
+                .map(responseBody -> verifiedResponseWithBodyAndStatusCode(response, responseBody, BAD_REQUEST))
                 .orElseThrow(() -> exceptionUtils.createIllegalArgumentException(
                         RESPONSE, response,
                         SUPPORTED_HTTP_METHODS, supportedHttpMethods
@@ -79,12 +84,33 @@ public class ApiGatewayResponseHandler implements ResponseHandler {
         return Optional.ofNullable(responseBody)
                 .filter(unused -> nonNull(response))
                 .filter(unused -> nonNull(statusCode))
+                .map(this::updateIfSimpleResponse)
                 .map(body -> responseWithBodyAndStatusCode(response, body, statusCode))
                 .orElseThrow(() -> exceptionUtils.createIllegalArgumentException(
                         RESPONSE, response,
                         RESPONSE_BODY, responseBody,
                         STATUS_CODE, statusCode
                 ));
+    }
+
+    private String updateIfSimpleResponse(String responseBody) {
+        return Optional.of(responseBody)
+                .filter(not(jsonConverter::isValidJson))
+                .map(this::createResultResponseBody)
+                .map(jsonConverter::pojoToJson)
+                .orElse(responseBody);
+    }
+
+    private Map<String, String> createResultResponseBody(String value) {
+        return createSimpleResponseBody(RESULT, value);
+    }
+
+    private Map<String, String> createExceptionResponseBody(String value) {
+        return createSimpleResponseBody(EXCEPTION, value);
+    }
+
+    private Map<String, String> createSimpleResponseBody(String key, String value) {
+        return singletonMap(key, value);
     }
 
     private APIGatewayV2HTTPResponse responseWithBodyAndStatusCode(APIGatewayV2HTTPResponse response,

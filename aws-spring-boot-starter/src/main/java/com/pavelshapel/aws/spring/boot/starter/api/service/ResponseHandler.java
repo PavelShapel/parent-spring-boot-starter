@@ -11,7 +11,8 @@ public interface ResponseHandler {
     String EXCEPTION = "exception";
     String SUPPORTED_HTTP_METHODS = "supportedHttpMethods";
     String STATUS_CODE = "statusCode";
-    String EXCEPTION_MESSAGE = "exceptionMessage";
+    String RESULT = "result";
+    String METHOD_NOT_SUPPORTED_PATTERN = "[%s] method(s) not supported";
 
     APIGatewayV2HTTPResponse updateResponseWithOkAndGet(APIGatewayV2HTTPResponse response, String responseBody);
 

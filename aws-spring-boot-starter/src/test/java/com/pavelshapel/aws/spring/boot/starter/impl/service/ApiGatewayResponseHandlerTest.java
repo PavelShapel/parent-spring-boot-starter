@@ -1,24 +1,26 @@
 package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
+import com.pavelshapel.aws.spring.boot.starter.AwsStarterAutoConfiguration;
+import com.pavelshapel.aws.spring.boot.starter.api.service.ResponseHandler;
+import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
 import com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils;
+import com.pavelshapel.json.spring.boot.starter.JsonStarterAutoConfiguration;
 import com.pavelshapel.json.spring.boot.starter.converter.JsonConverter;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpMethod;
 
 import java.util.List;
 
-import static com.pavelshapel.aws.spring.boot.starter.api.service.ResponseHandler.EXCEPTION_MESSAGE;
-import static com.pavelshapel.aws.spring.boot.starter.api.service.ResponseHandler.RESPONSE_BODY;
-import static com.pavelshapel.aws.spring.boot.starter.api.service.ResponseHandler.STATUS_CODE;
+import static com.pavelshapel.aws.spring.boot.starter.api.service.ResponseHandler.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,24 +30,29 @@ import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
+@SpringBootTest(classes = {
+        AwsStarterAutoConfiguration.class,
+        CoreStarterAutoConfiguration.class,
+        JsonStarterAutoConfiguration.class
+})
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@ExtendWith(MockitoExtension.class)
 class ApiGatewayResponseHandlerTest {
     private static final String BODY = "body";
-    private static final String EXCEPTION_JSON = String.format("{\"%1$s\":\"%1$s\"}", EXCEPTION_MESSAGE);
-    private static final Exception EXCEPTION = new Exception(EXCEPTION_MESSAGE);
+    private static final String THROWABLE_JSON = String.format("{\"%1$s\":\"%1$s\"}", EXCEPTION);
+    private static final String VALID_JSON = String.format("{\"%1$s\":\"%1$s\"}", RESULT);
+    private static final Exception THROWABLE = new Exception(EXCEPTION);
     private static final List<HttpMethod> SUPPORTED_HTTP_METHOD_LIST = List.of(GET, POST);
-    @Mock
+    @SpyBean
     JsonConverter jsonConverter;
-    @Mock
+    @MockBean
     ExceptionUtils exceptionUtils;
-    @InjectMocks
-    ApiGatewayResponseHandler responseHandler;
+    @Autowired
+    ResponseHandler responseHandler;
 
     @Test
-    void updateResponseWithOkAndGet_WithValidParameters_ShouldUpdateAndReturnResponse() {
+    void updateResponseWithOkAndGet_WithValidJsonAsBodyAndValidParameters_ShouldUpdateAndReturnResponse() {
         APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
-        String responseBody = RESPONSE_BODY;
+        String responseBody = VALID_JSON;
 
         APIGatewayV2HTTPResponse updatedResponse = responseHandler.updateResponseWithOkAndGet(response, responseBody);
 
@@ -53,6 +60,18 @@ class ApiGatewayResponseHandlerTest {
                 .isNotNull()
                 .hasFieldOrPropertyWithValue(STATUS_CODE, OK.value())
                 .hasFieldOrPropertyWithValue(BODY, responseBody);
+    }
+
+    @Test
+    void updateResponseWithOkAndGet_WithInvalidJsonAsBodyAndValidParameters_ShouldUpdateAndReturnResponse() {
+        APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
+
+        APIGatewayV2HTTPResponse updatedResponse = responseHandler.updateResponseWithOkAndGet(response, RESULT);
+
+        assertThat(updatedResponse)
+                .isNotNull()
+                .hasFieldOrPropertyWithValue(STATUS_CODE, OK.value())
+                .hasFieldOrPropertyWithValue(BODY, VALID_JSON);
     }
 
     @ParameterizedTest
@@ -76,15 +95,14 @@ class ApiGatewayResponseHandlerTest {
 
     @Test
     void updateResponseWithBadRequestAndGet_Exception_WithValidParameters_ShouldUpdateAndReturnResponse() {
-        doReturn(EXCEPTION_JSON).when(jsonConverter).pojoToJson(any());
         APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
 
-        APIGatewayV2HTTPResponse updatedResponse = responseHandler.updateResponseWithBadRequestAndGet(response, EXCEPTION);
+        APIGatewayV2HTTPResponse updatedResponse = responseHandler.updateResponseWithBadRequestAndGet(response, THROWABLE);
 
         assertThat(updatedResponse)
                 .isNotNull()
                 .hasFieldOrPropertyWithValue(STATUS_CODE, BAD_REQUEST.value())
-                .hasFieldOrPropertyWithValue(BODY, EXCEPTION_JSON);
+                .hasFieldOrPropertyWithValue(BODY, THROWABLE_JSON);
     }
 
     @ParameterizedTest
@@ -102,7 +120,7 @@ class ApiGatewayResponseHandlerTest {
     void updateResponseWithBadRequestAndGet_Exception_WithNullResponseAsParameter_ShouldThrowException(APIGatewayV2HTTPResponse response) {
         mockExceptionUtilsCreateIllegalArgumentException();
 
-        assertThatThrownBy(() -> responseHandler.updateResponseWithBadRequestAndGet(response, EXCEPTION))
+        assertThatThrownBy(() -> responseHandler.updateResponseWithBadRequestAndGet(response, THROWABLE))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
