@@ -39,7 +39,9 @@ public class JacksonJsonConverter implements JsonConverter {
         try {
             return customObjectMapper.readValue(json, targetClass);
         } catch (Exception exception) {
-            throw exceptionUtils.createIllegalArgumentException(JSON, json, TARGET_CLASS, targetClass);
+            throw exceptionUtils.createIllegalArgumentException(
+                    JSON, json,
+                    TARGET_CLASS, targetClass);
         }
     }
 
@@ -48,7 +50,9 @@ public class JacksonJsonConverter implements JsonConverter {
         try {
             return customObjectMapper.readValue(inputStream, targetClass);
         } catch (Exception exception) {
-            throw exceptionUtils.createIllegalArgumentException(INPUT_STREAM, inputStream, TARGET_CLASS, targetClass);
+            throw exceptionUtils.createIllegalArgumentException(
+                    INPUT_STREAM, inputStream,
+                    TARGET_CLASS, targetClass);
         }
     }
 
@@ -57,7 +61,9 @@ public class JacksonJsonConverter implements JsonConverter {
         try {
             return Arrays.asList(customObjectMapper.readValue(inputStream, targetClasses));
         } catch (Exception exception) {
-            throw exceptionUtils.createIllegalArgumentException(INPUT_STREAM, inputStream, TARGET_CLASSES, targetClasses);
+            throw exceptionUtils.createIllegalArgumentException(
+                    INPUT_STREAM, inputStream,
+                    TARGET_CLASSES, targetClasses);
         }
     }
 
@@ -77,7 +83,9 @@ public class JacksonJsonConverter implements JsonConverter {
             return Optional.ofNullable(customObjectMapper.convertValue(map, targetClass))
                     .orElseThrow();
         } catch (Exception exception) {
-            throw exceptionUtils.createIllegalArgumentException(MAP, map, TARGET_CLASS, targetClass);
+            throw exceptionUtils.createIllegalArgumentException(
+                    MAP, map,
+                    TARGET_CLASS, targetClass);
         }
     }
 
@@ -112,7 +120,9 @@ public class JacksonJsonConverter implements JsonConverter {
                     .map(JsonNode::textValue)
                     .orElseThrow();
         } catch (Exception exception) {
-            throw exceptionUtils.createIllegalArgumentException(JSON, json, NODES, nodes);
+            throw exceptionUtils.createIllegalArgumentException(
+                    JSON, json,
+                    NODES, nodes);
         }
     }
 
@@ -127,6 +137,8 @@ public class JacksonJsonConverter implements JsonConverter {
     }
 
     private <P> RuntimeException createIllegalArgumentExceptionWithPojo(P pojo) {
-        return exceptionUtils.createIllegalArgumentException(POJO, pojo);
+        return exceptionUtils.createIllegalArgumentException(
+                POJO, pojo
+        );
     }
 }
