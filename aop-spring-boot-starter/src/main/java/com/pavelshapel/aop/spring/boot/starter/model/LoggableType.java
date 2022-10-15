@@ -1,4 +1,4 @@
-package com.pavelshapel.aop.spring.boot.starter.log.method;
+package com.pavelshapel.aop.spring.boot.starter.model;
 
 import lombok.AccessLevel;
 import lombok.Getter;

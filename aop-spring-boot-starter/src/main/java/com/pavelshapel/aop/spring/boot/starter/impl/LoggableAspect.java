@@ -1,5 +1,8 @@
-package com.pavelshapel.aop.spring.boot.starter.log.method;
+package com.pavelshapel.aop.spring.boot.starter.impl;
 
+import com.pavelshapel.aop.spring.boot.starter.annotation.Loggable;
+import com.pavelshapel.aop.spring.boot.starter.model.LoggableJoinPointSpecification;
+import com.pavelshapel.aop.spring.boot.starter.model.LoggableType;
 import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.aspectj.lang.JoinPoint;
@@ -21,23 +24,26 @@ import static java.util.logging.Level.SEVERE;
 @Aspect
 @Log
 public class LoggableAspect {
-    private static final String LOG_PATTERN = "[{0}.{1}] {2} -> {3}";
+    private static final String LOG_PATTERN = "[{0}#{1}] {2} -> {3}";
     private static final String NOTHING_TO_LOG = "nothing to log";
+    private static final String ANNOTATION = "com.pavelshapel.aop.spring.boot.starter.annotation.Loggable";
+    private static final String POINTCUT_METHOD_ANNOTATION = "@annotation(" + ANNOTATION + ")";
+    private static final String POINTCUT_CLASS_ANNOTATION = "@within(" + ANNOTATION + ")";
     private static final String POINTCUT = "execution(* *(..)) && (annotatedMethod() || annotatedClass())";
 
-    @Pointcut("@annotation(com.pavelshapel.aop.spring.boot.starter.log.method.Loggable)")
+    @Pointcut(POINTCUT_METHOD_ANNOTATION)
     public void annotatedMethod() {
         //pointcut
     }
 
-    @Pointcut("@within(com.pavelshapel.aop.spring.boot.starter.log.method.Loggable)")
+    @Pointcut(POINTCUT_CLASS_ANNOTATION)
     public void annotatedClass() {
         //pointcut
     }
 
     @AfterReturning(pointcut = POINTCUT, returning = "result")
     public void onSuccess(JoinPoint joinPoint, Object result) {
-        LoggableJoinPointSpecification loggableJoinPointSpecification = new LoggableJoinPointSpecification(joinPoint);
+        LoggableJoinPointSpecification loggableJoinPointSpecification = createLoggableJoinPointSpecification(joinPoint);
         if (isContainingLoggableType(loggableJoinPointSpecification, LoggableType.METHOD_RESULT)) {
             logSuccess(loggableJoinPointSpecification, result);
         }
@@ -45,7 +51,7 @@ public class LoggableAspect {
 
     private void logSuccess(LoggableJoinPointSpecification loggableJoinPointSpecification, Object result) {
         if (isResponseEntityErrorNotLogged(loggableJoinPointSpecification, result)) {
-            Level level = Level.parse(loggableJoinPointSpecification.getLoggable().level());
+            Level level = Level.parse(loggableJoinPointSpecification.getAnnotation().level());
             Object[] params = {
                     loggableJoinPointSpecification.getClassName(),
                     loggableJoinPointSpecification.getMethodName(),
@@ -75,7 +81,7 @@ public class LoggableAspect {
 
     @AfterThrowing(pointcut = POINTCUT, throwing = "throwable")
     public void onFailed(JoinPoint joinPoint, Throwable throwable) {
-        LoggableJoinPointSpecification loggableJoinPointSpecification = new LoggableJoinPointSpecification(joinPoint);
+        LoggableJoinPointSpecification loggableJoinPointSpecification = createLoggableJoinPointSpecification(joinPoint);
         if (isContainingLoggableType(loggableJoinPointSpecification, LoggableType.METHOD_EXCEPTION)) {
             logException(loggableJoinPointSpecification, throwable);
         }
@@ -95,7 +101,7 @@ public class LoggableAspect {
         long startTimeMillis = System.currentTimeMillis();
         Object proceed = joinPoint.proceed();
         long duration = System.currentTimeMillis() - startTimeMillis;
-        LoggableJoinPointSpecification loggableJoinPointSpecification = new LoggableJoinPointSpecification(joinPoint);
+        LoggableJoinPointSpecification loggableJoinPointSpecification = createLoggableJoinPointSpecification(joinPoint);
         if (isContainingLoggableType(loggableJoinPointSpecification, LoggableType.METHOD_DURATION)) {
             logDuration(loggableJoinPointSpecification, duration);
         }
@@ -103,7 +109,7 @@ public class LoggableAspect {
     }
 
     private void logDuration(LoggableJoinPointSpecification loggableJoinPointSpecification, long duration) {
-        Level level = Level.parse(loggableJoinPointSpecification.getLoggable().level());
+        Level level = Level.parse(loggableJoinPointSpecification.getAnnotation().level());
         Object[] params = {loggableJoinPointSpecification.getClassName(),
                 loggableJoinPointSpecification.getMethodName(),
                 LoggableType.METHOD_DURATION.getPrefix(),
@@ -112,7 +118,7 @@ public class LoggableAspect {
     }
 
     private boolean isContainingLoggableType(LoggableJoinPointSpecification loggableJoinPointSpecification, LoggableType loggableType) {
-        return asList(loggableJoinPointSpecification.getLoggable().value())
+        return asList(loggableJoinPointSpecification.getAnnotation().value())
                 .contains(loggableType);
     }
 
@@ -121,5 +127,9 @@ public class LoggableAspect {
                 .map(Object::toString)
                 .filter(StringUtils::hasLength)
                 .orElse(NOTHING_TO_LOG);
+    }
+
+    private LoggableJoinPointSpecification createLoggableJoinPointSpecification(JoinPoint joinPoint) {
+        return new LoggableJoinPointSpecification(joinPoint, Loggable.class);
     }
 }
