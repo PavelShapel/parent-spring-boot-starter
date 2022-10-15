@@ -13,4 +13,6 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface ExceptionWrapped {
     Class<? extends Exception> value() default IllegalArgumentException.class;
+
+    String prefix() default "method arguments";
 }
