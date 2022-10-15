@@ -9,7 +9,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Aspect
@@ -29,33 +28,36 @@ public class ExceptionWrappedAspect {
         //pointcut
     }
 
-    @SneakyThrows
     @Around(POINTCUT)
     public Object onDuration(ProceedingJoinPoint joinPoint) {
         ExceptionWrappedJoinPointSpecification exceptionWrappedJoinPointSpecification = createExceptionWrappedJoinPointSpecification(joinPoint);
-        Object proceed;
+        Object proceed = null;
         try {
             proceed = joinPoint.proceed();
-        } catch (Exception exception) {
-            String message = getMessage(exceptionWrappedJoinPointSpecification);
-            throw exceptionWrappedJoinPointSpecification.getAnnotation().value().getConstructor(String.class).newInstance(message);
+        } catch (Throwable exception) {
+            throwWrappedException(exceptionWrappedJoinPointSpecification);
         }
         return proceed;
     }
 
+    @SneakyThrows
+    private void throwWrappedException(ExceptionWrappedJoinPointSpecification exceptionWrappedJoinPointSpecification) {
+        String message = getMessage(exceptionWrappedJoinPointSpecification);
+        throw exceptionWrappedJoinPointSpecification.getAnnotation().value().getConstructor(String.class).newInstance(message);
+    }
+
     private String getMessage(ExceptionWrappedJoinPointSpecification exceptionWrappedJoinPointSpecification) {
-        String methodArguments = joinArguments(exceptionWrappedJoinPointSpecification);
+        String methodParameters = joinParameters(exceptionWrappedJoinPointSpecification);
         return Optional.of(exceptionWrappedJoinPointSpecification)
                 .map(ExceptionWrappedJoinPointSpecification::getAnnotation)
                 .map(ExceptionWrapped::prefix)
-                .map(prefix -> String.format("%s %s", prefix, methodArguments))
+                .map(prefix -> String.format("%s %s", prefix, methodParameters))
                 .orElseThrow();
     }
 
-    private String joinArguments(ExceptionWrappedJoinPointSpecification exceptionWrappedJoinPointSpecification) {
+    private String joinParameters(ExceptionWrappedJoinPointSpecification exceptionWrappedJoinPointSpecification) {
         return Optional.of(exceptionWrappedJoinPointSpecification)
-                .map(ExceptionWrappedJoinPointSpecification::getMethodArguments)
-                .map(Map::entrySet)
+                .map(ExceptionWrappedJoinPointSpecification::getMethodParameters)
                 .map(Object::toString)
                 .orElseThrow();
     }

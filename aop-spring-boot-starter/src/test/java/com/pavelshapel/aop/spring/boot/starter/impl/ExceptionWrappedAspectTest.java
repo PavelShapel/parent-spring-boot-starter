@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
-import org.springframework.context.annotation.Import;
 
 import static com.pavelshapel.aop.spring.boot.starter.AspectTester.MESSAGE;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -23,9 +22,9 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 @SpringBootTest(classes = {
         AopStarterAutoConfiguration.class,
-        AspectTester.class
+        AspectTester.class,
+        AnnotationAwareAspectJAutoProxyCreator.class
 })
-@Import(AnnotationAwareAspectJAutoProxyCreator.class)
 @ExtendWith(OutputCaptureExtension.class)
 class ExceptionWrappedAspectTest {
     @SpyBean
@@ -47,6 +46,7 @@ class ExceptionWrappedAspectTest {
                 .contains(RuntimeException.class.getName());
         verifyNoInteractions(exceptionWrappedAspect);
     }
+
     @Test
     void call_WithLoggableAndExceptionWrappedAnnotationsAndThrowException_ShouldReplaceAndLogException(CapturedOutput capturedOutput) {
         assertThatThrownBy(() -> aspectTester.throwExceptionWithLoggableAndExceptionWrappedAnnotations(MESSAGE))
