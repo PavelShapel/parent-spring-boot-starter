@@ -1,6 +1,5 @@
 package com.pavelshapel.core.spring.boot.starter.impl.util;
 
-import com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.SubstitutionUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.model.properties.NumberProperties;
 import com.pavelshapel.core.spring.boot.starter.impl.model.properties.StringProperties;
@@ -16,12 +15,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.math.NumberUtils.toScaledBigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,8 +42,6 @@ class CoreMathUtilsTest {
             )));
 
     @Mock
-    ExceptionUtils exceptionUtils;
-    @Mock
     SubstitutionUtils substitutionUtils;
     @InjectMocks
     CoreMathUtils mathUtils;
@@ -61,23 +58,14 @@ class CoreMathUtilsTest {
     @ParameterizedTest
     @NullSource
     void evaluate_WithNullRawExpressionAsParameter_ShouldThrowException(String rawExpression) {
-        mockExceptionUtilsCreateIllegalArgumentException();
-
         assertThatThrownBy(() -> mathUtils.evaluate(rawExpression, NUMBER_PROPERTIES))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @ParameterizedTest
     @NullSource
     void evaluate_WithNullPropertiesAsParameter_ShouldThrowException(NumberProperties properties) {
-        mockExceptionUtilsCreateIllegalArgumentException();
-
         assertThatThrownBy(() -> mathUtils.evaluate(RAW_EXPRESSION, properties))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @SuppressWarnings("ThrowableNotThrown")
-    private void mockExceptionUtilsCreateIllegalArgumentException() {
-        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
+                .isInstanceOf(NoSuchElementException.class);
     }
 }

@@ -1,6 +1,5 @@
 package com.pavelshapel.core.spring.boot.starter.impl.util;
 
-import com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.MathUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.SubstitutionUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.model.properties.NumberProperties;
@@ -23,8 +22,6 @@ import static java.util.Objects.nonNull;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CoreMathUtils implements MathUtils {
     @Autowired
-    ExceptionUtils exceptionUtils;
-    @Autowired
     SubstitutionUtils substitutionUtils;
 
     @Override
@@ -33,10 +30,7 @@ public class CoreMathUtils implements MathUtils {
                 .filter(unused -> nonNull(variables))
                 .map(expression -> replace(expression, variables))
                 .map(this::eval)
-                .orElseThrow(() -> exceptionUtils.createIllegalArgumentException(
-                        RAW_EXPRESSION, rawExpression,
-                        VARIABLES, variables
-                ));
+                .orElseThrow();
     }
 
     private String replace(String rawExpression, NumberProperties variables) {
@@ -64,6 +58,6 @@ public class CoreMathUtils implements MathUtils {
     }
 
     private ScriptEngine getEngine() {
-        return new ScriptEngineManager().getEngineByName(JAVA_SCRIPT);
+        return new ScriptEngineManager().getEngineByName("JavaScript");
     }
 }

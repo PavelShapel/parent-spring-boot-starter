@@ -3,7 +3,11 @@ package com.pavelshapel.core.spring.boot.starter.impl.util;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
 import org.springframework.http.ResponseEntity;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
