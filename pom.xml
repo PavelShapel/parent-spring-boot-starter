@@ -23,7 +23,7 @@
         <aws-lambda-java-serialization.version>1.0.0</aws-lambda-java-serialization.version>
         <spring-cloud-dependencies.version>2021.0.1</spring-cloud-dependencies.version>
         <aws-serverless-java-container-springboot2.version>1.8.1</aws-serverless-java-container-springboot2.version>
-        <commons-text.version>1.9</commons-text.version>
+        <commons-text.version>1.10.0</commons-text.version>
         <aws-lambda-java-tests.version>1.1.1</aws-lambda-java-tests.version>
         <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
         <junit-jupiter-engine.version>5.9.0</junit-jupiter-engine.version>
