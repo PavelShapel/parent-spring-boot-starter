@@ -7,6 +7,5 @@ import lombok.Value;
 @Builder
 public class MethodParameter {
     int index;
-    Class<?> parameterClass;
     Object value;
 }

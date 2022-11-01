@@ -57,9 +57,6 @@ public abstract class AbstractJoinPointSpecification<T extends Annotation> {
     private MethodParameter createMethodArgument(Integer index, Object argument) {
         return MethodParameter.builder()
                 .index(index)
-                .parameterClass(Optional.ofNullable(argument)
-                        .map(Object::getClass)
-                        .orElse(null))
                 .value(argument)
                 .build();
     }
