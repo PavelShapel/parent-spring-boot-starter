@@ -1,9 +1,10 @@
 package com.pavelshapel.json.spring.boot.starter.converter.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pavelshapel.aop.spring.boot.starter.AopStarterAutoConfiguration;
 import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
-import com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils;
 import com.pavelshapel.json.spring.boot.starter.JsonStarterAutoConfiguration;
+import com.pavelshapel.json.spring.boot.starter.converter.JsonConverter;
 import lombok.AccessLevel;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
@@ -13,9 +14,9 @@ import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.io.InputStream;
@@ -29,19 +30,19 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 
 @SpringBootTest(classes = {
         JsonStarterAutoConfiguration.class,
-        CoreStarterAutoConfiguration.class
+        CoreStarterAutoConfiguration.class,
+        AopStarterAutoConfiguration.class,
+        AnnotationAwareAspectJAutoProxyCreator.class
 })
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class JacksonJsonConverterTest {
     private static final String ID = "id";
     private static final String NAME = "name";
     private static final Integer ID_VALUE = 1;
-    private static final String NAME_VALUE = NAME;
+    private static final String NAME_VALUE = "test";
     private static final String JSON_POJO = String.format("{\"%s\":%d,\"%s\":\"%s\"}", ID, ID_VALUE, NAME, NAME_VALUE);
     public static final String SOURCE_JSON = "source.json";
 
@@ -49,13 +50,11 @@ class JacksonJsonConverterTest {
     Path tempDir;
     @SpyBean
     ObjectMapper customObjectMapper;
-    @MockBean
-    ExceptionUtils exceptionUtils;
     @Autowired
-    JacksonJsonConverter jsonConverter;
+    JsonConverter jsonConverter;
 
     @Test
-    void pojoToJson_ValidPojoAsParam_ShouldReturnJson() {
+    void pojoToJson_ValidPojoAsParameter_ShouldReturnJson() {
         JsonTester pojo = createTestPojo();
 
         String result = jsonConverter.pojoToJson(pojo);
@@ -65,24 +64,21 @@ class JacksonJsonConverterTest {
 
     @ParameterizedTest
     @NullSource
-    void pojoToJson_NullAsParam_ShouldThrowException(JsonTester pojo) {
-        mockExceptionUtilsCreateIllegalArgumentException();
-
+    void pojoToJson_NullAsParameter_ShouldThrowException(JsonTester pojo) {
         assertThatThrownBy(() -> jsonConverter.pojoToJson(pojo))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void pojoToJson_InvalidPojoAsParam_ShouldThrowException() {
+    void pojoToJson_InvalidPojoAsParameter_ShouldThrowException() {
         String pojo = getInvalidJson();
-        mockExceptionUtilsCreateIllegalArgumentException();
 
         assertThatThrownBy(() -> jsonConverter.pojoToJson(pojo))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void jsonToPojo_ValidJsonAsParam_ShouldReturnPojo() {
+    void jsonToPojo_ValidJsonAsParameter_ShouldReturnPojo() {
         JsonTester pojo = createTestPojo();
 
         JsonTester result = jsonConverter.jsonToPojo(JSON_POJO, JsonTester.class);
@@ -91,9 +87,8 @@ class JacksonJsonConverterTest {
     }
 
     @Test
-    void jsonToPojo_InvalidStringAsParam_ShouldThrowException() {
+    void jsonToPojo_InvalidStringAsParameter_ShouldThrowException() {
         String json = getInvalidJson();
-        mockExceptionUtilsCreateIllegalArgumentException();
 
         assertThatThrownBy(() -> jsonConverter.jsonToPojo(json, JsonTester.class))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -101,23 +96,19 @@ class JacksonJsonConverterTest {
 
     @ParameterizedTest
     @NullSource
-    void jsonToPojo_NullStringAsParam_ShouldThrowException(String json) {
-        mockExceptionUtilsCreateIllegalArgumentException();
-
+    void jsonToPojo_NullStringAsParameter_ShouldThrowException(String json) {
         assertThatThrownBy(() -> jsonConverter.jsonToPojo(json, JsonTester.class))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void jsonToPojo_NullClassAsParam_ShouldThrowException() {
-        mockExceptionUtilsCreateIllegalArgumentException();
-
+    void jsonToPojo_NullClassAsParameter_ShouldThrowException() {
         assertThatThrownBy(() -> jsonConverter.jsonToPojo(JSON_POJO, null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void pojoToMap_ValidPojoAsParam_ShouldReturnMap() {
+    void pojoToMap_ValidPojoAsParameter_ShouldReturnMap() {
         JsonTester pojo = createTestPojo();
         Map<String, Object> map = createTestMap();
 
@@ -128,24 +119,21 @@ class JacksonJsonConverterTest {
 
     @ParameterizedTest
     @NullSource
-    void pojoToMap_NullAsParam_ShouldThrowException(JsonTester pojo) {
-        mockExceptionUtilsCreateIllegalArgumentException();
-
+    void pojoToMap_NullAsParameter_ShouldThrowException(JsonTester pojo) {
         assertThatThrownBy(() -> jsonConverter.pojoToMap(pojo))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void pojoToMap_InvalidPojoAsParam_ShouldThrowException() {
+    void pojoToMap_InvalidPojoAsParameter_ShouldThrowException() {
         String pojo = getInvalidJson();
-        mockExceptionUtilsCreateIllegalArgumentException();
 
         assertThatThrownBy(() -> jsonConverter.pojoToMap(pojo))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void mapToPojo_ValidMapAsParam_ShouldReturnPojo() {
+    void mapToPojo_ValidMapAsParameter_ShouldReturnPojo() {
         Map<String, Object> map = createTestMap();
         JsonTester pojo = createTestPojo();
 
@@ -156,17 +144,15 @@ class JacksonJsonConverterTest {
 
     @ParameterizedTest
     @NullSource
-    void mapToPojo_NullMapAsParam_ShouldThrowException(Map<String, Object> map) {
-        mockExceptionUtilsCreateIllegalArgumentException();
+    void mapToPojo_NullMapAsParameter_ShouldThrowException(Map<String, Object> map) {
 
         assertThatThrownBy(() -> jsonConverter.mapToPojo(map, JsonTester.class))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void mapToPojo_NullClassAsParam_ShouldThrowException() {
+    void mapToPojo_NullClassAsParameter_ShouldThrowException() {
         Map<String, Object> map = createTestMap();
-        mockExceptionUtilsCreateIllegalArgumentException();
 
         assertThatThrownBy(() -> jsonConverter.mapToPojo(map, null))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -188,7 +174,7 @@ class JacksonJsonConverterTest {
     }
 
     @Test
-    void pojoToPrettyJson_ValidPojoAsParam_ShouldReturnJson() {
+    void pojoToPrettyJson_ValidPojoAsParameter_ShouldReturnJson() {
         JsonTester pojo = createTestPojo();
 
         String json = jsonConverter.pojoToPrettyJson(pojo);
@@ -198,7 +184,7 @@ class JacksonJsonConverterTest {
 
     @Test
     void getNodeAsString_WithValidParams_ShouldReturnResult() {
-        String node = jsonConverter.getNodeAsString(JSON_POJO, NAME_VALUE);
+        String node = jsonConverter.getNodeAsString(JSON_POJO, NAME);
 
         assertThat(node).isEqualTo(NAME_VALUE);
     }
@@ -206,7 +192,6 @@ class JacksonJsonConverterTest {
     @Test
     void getNodeAsString_WithInValidParams_ShouldThrowException() {
         String json = getInvalidJson();
-        mockExceptionUtilsCreateIllegalArgumentException();
 
         assertThatThrownBy(() -> jsonConverter.getNodeAsString(json, NAME_VALUE))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -227,12 +212,10 @@ class JacksonJsonConverterTest {
 
     @SneakyThrows
     @Test
-    void inputStreamToPojo_NullClassAsParam_ShouldThrowException() {
+    void inputStreamToPojo_NullClassAsParameter_ShouldThrowException() {
         Path templatePath = tempDir.resolve(SOURCE_JSON);
         Files.write(templatePath, singleton(JSON_POJO));
         try (InputStream inputStream = Files.newInputStream(templatePath)) {
-            mockExceptionUtilsCreateIllegalArgumentException();
-
             assertThatThrownBy(() -> jsonConverter.inputStreamToPojo(inputStream, null))
                     .isInstanceOf(IllegalArgumentException.class);
         }
@@ -258,14 +241,12 @@ class JacksonJsonConverterTest {
 
     @SneakyThrows
     @Test
-    void inputStreamToPojos_NullClassAsParam_ShouldThrowException() {
+    void inputStreamToPojos_NullClassAsParameter_ShouldThrowException() {
         JsonTester pojo = createTestPojo();
         Path templatePath = tempDir.resolve(SOURCE_JSON);
         Files.write(templatePath, singleton(jsonConverter.pojoToJson(asList(pojo, pojo))));
 
         try (InputStream inputStream = Files.newInputStream(templatePath)) {
-            mockExceptionUtilsCreateIllegalArgumentException();
-
             assertThatThrownBy(() -> jsonConverter.inputStreamToPojos(inputStream, null))
                     .isInstanceOf(IllegalArgumentException.class);
         }
@@ -284,10 +265,5 @@ class JacksonJsonConverterTest {
         map.put(ID, ID_VALUE);
         map.put(NAME, NAME_VALUE);
         return map;
-    }
-
-    @SuppressWarnings("ThrowableNotThrown")
-    private void mockExceptionUtilsCreateIllegalArgumentException() {
-        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
     }
 }

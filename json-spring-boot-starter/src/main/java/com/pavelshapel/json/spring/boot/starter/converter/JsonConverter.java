@@ -5,14 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface JsonConverter {
-    String POJO = "pojo";
-    String JSON = "json";
-    String INPUT_STREAM = "inputStream";
-    String MAP = "map";
-    String NODES = "nodes";
-    String TARGET_CLASS = "targetClass";
-    String TARGET_CLASSES = "targetClasses";
-
     <P> String pojoToJson(P pojo);
 
     <P> P jsonToPojo(String json, Class<P> targetClass);

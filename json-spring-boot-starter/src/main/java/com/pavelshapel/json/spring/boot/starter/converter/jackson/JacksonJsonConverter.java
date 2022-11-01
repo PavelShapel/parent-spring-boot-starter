@@ -3,10 +3,11 @@ package com.pavelshapel.json.spring.boot.starter.converter.jackson;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils;
+import com.pavelshapel.aop.spring.boot.starter.annotation.ExceptionWrapped;
 import com.pavelshapel.json.spring.boot.starter.converter.JsonConverter;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -19,74 +20,48 @@ import java.util.Optional;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
+@ExceptionWrapped
 public class JacksonJsonConverter implements JsonConverter {
     ObjectMapper customObjectMapper;
-    ExceptionUtils exceptionUtils;
 
     @Override
+    @SneakyThrows
     public <P> String pojoToJson(P pojo) {
-        try {
-            return Optional.of(customObjectMapper.writeValueAsString(pojo))
-                    .filter(this::isValidJson)
-                    .orElseThrow();
-        } catch (Exception exception) {
-            throw createIllegalArgumentExceptionWithPojo(pojo);
-        }
+        return Optional.of(customObjectMapper.writeValueAsString(pojo))
+                .filter(this::isValidJson)
+                .orElseThrow();
     }
 
     @Override
+    @SneakyThrows
     public <P> P jsonToPojo(String json, Class<P> targetClass) {
-        try {
-            return customObjectMapper.readValue(json, targetClass);
-        } catch (Exception exception) {
-            throw exceptionUtils.createIllegalArgumentException(
-                    JSON, json,
-                    TARGET_CLASS, targetClass);
-        }
+        return customObjectMapper.readValue(json, targetClass);
     }
 
     @Override
+    @SneakyThrows
     public <P> P inputStreamToPojo(InputStream inputStream, Class<P> targetClass) {
-        try {
-            return customObjectMapper.readValue(inputStream, targetClass);
-        } catch (Exception exception) {
-            throw exceptionUtils.createIllegalArgumentException(
-                    INPUT_STREAM, inputStream,
-                    TARGET_CLASS, targetClass);
-        }
+        return customObjectMapper.readValue(inputStream, targetClass);
     }
 
     @Override
+    @SneakyThrows
     public <P> List<P> inputStreamToPojos(InputStream inputStream, Class<P[]> targetClasses) {
-        try {
-            return Arrays.asList(customObjectMapper.readValue(inputStream, targetClasses));
-        } catch (Exception exception) {
-            throw exceptionUtils.createIllegalArgumentException(
-                    INPUT_STREAM, inputStream,
-                    TARGET_CLASSES, targetClasses);
-        }
+        return Arrays.asList(customObjectMapper.readValue(inputStream, targetClasses));
     }
 
     @Override
+    @SneakyThrows
     public <P, M> Map<String, M> pojoToMap(P pojo) {
-        try {
-            return Optional.ofNullable(customObjectMapper.convertValue(pojo, new TypeReference<Map<String, M>>() {
-            })).orElseThrow(() -> createIllegalArgumentExceptionWithPojo(pojo));
-        } catch (Exception exception) {
-            throw createIllegalArgumentExceptionWithPojo(pojo);
-        }
+        return Optional.ofNullable(customObjectMapper.convertValue(pojo, new TypeReference<Map<String, M>>() {
+        })).orElseThrow();
     }
 
     @Override
+    @SneakyThrows
     public <P, M> P mapToPojo(Map<String, M> map, Class<P> targetClass) {
-        try {
-            return Optional.ofNullable(customObjectMapper.convertValue(map, targetClass))
-                    .orElseThrow();
-        } catch (Exception exception) {
-            throw exceptionUtils.createIllegalArgumentException(
-                    MAP, map,
-                    TARGET_CLASS, targetClass);
-        }
+        return Optional.ofNullable(customObjectMapper.convertValue(map, targetClass))
+                .orElseThrow();
     }
 
     @Override
@@ -104,26 +79,18 @@ public class JacksonJsonConverter implements JsonConverter {
     }
 
     @Override
+    @SneakyThrows
     public <P> String pojoToPrettyJson(P pojo) {
-        try {
-            return customObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(pojo);
-        } catch (Exception exception) {
-            throw createIllegalArgumentExceptionWithPojo(pojo);
-        }
+        return customObjectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(pojo);
     }
 
     @Override
+    @SneakyThrows
     public String getNodeAsString(String json, String... nodes) {
-        try {
-            return Optional.of(customObjectMapper.readTree(json))
-                    .map(jsonNode -> getNode(jsonNode, nodes, 0))
-                    .map(JsonNode::textValue)
-                    .orElseThrow();
-        } catch (Exception exception) {
-            throw exceptionUtils.createIllegalArgumentException(
-                    JSON, json,
-                    NODES, nodes);
-        }
+        return Optional.of(customObjectMapper.readTree(json))
+                .map(jsonNode -> getNode(jsonNode, nodes, 0))
+                .map(JsonNode::textValue)
+                .orElseThrow();
     }
 
     private JsonNode getNode(JsonNode root, String[] nodes, int index) {
@@ -134,11 +101,5 @@ public class JacksonJsonConverter implements JsonConverter {
                 .map(root::get)
                 .map(jsonNode -> getNode(jsonNode, nodes, index + 1))
                 .orElse(root);
-    }
-
-    private <P> RuntimeException createIllegalArgumentExceptionWithPojo(P pojo) {
-        return exceptionUtils.createIllegalArgumentException(
-                POJO, pojo
-        );
     }
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils;
 import com.pavelshapel.json.spring.boot.starter.converter.JsonConverter;
 import com.pavelshapel.json.spring.boot.starter.converter.jackson.JacksonJsonConverter;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,8 +26,8 @@ public class JsonStarterAutoConfiguration {
 
     @Bean
     @ConditionalOnClass(ObjectMapper.class)
-    public JsonConverter jacksonJsonConverter(@Qualifier(CUSTOM_OBJECT_MAPPER) ObjectMapper customObjectMapper, ExceptionUtils exceptionUtils) {
-        return new JacksonJsonConverter(customObjectMapper, exceptionUtils);
+    public JsonConverter jacksonJsonConverter(@Qualifier(CUSTOM_OBJECT_MAPPER) ObjectMapper customObjectMapper) {
+        return new JacksonJsonConverter(customObjectMapper);
     }
 
     @Bean
