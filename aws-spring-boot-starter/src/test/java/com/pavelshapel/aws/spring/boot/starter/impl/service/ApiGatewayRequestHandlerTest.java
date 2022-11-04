@@ -1,34 +1,37 @@
 package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
-import com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils;
+import com.pavelshapel.aop.spring.boot.starter.AopStarterAutoConfiguration;
+import com.pavelshapel.aws.spring.boot.starter.AwsStarterAutoConfiguration;
+import com.pavelshapel.aws.spring.boot.starter.api.service.RequestHandler;
+import com.pavelshapel.json.spring.boot.starter.JsonStarterAutoConfiguration;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest(classes = {
+        AwsStarterAutoConfiguration.class,
+        JsonStarterAutoConfiguration.class,
+        AnnotationAwareAspectJAutoProxyCreator.class,
+        AopStarterAutoConfiguration.class
+})
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class ApiGatewayRequestHandlerTest {
-    @Mock
-    ExceptionUtils exceptionUtils;
-    @InjectMocks
-    ApiGatewayRequestHandler requestHandler;
+    @Autowired
+    RequestHandler requestHandler;
 
     @Test
     void isRequestMethod_WithValidParametersAndEqualsMethods_ShouldReturnTrue() {
@@ -51,8 +54,6 @@ class ApiGatewayRequestHandlerTest {
     @ParameterizedTest
     @NullSource
     void isRequestMethod_WithNullRequestAsParameter_ShouldThrowException(APIGatewayV2HTTPEvent request) {
-        mockExceptionUtilsCreateIllegalArgumentException();
-
         assertThatThrownBy(() -> requestHandler.isRequestMethod(request, POST))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -60,7 +61,6 @@ class ApiGatewayRequestHandlerTest {
     @ParameterizedTest
     @NullSource
     void isRequestMethod_WithNullHttpMethodAsParameter_ShouldThrowException(HttpMethod httpMethod) {
-        mockExceptionUtilsCreateIllegalArgumentException();
         APIGatewayV2HTTPEvent request = createRequestWithHttpMethod(GET);
 
         assertThatThrownBy(() -> requestHandler.isRequestMethod(request, httpMethod))
@@ -116,10 +116,5 @@ class ApiGatewayRequestHandlerTest {
                         .withRequestContext(requestContext)
                         .build())
                 .orElseThrow();
-    }
-
-    @SuppressWarnings("ThrowableNotThrown")
-    private void mockExceptionUtilsCreateIllegalArgumentException() {
-        doReturn(new IllegalArgumentException()).when(exceptionUtils).createIllegalArgumentException(any());
     }
 }

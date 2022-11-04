@@ -1,8 +1,8 @@
 package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
+import com.pavelshapel.aop.spring.boot.starter.annotation.ExceptionWrapped;
 import com.pavelshapel.aws.spring.boot.starter.api.service.ResponseHandler;
-import com.pavelshapel.core.spring.boot.starter.api.util.ExceptionUtils;
 import com.pavelshapel.json.spring.boot.starter.converter.JsonConverter;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -24,11 +24,13 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ExceptionWrapped
 public class ApiGatewayResponseHandler implements ResponseHandler {
+    public static final String EXCEPTION = "exception";
+    public static final String RESULT = "result";
+    private static final String METHOD_NOT_SUPPORTED_PATTERN = "[%s] method(s) not supported";
     @Autowired
     JsonConverter jsonConverter;
-    @Autowired
-    ExceptionUtils exceptionUtils;
 
     public APIGatewayV2HTTPResponse updateResponseWithOkAndGet(APIGatewayV2HTTPResponse response,
                                                                String responseBody) {
@@ -43,10 +45,7 @@ public class ApiGatewayResponseHandler implements ResponseHandler {
                 .map(this::createExceptionResponseBody)
                 .map(jsonConverter::pojoToJson)
                 .map(responseBody -> verifiedResponseWithBodyAndStatusCode(response, responseBody, BAD_REQUEST))
-                .orElseThrow(() -> exceptionUtils.createIllegalArgumentException(
-                        RESPONSE, response,
-                        EXCEPTION, exception
-                ));
+                .orElseThrow();
     }
 
     @Override
@@ -61,10 +60,7 @@ public class ApiGatewayResponseHandler implements ResponseHandler {
                 .map(this::createExceptionResponseBody)
                 .map(jsonConverter::pojoToJson)
                 .map(responseBody -> verifiedResponseWithBodyAndStatusCode(response, responseBody, BAD_REQUEST))
-                .orElseThrow(() -> exceptionUtils.createIllegalArgumentException(
-                        RESPONSE, response,
-                        SUPPORTED_HTTP_METHODS, supportedHttpMethods
-                ));
+                .orElseThrow();
     }
 
     private List<HttpMethod> getUnsupportedHttpMethods(List<HttpMethod> supportedHttpMethods) {
@@ -86,11 +82,7 @@ public class ApiGatewayResponseHandler implements ResponseHandler {
                 .filter(unused -> nonNull(statusCode))
                 .map(this::updateIfSimpleResponse)
                 .map(body -> responseWithBodyAndStatusCode(response, body, statusCode))
-                .orElseThrow(() -> exceptionUtils.createIllegalArgumentException(
-                        RESPONSE, response,
-                        RESPONSE_BODY, responseBody,
-                        STATUS_CODE, statusCode
-                ));
+                .orElseThrow();
     }
 
     private String updateIfSimpleResponse(String responseBody) {
