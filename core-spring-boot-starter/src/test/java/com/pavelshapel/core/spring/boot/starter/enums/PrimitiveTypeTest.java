@@ -15,4 +15,11 @@ class PrimitiveTypeTest {
                 .map(Supplier::get)
                 .forEach(randomValue -> assertThat(randomValue).isNotNull());
     }
+
+    @Test
+    void getCastFunction_ShouldReturnNotNullValue() {
+        Arrays.stream(PrimitiveType.values())
+                .map(PrimitiveType::getCastFunction)
+                .forEach(function -> assertThat(function).isNotNull());
+    }
 }
