@@ -35,23 +35,25 @@ public class ExceptionWrappedAspect {
         try {
             proceed = joinPoint.proceed();
         } catch (Throwable exception) {
-            throwWrappedException(exceptionWrappedJoinPointSpecification);
+            throwWrappedException(exceptionWrappedJoinPointSpecification, exception);
         }
         return proceed;
     }
 
     @SneakyThrows
-    private void throwWrappedException(ExceptionWrappedJoinPointSpecification exceptionWrappedJoinPointSpecification) {
-        String message = getMessage(exceptionWrappedJoinPointSpecification);
-        throw exceptionWrappedJoinPointSpecification.getAnnotation().value().getConstructor(String.class).newInstance(message);
+    private void throwWrappedException(ExceptionWrappedJoinPointSpecification exceptionWrappedJoinPointSpecification, Throwable exception) {
+        String message = String.format(
+                "%s method parameters %s, cause [%s]",
+                getPrefix(exceptionWrappedJoinPointSpecification),
+                joinParameters(exceptionWrappedJoinPointSpecification),
+                exception.toString());
+        throw exceptionWrappedJoinPointSpecification.getAnnotation().value().getConstructor(String.class, Throwable.class).newInstance(message, exception);
     }
 
-    private String getMessage(ExceptionWrappedJoinPointSpecification exceptionWrappedJoinPointSpecification) {
-        String methodParameters = joinParameters(exceptionWrappedJoinPointSpecification);
+    private String getPrefix(ExceptionWrappedJoinPointSpecification exceptionWrappedJoinPointSpecification) {
         return Optional.of(exceptionWrappedJoinPointSpecification)
                 .map(ExceptionWrappedJoinPointSpecification::getAnnotation)
                 .map(ExceptionWrapped::prefix)
-                .map(prefix -> String.format("%s %s", prefix, methodParameters))
                 .orElseThrow();
     }
 
