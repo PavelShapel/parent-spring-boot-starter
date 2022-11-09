@@ -54,7 +54,7 @@ class JacksonJsonConverterTest {
     JsonConverter jsonConverter;
 
     @Test
-    void pojoToJson_ValidPojoAsParameter_ShouldReturnJson() {
+    void pojoToJson_WithValidPojoAsParameter_ShouldReturnJson() {
         JsonTester pojo = createTestPojo();
 
         String result = jsonConverter.pojoToJson(pojo);
@@ -64,13 +64,13 @@ class JacksonJsonConverterTest {
 
     @ParameterizedTest
     @NullSource
-    void pojoToJson_NullAsParameter_ShouldThrowException(JsonTester pojo) {
+    void pojoToJson_WithNullAsParameter_ShouldThrowException(JsonTester pojo) {
         assertThatThrownBy(() -> jsonConverter.pojoToJson(pojo))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void pojoToJson_InvalidPojoAsParameter_ShouldThrowException() {
+    void pojoToJson_WithInvalidPojoAsParameter_ShouldThrowException() {
         String pojo = getInvalidJson();
 
         assertThatThrownBy(() -> jsonConverter.pojoToJson(pojo))
@@ -78,7 +78,7 @@ class JacksonJsonConverterTest {
     }
 
     @Test
-    void jsonToPojo_ValidJsonAsParameter_ShouldReturnPojo() {
+    void jsonToPojo_WithValidJsonAsParameter_ShouldReturnPojo() {
         JsonTester pojo = createTestPojo();
 
         JsonTester result = jsonConverter.jsonToPojo(JSON_POJO, JsonTester.class);
@@ -87,7 +87,7 @@ class JacksonJsonConverterTest {
     }
 
     @Test
-    void jsonToPojo_InvalidStringAsParameter_ShouldThrowException() {
+    void jsonToPojo_WithInvalidStringAsParameter_ShouldThrowException() {
         String json = getInvalidJson();
 
         assertThatThrownBy(() -> jsonConverter.jsonToPojo(json, JsonTester.class))
@@ -96,19 +96,19 @@ class JacksonJsonConverterTest {
 
     @ParameterizedTest
     @NullSource
-    void jsonToPojo_NullStringAsParameter_ShouldThrowException(String json) {
+    void jsonToPojo_WithNullStringAsParameter_ShouldThrowException(String json) {
         assertThatThrownBy(() -> jsonConverter.jsonToPojo(json, JsonTester.class))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void jsonToPojo_NullClassAsParameter_ShouldThrowException() {
+    void jsonToPojo_WithNullClassAsParameter_ShouldThrowException() {
         assertThatThrownBy(() -> jsonConverter.jsonToPojo(JSON_POJO, null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void pojoToMap_ValidPojoAsParameter_ShouldReturnMap() {
+    void pojoToMap_WithValidPojoAsParameter_ShouldReturnMap() {
         JsonTester pojo = createTestPojo();
         Map<String, Object> map = createTestMap();
 
@@ -119,13 +119,13 @@ class JacksonJsonConverterTest {
 
     @ParameterizedTest
     @NullSource
-    void pojoToMap_NullAsParameter_ShouldThrowException(JsonTester pojo) {
+    void pojoToMap_WithNullAsParameter_ShouldThrowException(JsonTester pojo) {
         assertThatThrownBy(() -> jsonConverter.pojoToMap(pojo))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void pojoToMap_InvalidPojoAsParameter_ShouldThrowException() {
+    void pojoToMap_WithInvalidPojoAsParameter_ShouldThrowException() {
         String pojo = getInvalidJson();
 
         assertThatThrownBy(() -> jsonConverter.pojoToMap(pojo))
@@ -133,7 +133,7 @@ class JacksonJsonConverterTest {
     }
 
     @Test
-    void mapToPojo_ValidMapAsParameter_ShouldReturnPojo() {
+    void mapToPojo_WithValidMapAsParameter_ShouldReturnPojo() {
         Map<String, Object> map = createTestMap();
         JsonTester pojo = createTestPojo();
 
@@ -144,14 +144,14 @@ class JacksonJsonConverterTest {
 
     @ParameterizedTest
     @NullSource
-    void mapToPojo_NullMapAsParameter_ShouldThrowException(Map<String, Object> map) {
+    void mapToPojo_WithNullMapAsParameter_ShouldThrowException(Map<String, Object> map) {
 
         assertThatThrownBy(() -> jsonConverter.mapToPojo(map, JsonTester.class))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void mapToPojo_NullClassAsParameter_ShouldThrowException() {
+    void mapToPojo_WithNullClassAsParameter_ShouldThrowException() {
         Map<String, Object> map = createTestMap();
 
         assertThatThrownBy(() -> jsonConverter.mapToPojo(map, null))
@@ -159,7 +159,7 @@ class JacksonJsonConverterTest {
     }
 
     @Test
-    void isValidJson_ValidParam_ShouldReturnTrue() {
+    void isValidJson_WithValidParam_ShouldReturnTrue() {
         boolean isValidJson = jsonConverter.isValidJson(JSON_POJO);
 
         assertThat(isValidJson).isTrue();
@@ -167,14 +167,14 @@ class JacksonJsonConverterTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"null", NAME_VALUE})
-    void isValidJson_InvalidParam_ShouldReturnFalse(String json) {
+    void isValidJson_WithInvalidParam_ShouldReturnFalse(String json) {
         boolean isValidJson = jsonConverter.isValidJson(json);
 
         assertThat(isValidJson).isFalse();
     }
 
     @Test
-    void pojoToPrettyJson_ValidPojoAsParameter_ShouldReturnJson() {
+    void pojoToPrettyJson_WithValidPojoAsParameter_ShouldReturnJson() {
         JsonTester pojo = createTestPojo();
 
         String json = jsonConverter.pojoToPrettyJson(pojo);
@@ -212,7 +212,7 @@ class JacksonJsonConverterTest {
 
     @SneakyThrows
     @Test
-    void inputStreamToPojo_NullClassAsParameter_ShouldThrowException() {
+    void inputStreamToPojo_WithNullClassAsParameter_ShouldThrowException() {
         Path templatePath = tempDir.resolve(SOURCE_JSON);
         Files.write(templatePath, singleton(JSON_POJO));
         try (InputStream inputStream = Files.newInputStream(templatePath)) {
@@ -241,7 +241,7 @@ class JacksonJsonConverterTest {
 
     @SneakyThrows
     @Test
-    void inputStreamToPojos_NullClassAsParameter_ShouldThrowException() {
+    void inputStreamToPojos_WithNullClassAsParameter_ShouldThrowException() {
         JsonTester pojo = createTestPojo();
         Path templatePath = tempDir.resolve(SOURCE_JSON);
         Files.write(templatePath, singleton(jsonConverter.pojoToJson(asList(pojo, pojo))));
