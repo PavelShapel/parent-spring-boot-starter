@@ -26,7 +26,7 @@ import static org.mockito.Mockito.doReturn;
 @ExtendWith(MockitoExtension.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class CoreMathUtilsTest {
-    private static final String RAW_EXPRESSION = "x+(y-2)*z";
+    private static final String RAW_EXPRESSION = "${x}+(${y}-2.45)*${z}";
     private static final String EXPRESSION = "1.5+(7.25-2.45)*3.333";
     private static final BigDecimal EXPRESSION_RESULT = toScaledBigDecimal(17.50);
     private static final NumberProperties NUMBER_PROPERTIES = new NumberProperties(Map.of(
