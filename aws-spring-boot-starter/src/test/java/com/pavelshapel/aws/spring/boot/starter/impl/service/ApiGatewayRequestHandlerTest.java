@@ -1,18 +1,14 @@
 package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
-import com.pavelshapel.aop.spring.boot.starter.AopStarterAutoConfiguration;
-import com.pavelshapel.aws.spring.boot.starter.AwsStarterAutoConfiguration;
+import com.pavelshapel.aws.spring.boot.starter.AbstractTest;
 import com.pavelshapel.aws.spring.boot.starter.api.service.RequestHandler;
-import com.pavelshapel.json.spring.boot.starter.JsonStarterAutoConfiguration;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
-import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 
 import java.util.Optional;
@@ -22,14 +18,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
-@SpringBootTest(classes = {
-        AwsStarterAutoConfiguration.class,
-        JsonStarterAutoConfiguration.class,
-        AnnotationAwareAspectJAutoProxyCreator.class,
-        AopStarterAutoConfiguration.class
-})
 @FieldDefaults(level = AccessLevel.PRIVATE)
-class ApiGatewayRequestHandlerTest {
+class ApiGatewayRequestHandlerTest extends AbstractTest {
     @Autowired
     RequestHandler requestHandler;
 

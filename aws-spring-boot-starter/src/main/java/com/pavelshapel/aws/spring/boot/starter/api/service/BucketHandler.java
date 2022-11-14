@@ -1,5 +1,8 @@
 package com.pavelshapel.aws.spring.boot.starter.api.service;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
@@ -11,19 +14,19 @@ public interface BucketHandler {
 
     String createBucketIfNotExists(String bucketName);
 
-    String createBucket(String bucketName);
-
     String deleteBucketIfExists(String bucketName);
 
     String clearBucket(String bucketName);
-
-    String deleteBucket(String bucketName);
 
     boolean isObjectExist(String bucketName, String key);
 
     String uploadObject(String bucketName, String key, String payload);
 
     String uploadObject(String bucketName, String key, File payload);
+
+    String uploadObject(String bucketName, String key, InputStream inputStream, ObjectMetadata metadata);
+
+    String uploadObject(PutObjectRequest request);
 
     InputStream downloadObject(String bucketName, String key);
 

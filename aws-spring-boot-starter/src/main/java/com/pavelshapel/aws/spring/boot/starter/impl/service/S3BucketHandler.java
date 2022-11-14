@@ -1,7 +1,15 @@
 package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.*;
+import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.ListVersionsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.model.VersionListing;
+import com.pavelshapel.aop.spring.boot.starter.annotation.ExceptionWrapped;
 import com.pavelshapel.aws.spring.boot.starter.api.service.BucketHandler;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import com.pavelshapel.aws.spring.boot.starter.properties.nested.AbstractServiceProperties;
@@ -19,6 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ExceptionWrapped
 public class S3BucketHandler implements BucketHandler {
     @Autowired
     AmazonS3 amazonS3;
@@ -45,6 +54,7 @@ public class S3BucketHandler implements BucketHandler {
     }
 
     @Override
+    @ExceptionWrapped(prefix = "bucket name should be specified.")
     public boolean isBucketExists(String bucketName) {
         return amazonS3.doesBucketExistV2(bucketName);
     }
@@ -57,11 +67,11 @@ public class S3BucketHandler implements BucketHandler {
                 .orElse(bucketName);
     }
 
-    @Override
-    public String createBucket(String bucketName) {
-        return Optional.of(amazonS3.createBucket(bucketName))
+    private String createBucket(String bucketName) {
+        return Optional.ofNullable(bucketName)
+                .map(amazonS3::createBucket)
                 .map(Bucket::getName)
-                .orElse(null);
+                .orElseThrow();
     }
 
     @Override
@@ -72,21 +82,25 @@ public class S3BucketHandler implements BucketHandler {
                 .orElse(bucketName);
     }
 
+    private String deleteBucket(String bucketName) {
+        Optional.ofNullable(bucketName)
+                .map(this::clearBucket)
+                .ifPresent(amazonS3::deleteBucket);
+        return bucketName;
+    }
+
     @Override
     public String clearBucket(String bucketName) {
-        deleteAllObjects(bucketName);
-        deleteAllObjectVersions(bucketName);
-        return bucketName;
+        return Optional.of(isBucketExists(bucketName))
+                .filter(Boolean.TRUE::equals)
+                .map(unused -> bucketName)
+                .map(this::deleteAllObjectVersions)
+                .map(this::deleteAllObjects)
+                .orElse(bucketName);
     }
 
     @Override
-    public String deleteBucket(String bucketName) {
-        clearBucket(bucketName);
-        amazonS3.deleteBucket(bucketName);
-        return bucketName;
-    }
-
-    @Override
+    @ExceptionWrapped(prefix = "bucket name and key should be specified.")
     public boolean isObjectExist(String bucketName, String key) {
         return amazonS3.doesObjectExist(bucketName, key);
     }
@@ -104,10 +118,22 @@ public class S3BucketHandler implements BucketHandler {
     }
 
     @Override
+    public String uploadObject(String bucketName, String key, InputStream inputStream, ObjectMetadata metadata) {
+        PutObjectRequest request = new PutObjectRequest(bucketName, key, inputStream, metadata);
+        return uploadObject(request);
+    }
+
+    @Override
+    public String uploadObject(PutObjectRequest request) {
+        amazonS3.putObject(request);
+        return buildObjectPath(request.getBucketName(), request.getKey());
+    }
+
+    @Override
     public InputStream downloadObject(String bucketName, String key) {
         return Optional.of(amazonS3.getObject(bucketName, key))
                 .map(S3Object::getObjectContent)
-                .orElseThrow(() -> new IllegalArgumentException(buildObjectPath(bucketName, key)));
+                .orElseThrow();
     }
 
     private String buildObjectPath(String bucketName, String key) {
@@ -122,7 +148,7 @@ public class S3BucketHandler implements BucketHandler {
                 .collect(Collectors.toList());
     }
 
-    private void deleteAllObjects(String bucketName) {
+    private String deleteAllObjects(String bucketName) {
         ObjectListing objectListing = amazonS3.listObjects(bucketName);
         while (true) {
             objectListing.getObjectSummaries()
@@ -133,9 +159,10 @@ public class S3BucketHandler implements BucketHandler {
                 break;
             }
         }
+        return bucketName;
     }
 
-    private void deleteAllObjectVersions(String bucketName) {
+    private String deleteAllObjectVersions(String bucketName) {
         VersionListing versionList = amazonS3.listVersions(new ListVersionsRequest().withBucketName(bucketName));
         while (true) {
             versionList.getVersionSummaries()
@@ -146,5 +173,6 @@ public class S3BucketHandler implements BucketHandler {
                 break;
             }
         }
+        return bucketName;
     }
 }

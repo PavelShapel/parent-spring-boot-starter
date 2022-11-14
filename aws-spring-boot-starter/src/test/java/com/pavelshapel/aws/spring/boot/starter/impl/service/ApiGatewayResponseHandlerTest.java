@@ -1,26 +1,20 @@
 package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
-import com.pavelshapel.aop.spring.boot.starter.AopStarterAutoConfiguration;
-import com.pavelshapel.aws.spring.boot.starter.AwsStarterAutoConfiguration;
+import com.pavelshapel.aws.spring.boot.starter.AbstractTest;
 import com.pavelshapel.aws.spring.boot.starter.api.service.ResponseHandler;
-import com.pavelshapel.json.spring.boot.starter.JsonStarterAutoConfiguration;
-import com.pavelshapel.json.spring.boot.starter.converter.JsonConverter;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
-import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpMethod;
 
 import java.util.List;
 
-import static com.pavelshapel.aws.spring.boot.starter.impl.service.ApiGatewayResponseHandler.RESULT;
 import static com.pavelshapel.aws.spring.boot.starter.impl.service.ApiGatewayResponseHandler.EXCEPTION;
+import static com.pavelshapel.aws.spring.boot.starter.impl.service.ApiGatewayResponseHandler.RESULT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.http.HttpMethod.GET;
@@ -28,14 +22,8 @@ import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
-@SpringBootTest(classes = {
-        AwsStarterAutoConfiguration.class,
-        JsonStarterAutoConfiguration.class,
-        AnnotationAwareAspectJAutoProxyCreator.class,
-        AopStarterAutoConfiguration.class
-})
 @FieldDefaults(level = AccessLevel.PRIVATE)
-class ApiGatewayResponseHandlerTest {
+class ApiGatewayResponseHandlerTest extends AbstractTest {
     private static final String BODY = "body";
     private static final String STATUS_CODE = "statusCode";
     private static final String RESPONSE_BODY = "responseBody";
@@ -43,8 +31,6 @@ class ApiGatewayResponseHandlerTest {
     private static final String VALID_JSON = String.format("{\"%1$s\":\"%1$s\"}", RESULT);
     private static final Exception THROWABLE = new Exception(EXCEPTION);
     private static final List<HttpMethod> SUPPORTED_HTTP_METHOD_LIST = List.of(GET, POST);
-    @SpyBean
-    JsonConverter jsonConverter;
     @Autowired
     ResponseHandler responseHandler;
 

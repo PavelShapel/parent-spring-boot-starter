@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import java.util.Optional;
 
@@ -20,6 +21,7 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 @Getter(AccessLevel.PROTECTED)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@EnableConfigurationProperties(AwsProperties.class)
 public abstract class AbstractAwsConfiguration<S extends AwsSyncClientBuilder, T> {
     final AwsProperties awsProperties;
     final AbstractServiceProperties serviceProperties;
