@@ -70,6 +70,11 @@
             <artifactId>spring-cloud-function-adapter-aws</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.pavelshapel</groupId>
+            <artifactId>test-spring-boot-starter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>

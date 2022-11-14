@@ -1,7 +1,6 @@
 package com.pavelshapel.aws.spring.boot.starter;
 
 import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyDynamoDb;
-import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyLambda;
 import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyS3;
 import com.pavelshapel.aws.spring.boot.starter.api.service.BucketHandler;
 import com.pavelshapel.aws.spring.boot.starter.api.service.DbHandler;
@@ -11,7 +10,6 @@ import com.pavelshapel.aws.spring.boot.starter.impl.service.ApiGatewayRequestHan
 import com.pavelshapel.aws.spring.boot.starter.impl.service.ApiGatewayResponseHandler;
 import com.pavelshapel.aws.spring.boot.starter.impl.service.DynamoDbHandler;
 import com.pavelshapel.aws.spring.boot.starter.impl.service.S3BucketHandler;
-import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,14 +20,6 @@ public class AwsStarterAutoConfiguration {
     @Bean
     public AwsContextRefreshedListener awsContextRefreshedListener() {
         return new AwsContextRefreshedListener();
-    }
-
-    @Bean
-    @ConditionalOnPropertyS3
-    @ConditionalOnPropertyDynamoDb
-    @ConditionalOnPropertyLambda
-    public AwsProperties awsProperties() {
-        return new AwsProperties();
     }
 
     @Bean
