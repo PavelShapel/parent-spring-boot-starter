@@ -14,7 +14,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <testcontainers.version>1.16.3</testcontainers.version>
+        <testcontainers.version>1.17.5</testcontainers.version>
         <springdoc.version>1.6.8</springdoc.version>
         <amazonaws.version>1.12.290</amazonaws.version>
         <derjust.version>5.1.0</derjust.version>
@@ -94,6 +94,11 @@
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>dynalite</artifactId>
+                <version>${testcontainers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>localstack</artifactId>
                 <version>${testcontainers.version}</version>
             </dependency>
             <!--com.pavelshapel-->
