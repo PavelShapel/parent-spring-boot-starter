@@ -8,7 +8,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.S3;
 
-public class AwsS3Extension implements BeforeAllCallback, AfterAllCallback {
+public class S3AwsExtension implements BeforeAllCallback, AfterAllCallback {
     private static final String DEFAULT_TAG = "0.11.3";
     private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse("localstack/localstack");
     private static final String AWS_PATH = "spring.aws";
