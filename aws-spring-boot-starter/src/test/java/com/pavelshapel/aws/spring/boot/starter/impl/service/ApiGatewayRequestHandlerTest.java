@@ -99,34 +99,34 @@ class ApiGatewayRequestHandlerTest extends AbstractTest {
 
     @ParameterizedTest
     @ArgumentsSource(TwoStringProvider.class)
-    void getQueryParameter_WithValidParametersAndExistingQueryParameter_ShouldReturnQueryParameterValue(String bucketName, String key) {
-        APIGatewayV2HTTPEvent request = createRequestWithHttpMethod(POST, Map.of(bucketName, key));
+    void getQueryParameter_WithValidParametersAndExistingQueryParameter_ShouldReturnQueryParameterValue(String key, String value) {
+        APIGatewayV2HTTPEvent request = createRequestWithHttpMethod(POST, Map.of(key, value));
 
-        String result = requestHandler.getQueryParameter(request, bucketName);
+        String result = requestHandler.getQueryParameter(request, key);
 
-        assertThat(result).isEqualTo(key);
+        assertThat(result).isEqualTo(value);
     }
 
     @ParameterizedTest
     @ArgumentsSource(TwoStringProvider.class)
-    void getQueryParameter_WithValidParametersAndNotExistingQueryParameter_ShouldThrowException(String bucketName, String key) {
+    void getQueryParameter_WithValidParametersAndNotExistingQueryParameter_ShouldThrowException(String key, String value) {
         APIGatewayV2HTTPEvent request = createRequestWithHttpMethod(POST);
 
-        assertThatThrownBy(() -> requestHandler.getQueryParameter(request, bucketName))
+        assertThatThrownBy(() -> requestHandler.getQueryParameter(request, key))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest
     @ArgumentsSource(OneStringProvider.class)
-    void getQueryParameter_WithNullRequestAsParameter_ShouldThrowException(String bucketName) {
-        assertThatThrownBy(() -> requestHandler.getQueryParameter(null, bucketName))
+    void getQueryParameter_WithNullRequestAsParameter_ShouldThrowException(String key) {
+        assertThatThrownBy(() -> requestHandler.getQueryParameter(null, key))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest
     @ArgumentsSource(TwoStringProvider.class)
-    void getQueryParameter_WithNullQueryParameterAsParameter_ShouldThrowException(String bucketName, String key) {
-        APIGatewayV2HTTPEvent request = createRequestWithHttpMethod(POST, Map.of(bucketName, key));
+    void getQueryParameter_WithNullQueryParameterAsParameter_ShouldThrowException(String key, String value) {
+        APIGatewayV2HTTPEvent request = createRequestWithHttpMethod(POST, Map.of(key, value));
 
         assertThatThrownBy(() -> requestHandler.getQueryParameter(request, null))
                 .isInstanceOf(IllegalArgumentException.class);
