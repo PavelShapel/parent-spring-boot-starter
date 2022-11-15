@@ -3,14 +3,18 @@ package com.pavelshapel.aws.spring.boot.starter.impl.service;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
 import com.pavelshapel.aws.spring.boot.starter.AbstractTest;
 import com.pavelshapel.aws.spring.boot.starter.api.service.RequestHandler;
+import com.pavelshapel.aws.spring.boot.starter.provider.OneStringProvider;
+import com.pavelshapel.aws.spring.boot.starter.provider.TwoStringProvider;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -93,7 +97,46 @@ class ApiGatewayRequestHandlerTest extends AbstractTest {
         assertThat(result).isFalse();
     }
 
+    @ParameterizedTest
+    @ArgumentsSource(TwoStringProvider.class)
+    void getQueryParameter_WithValidParametersAndExistingQueryParameter_ShouldReturnQueryParameterValue(String bucketName, String key) {
+        APIGatewayV2HTTPEvent request = createRequestWithHttpMethod(POST, Map.of(bucketName, key));
+
+        String result = requestHandler.getQueryParameter(request, bucketName);
+
+        assertThat(result).isEqualTo(key);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(TwoStringProvider.class)
+    void getQueryParameter_WithValidParametersAndNotExistingQueryParameter_ShouldThrowException(String bucketName, String key) {
+        APIGatewayV2HTTPEvent request = createRequestWithHttpMethod(POST);
+
+        assertThatThrownBy(() -> requestHandler.getQueryParameter(request, bucketName))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(OneStringProvider.class)
+    void getQueryParameter_WithNullRequestAsParameter_ShouldThrowException(String bucketName) {
+        assertThatThrownBy(() -> requestHandler.getQueryParameter(null, bucketName))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(TwoStringProvider.class)
+    void getQueryParameter_WithNullQueryParameterAsParameter_ShouldThrowException(String bucketName, String key) {
+        APIGatewayV2HTTPEvent request = createRequestWithHttpMethod(POST, Map.of(bucketName, key));
+
+        assertThatThrownBy(() -> requestHandler.getQueryParameter(request, null))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     private APIGatewayV2HTTPEvent createRequestWithHttpMethod(HttpMethod httpMethod) {
+        return createRequestWithHttpMethod(httpMethod, null);
+    }
+
+    private APIGatewayV2HTTPEvent createRequestWithHttpMethod(HttpMethod httpMethod, Map<String, String> queryStringParameters) {
         return Optional.of(httpMethod)
                 .map(Enum::name)
                 .map(httpMethodName -> APIGatewayV2HTTPEvent.RequestContext.Http.builder()
@@ -104,6 +147,7 @@ class ApiGatewayRequestHandlerTest extends AbstractTest {
                         .build())
                 .map(requestContext -> APIGatewayV2HTTPEvent.builder()
                         .withRequestContext(requestContext)
+                        .withQueryStringParameters(queryStringParameters)
                         .build())
                 .orElseThrow();
     }

@@ -16,4 +16,6 @@ public interface RequestHandler {
     }
 
     boolean isRequestMethod(APIGatewayV2HTTPEvent request, HttpMethod httpMethod);
+
+    String getQueryParameter(APIGatewayV2HTTPEvent request, String pathParameter);
 }

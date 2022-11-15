@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ExceptionWrapped
@@ -28,6 +29,15 @@ public class ApiGatewayRequestHandler implements RequestHandler {
                 .map(APIGatewayV2HTTPEvent::getRequestContext)
                 .map(APIGatewayV2HTTPEvent.RequestContext::getHttp)
                 .map(APIGatewayV2HTTPEvent.RequestContext.Http::getMethod)
+                .orElseThrow();
+    }
+
+    @Override
+    public String getQueryParameter(APIGatewayV2HTTPEvent request, String queryParameter) {
+        return Optional.ofNullable(request)
+                .filter(unused -> isNoneBlank(queryParameter))
+                .map(APIGatewayV2HTTPEvent::getQueryStringParameters)
+                .map(map -> map.get(queryParameter))
                 .orElseThrow();
     }
 }
