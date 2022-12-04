@@ -3,6 +3,7 @@ package com.pavelshapel.aws.spring.boot.starter.config;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.client.builder.AwsSyncClientBuilder;
@@ -47,13 +48,21 @@ public abstract class AbstractAwsConfiguration<S extends AwsSyncClientBuilder, T
                 .filter(properties -> isEmpty(properties.getProfile()))
                 .filter(properties -> isEmpty(properties.getAccessKey()))
                 .filter(properties -> isEmpty(properties.getSecretKey()))
-                .map(unused -> clientBuilder.build())
+                .map(unused -> buildClientWithoutCredentials())
                 .orElseGet(this::buildClientWithCredentials);
     }
 
+    private T buildClientWithoutCredentials() {
+        return buildClientCredentials(DefaultAWSCredentialsProviderChain.getInstance());
+    }
+
     private T buildClientWithCredentials() {
+        return buildClientCredentials(awsCredentialsProvider());
+    }
+
+    private T buildClientCredentials(AWSCredentialsProvider awsCredentialsProvider) {
         return (T) clientBuilder
-                .withCredentials(awsCredentialsProvider())
+                .withCredentials(awsCredentialsProvider)
                 .withEndpointConfiguration(createEndpointConfiguration())
                 .build();
     }

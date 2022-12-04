@@ -1,11 +1,14 @@
 package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
+import com.amazonaws.services.lambda.runtime.tests.annotations.Event;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.pavelshapel.aws.spring.boot.starter.AbstractTest;
 import com.pavelshapel.aws.spring.boot.starter.api.service.RequestHandler;
 import com.pavelshapel.aws.spring.boot.starter.provider.OneStringProvider;
 import com.pavelshapel.aws.spring.boot.starter.provider.TwoStringProvider;
 import lombok.AccessLevel;
+import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,6 +17,8 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class ApiGatewayRequestHandlerTest extends AbstractTest {
@@ -131,6 +137,42 @@ class ApiGatewayRequestHandlerTest extends AbstractTest {
         assertThatThrownBy(() -> requestHandler.getQueryParameter(request, null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @ParameterizedTest
+    @Event(value = "src/test/resources/request_base64.json", type = APIGatewayV2HTTPEvent.class)
+    @SneakyThrows
+    void requestBodyToInputStream_WithBase64BodyParameter_ShouldReturnInputStream(APIGatewayV2HTTPEvent request) {
+        try (InputStream result = requestHandler.requestBodyToInputStream(request)) {
+            assertThat(result)
+                    .isNotNull();
+        }
+    }
+
+    @ParameterizedTest
+    @Event(value = "src/test/resources/request.json", type = APIGatewayV2HTTPEvent.class)
+    @SneakyThrows
+    void requestBodyToInputStream_WithPlainTextBodyParameter_ShouldReturnInputStream(APIGatewayV2HTTPEvent request) {
+        try (InputStream result = requestHandler.requestBodyToInputStream(request)) {
+            assertThat(result)
+                    .isNotNull()
+                    .hasSameContentAs(new ByteArrayInputStream("test".getBytes()));
+        }
+    }
+
+    @ParameterizedTest
+    @Event(value = "src/test/resources/request.json", type = APIGatewayV2HTTPEvent.class)
+    @SneakyThrows
+    void requestHeadersToObjectMetadata_WithPlainTextBodyParameter_ShouldReturnInputStream(APIGatewayV2HTTPEvent request) {
+        ObjectMetadata result = requestHandler.requestHeadersToObjectMetadata(request);
+
+        assertThat(result)
+                .isNotNull()
+                .isInstanceOf(ObjectMetadata.class)
+                .extracting(ObjectMetadata::getContentType)
+                .asString()
+                .isEqualTo(TEXT_PLAIN_VALUE);
+    }
+
 
     private APIGatewayV2HTTPEvent createRequestWithHttpMethod(HttpMethod httpMethod) {
         return createRequestWithHttpMethod(httpMethod, null);

@@ -1,0 +1,45 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/",
+  "rawQueryString": "bucketName=com-pavelshapel-artifact-bucket&key=test_upload2.txt",
+  "headers": {
+    "content-length": "274",
+    "x-amzn-tls-version": "TLSv1.2",
+    "x-forwarded-proto": "https",
+    "postman-token": "7adb064a-7a43-4925-8202-98e8405a1b99",
+    "x-forwarded-port": "443",
+    "x-forwarded-for": "46.205.212.111",
+    "accept": "*/*",
+    "x-amzn-tls-cipher-suite": "ECDHE-RSA-AES128-GCM-SHA256",
+    "x-amzn-trace-id": "Root=1-63850f35-403bccdc660095164a994b0e",
+    "host": "jjujhz7xndysms6yvmnhnhp4qi0zdcvg.lambda-url.eu-west-1.on.aws",
+    "content-type": "text/plain",
+    "accept-encoding": "gzip, deflate, br",
+    "user-agent": "PostmanRuntime/7.29.2"
+  },
+  "queryStringParameters": {
+    "bucketName": "com-pavelshapel-artifact-bucket",
+    "key": "test_upload2.txt"
+  },
+  "requestContext": {
+    "accountId": "anonymous",
+    "apiId": "jjujhz7xndysms6yvmnhnhp4qi0zdcvg",
+    "domainName": "jjujhz7xndysms6yvmnhnhp4qi0zdcvg.lambda-url.eu-west-1.on.aws",
+    "domainPrefix": "jjujhz7xndysms6yvmnhnhp4qi0zdcvg",
+    "http": {
+      "method": "POST",
+      "path": "/",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "46.205.212.111",
+      "userAgent": "PostmanRuntime/7.29.2"
+    },
+    "requestId": "90307207-db91-4d7a-ad25-3c531134b823",
+    "routeKey": "$default",
+    "stage": "$default",
+    "time": "28/Nov/2022:19:42:46 +0000",
+    "timeEpoch": 1669664566134
+  },
+  "body": "test",
+  "isBase64Encoded": false
+}
