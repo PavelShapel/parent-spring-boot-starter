@@ -129,8 +129,16 @@ public class ApiGatewayRequestHandler implements RequestHandler {
     }
 
     private ObjectMetadata createObjectMetadata(Map<String, String> headers) {
+        return Optional.of(CONTENT_TYPE)
+                .map(String::toLowerCase)
+                .map(headers::get)
+                .map(this::createMetadataWithContentType)
+                .orElseGet(ObjectMetadata::new);
+    }
+
+    private ObjectMetadata createMetadataWithContentType(String contentType) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(headers.get(CONTENT_TYPE.toLowerCase()));
+        objectMetadata.setContentType(contentType);
         return objectMetadata;
     }
 }
