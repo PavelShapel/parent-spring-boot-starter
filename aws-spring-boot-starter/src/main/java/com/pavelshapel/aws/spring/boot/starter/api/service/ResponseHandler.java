@@ -6,7 +6,9 @@ import org.springframework.http.HttpMethod;
 import java.util.List;
 
 public interface ResponseHandler {
-    APIGatewayV2HTTPResponse updateResponseWithOkAndGet(APIGatewayV2HTTPResponse response, String responseBody);
+    APIGatewayV2HTTPResponse updateResponseWithOkJsonBodyAndGet(APIGatewayV2HTTPResponse response, String responseBody);
+
+    APIGatewayV2HTTPResponse updateResponseWithOkAndGet(APIGatewayV2HTTPResponse response);
 
     APIGatewayV2HTTPResponse updateResponseWithBadRequestAndGet(APIGatewayV2HTTPResponse response, Exception exception);
 

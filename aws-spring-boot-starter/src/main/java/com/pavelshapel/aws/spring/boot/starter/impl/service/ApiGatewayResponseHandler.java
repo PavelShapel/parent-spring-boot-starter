@@ -32,9 +32,20 @@ public class ApiGatewayResponseHandler implements ResponseHandler {
     @Autowired
     JsonConverter jsonConverter;
 
-    public APIGatewayV2HTTPResponse updateResponseWithOkAndGet(APIGatewayV2HTTPResponse response,
-                                                               String responseBody) {
+    public APIGatewayV2HTTPResponse updateResponseWithOkJsonBodyAndGet(APIGatewayV2HTTPResponse response, String responseBody) {
         return verifiedResponseWithBodyAndStatusCode(response, responseBody, OK);
+    }
+
+    @Override
+    public APIGatewayV2HTTPResponse updateResponseWithOkAndGet(APIGatewayV2HTTPResponse response) {
+        return Optional.ofNullable(response)
+                .map(this::withOkStatusCode)
+                .orElseThrow();
+    }
+
+    private APIGatewayV2HTTPResponse withOkStatusCode(APIGatewayV2HTTPResponse response) {
+        response.setStatusCode(OK.value());
+        return response;
     }
 
     @Override

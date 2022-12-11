@@ -61,6 +61,11 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>${tika-core.version}</version>
+            </dependency>
             <!--testcontainers-->
             <dependency>
                 <groupId>org.testcontainers</groupId>
