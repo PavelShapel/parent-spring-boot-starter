@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.pavelshapel.cdk.spring.boot.starter.CdkStarterAutoConfiguration
