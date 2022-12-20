@@ -39,15 +39,7 @@ public class SpringBootLambdaFunction {
                 .map(builder -> builder.authType(FunctionUrlAuthType.NONE))
                 .map(FunctionUrlOptions.Builder::build)
                 .map(function::addFunctionUrl)
-                .map(this::grantInvokeUrl)
                 .ifPresent(this::addCfnOutput);
-    }
-
-    private FunctionUrl grantInvokeUrl(FunctionUrl functionUrl) {
-//        Optional.of(function)
-//                .map(Function::getRole)
-//                .ifPresent(functionUrl::grantInvokeUrl);
-        return functionUrl;
     }
 
     private void addCfnOutput(FunctionUrl functionUrl) {
