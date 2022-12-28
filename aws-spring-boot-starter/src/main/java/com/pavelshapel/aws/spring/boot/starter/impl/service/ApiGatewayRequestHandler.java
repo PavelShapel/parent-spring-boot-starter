@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
+import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -129,16 +130,15 @@ public class ApiGatewayRequestHandler implements RequestHandler {
     }
 
     private ObjectMetadata createObjectMetadata(Map<String, String> headers) {
-        return Optional.of(CONTENT_TYPE)
-                .map(String::toLowerCase)
-                .map(headers::get)
-                .map(this::createMetadataWithContentType)
-                .orElseGet(ObjectMetadata::new);
+        String contentType = headers.get(CONTENT_TYPE.toLowerCase());
+        String contentLength = headers.get(CONTENT_LENGTH.toLowerCase());
+        return createMetadata(contentType, contentLength);
     }
 
-    private ObjectMetadata createMetadataWithContentType(String contentType) {
+    private ObjectMetadata createMetadata(String contentType, String contentLength) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(contentType);
+        objectMetadata.setContentLength(Long.parseLong(contentLength));
         return objectMetadata;
     }
 }

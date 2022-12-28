@@ -2,43 +2,43 @@
   "version": "2.0",
   "routeKey": "$default",
   "rawPath": "/",
-  "rawQueryString": "bucketName=com-pavelshapel-artifact-bucket&key=test_upload2.txt",
+  "rawQueryString": "bucketName=com-pavelshapel-artifact-bucket&key=test_upload3.txt",
   "headers": {
-    "content-length": "274",
+    "content-length": "4",
     "x-amzn-tls-version": "TLSv1.2",
     "x-forwarded-proto": "https",
-    "postman-token": "7adb064a-7a43-4925-8202-98e8405a1b99",
+    "postman-token": "bcaf5878-a2fa-4936-bbc2-0e3adb85f0b3",
     "x-forwarded-port": "443",
-    "x-forwarded-for": "46.205.212.111",
+    "x-forwarded-for": "46.205.213.252",
     "accept": "*/*",
     "x-amzn-tls-cipher-suite": "ECDHE-RSA-AES128-GCM-SHA256",
-    "x-amzn-trace-id": "Root=1-63850f35-403bccdc660095164a994b0e",
-    "host": "jjujhz7xndysms6yvmnhnhp4qi0zdcvg.lambda-url.eu-west-1.on.aws",
+    "x-amzn-trace-id": "Root=1-63ac9a33-117475bb08c030664db781a8",
+    "host": "wntuvrr2evi37qkmnimpqk6dp40uulps.lambda-url.eu-west-1.on.aws",
     "content-type": "text/plain",
     "accept-encoding": "gzip, deflate, br",
     "user-agent": "PostmanRuntime/7.29.2"
   },
   "queryStringParameters": {
     "bucketName": "com-pavelshapel-artifact-bucket",
-    "key": "test_upload2.txt"
+    "key": "test_upload3.txt"
   },
   "requestContext": {
     "accountId": "anonymous",
-    "apiId": "jjujhz7xndysms6yvmnhnhp4qi0zdcvg",
-    "domainName": "jjujhz7xndysms6yvmnhnhp4qi0zdcvg.lambda-url.eu-west-1.on.aws",
-    "domainPrefix": "jjujhz7xndysms6yvmnhnhp4qi0zdcvg",
+    "apiId": "wntuvrr2evi37qkmnimpqk6dp40uulps",
+    "domainName": "wntuvrr2evi37qkmnimpqk6dp40uulps.lambda-url.eu-west-1.on.aws",
+    "domainPrefix": "wntuvrr2evi37qkmnimpqk6dp40uulps",
     "http": {
       "method": "POST",
       "path": "/",
       "protocol": "HTTP/1.1",
-      "sourceIp": "46.205.212.111",
+      "sourceIp": "46.205.213.252",
       "userAgent": "PostmanRuntime/7.29.2"
     },
-    "requestId": "90307207-db91-4d7a-ad25-3c531134b823",
+    "requestId": "acdaf92f-f192-4277-9093-a5b02501d25c",
     "routeKey": "$default",
     "stage": "$default",
-    "time": "28/Nov/2022:19:42:46 +0000",
-    "timeEpoch": 1669664566134
+    "time": "28/Dec/2022:19:34:12 +0000",
+    "timeEpoch": 1672256052000
   },
   "body": "test",
   "isBase64Encoded": false
