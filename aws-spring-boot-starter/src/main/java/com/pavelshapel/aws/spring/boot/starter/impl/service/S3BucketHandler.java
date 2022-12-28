@@ -130,10 +130,8 @@ public class S3BucketHandler implements BucketHandler {
     }
 
     @Override
-    public InputStream downloadObject(String bucketName, String key) {
-        return Optional.of(amazonS3.getObject(bucketName, key))
-                .map(S3Object::getObjectContent)
-                .orElseThrow();
+    public S3Object downloadObject(String bucketName, String key) {
+        return amazonS3.getObject(bucketName, key);
     }
 
     private String buildObjectPath(String bucketName, String key) {

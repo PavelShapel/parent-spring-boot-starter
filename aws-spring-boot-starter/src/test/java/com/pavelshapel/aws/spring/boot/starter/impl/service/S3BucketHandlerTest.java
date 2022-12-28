@@ -1,6 +1,7 @@
 package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.S3Object;
 import com.pavelshapel.aws.spring.boot.starter.AbstractTest;
 import com.pavelshapel.aws.spring.boot.starter.api.service.BucketHandler;
 import com.pavelshapel.aws.spring.boot.starter.provider.OneStringProvider;
@@ -284,8 +285,11 @@ class S3BucketHandlerTest extends AbstractTest {
         bucketName = createBucket(bucketName);
         bucketHandler.uploadObject(bucketName, key, payload);
 
-        try (InputStream result = bucketHandler.downloadObject(bucketName, key)) {
-            assertThat(result).isNotNull();
+        try (S3Object s3Object = bucketHandler.downloadObject(bucketName, key)) {
+            assertThat(s3Object)
+                    .isNotNull()
+                    .hasFieldOrPropertyWithValue("bucketName", bucketName)
+                    .hasFieldOrPropertyWithValue("key", key);
         }
     }
 

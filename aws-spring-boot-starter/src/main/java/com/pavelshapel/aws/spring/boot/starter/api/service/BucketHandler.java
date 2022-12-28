@@ -2,6 +2,7 @@ package com.pavelshapel.aws.spring.boot.starter.api.service;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 
 import java.io.File;
 import java.io.InputStream;
@@ -28,7 +29,7 @@ public interface BucketHandler {
 
     String uploadObject(PutObjectRequest request);
 
-    InputStream downloadObject(String bucketName, String key);
+    S3Object downloadObject(String bucketName, String key);
 
     List<String> listAll(String bucketName);
 }
