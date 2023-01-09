@@ -27,7 +27,6 @@
         <aws-lambda-java-tests.version>1.1.1</aws-lambda-java-tests.version>
         <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
         <junit-jupiter-engine.version>5.9.0</junit-jupiter-engine.version>
-        <tika-core.version>2.6.0</tika-core.version>
         <aws-cdk-lib.version>2.28.1</aws-cdk-lib.version>
         <constructs.version>[10.0.0,11.0.0)</constructs.version>
     </properties>
@@ -64,12 +63,6 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-            <dependency>
-                <groupId>org.apache.tika</groupId>
-                <artifactId>tika-core</artifactId>
-                <version>${tika-core.version}</version>
-            </dependency>
-            <!--testcontainers-->
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers</artifactId>
