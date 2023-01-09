@@ -1,9 +1,12 @@
 package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
 import com.pavelshapel.aws.spring.boot.starter.AbstractTest;
 import com.pavelshapel.aws.spring.boot.starter.api.service.ResponseHandler;
 import lombok.AccessLevel;
+import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,6 +14,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import static com.pavelshapel.aws.spring.boot.starter.impl.service.ApiGatewayResponseHandler.EXCEPTION;
@@ -21,6 +25,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class ApiGatewayResponseHandlerTest extends AbstractTest {
@@ -31,6 +36,8 @@ class ApiGatewayResponseHandlerTest extends AbstractTest {
     private static final String VALID_JSON = String.format("{\"%1$s\":\"%1$s\"}", RESULT);
     private static final Exception THROWABLE = new Exception(EXCEPTION);
     private static final List<HttpMethod> SUPPORTED_HTTP_METHOD_LIST = List.of(GET, POST);
+    private static final String KEY = "key";
+    private static final String TEST = "test";
     @Autowired
     ResponseHandler responseHandler;
 
@@ -75,23 +82,25 @@ class ApiGatewayResponseHandlerTest extends AbstractTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-//    @Test
-//    void updateResponseWithOkAndGet_WithValidParameters_ShouldUpdateAndReturnResponseWithOkStatusCode() {
-//        APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
-//
-//        APIGatewayV2HTTPResponse updatedResponse = responseHandler.updateResponseWithOkAndGet(response);
-//
-//        assertThat(updatedResponse)
-//                .isNotNull()
-//                .hasFieldOrPropertyWithValue(STATUS_CODE, OK.value());
-//    }
-//
-//    @ParameterizedTest
-//    @NullSource
-//    void updateResponseWithOkAndGet_WithNullResponseAsParameter_ShouldThrowException(APIGatewayV2HTTPResponse response) {
-//        assertThatThrownBy(() -> responseHandler.updateResponseWithOkAndGet(response))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
+    @Test
+    @SneakyThrows
+    void updateResponseWithOkAndGet_WithS3ObjectAndValidParameters_ShouldUpdateAndReturnResponseWithOkStatusCode() {
+        APIGatewayV2HTTPResponse response = new APIGatewayV2HTTPResponse();
+        try (S3Object s3Object = new S3Object()) {
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(4);
+            objectMetadata.setContentType(TEXT_PLAIN_VALUE);
+            s3Object.setKey(KEY);
+            s3Object.setObjectContent(new ByteArrayInputStream(TEST.getBytes()));
+            s3Object.setObjectMetadata(objectMetadata);
+
+            APIGatewayV2HTTPResponse updatedResponse = responseHandler.updateResponseWithOkAndGet(response, s3Object);
+
+            assertThat(updatedResponse)
+                    .isNotNull()
+                    .hasFieldOrPropertyWithValue(STATUS_CODE, OK.value());
+        }
+    }
 
     @Test
     void updateResponseWithBadRequestAndGet_Exception_WithValidParameters_ShouldUpdateAndReturnResponse() {
