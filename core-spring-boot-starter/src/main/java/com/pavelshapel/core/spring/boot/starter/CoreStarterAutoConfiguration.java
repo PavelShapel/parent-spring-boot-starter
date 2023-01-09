@@ -7,7 +7,6 @@ import com.pavelshapel.core.spring.boot.starter.api.util.MathUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.RandomUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.SubstitutionUtils;
-import com.pavelshapel.core.spring.boot.starter.api.util.FileUtils;
 import com.pavelshapel.core.spring.boot.starter.bpp.SelfAutowiredAnnotationBeanPostProcessor;
 import com.pavelshapel.core.spring.boot.starter.impl.annotation.ClassAnnotationReplacer;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreClassUtils;
@@ -16,7 +15,6 @@ import com.pavelshapel.core.spring.boot.starter.impl.util.CoreMathUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreRandomUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreStreamUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreSubstitutionUtils;
-import com.pavelshapel.core.spring.boot.starter.impl.util.CoreFileUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -67,10 +65,5 @@ public class CoreStarterAutoConfiguration {
     @Bean
     public MathUtils mathUtils() {
         return new CoreMathUtils();
-    }
-
-    @Bean
-    public FileUtils fileUtils() {
-        return new CoreFileUtils();
     }
 }

@@ -1,25 +1,36 @@
 package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
 import com.pavelshapel.aop.spring.boot.starter.annotation.ExceptionWrapped;
 import com.pavelshapel.aws.spring.boot.starter.api.service.ResponseHandler;
 import com.pavelshapel.json.spring.boot.starter.converter.JsonConverter;
 import lombok.AccessLevel;
+import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
+import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.amazonaws.util.IOUtils.toByteArray;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonMap;
 import static java.util.Objects.nonNull;
 import static java.util.function.Predicate.not;
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
+import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -32,18 +43,22 @@ public class ApiGatewayResponseHandler implements ResponseHandler {
     @Autowired
     JsonConverter jsonConverter;
 
-    public APIGatewayV2HTTPResponse updateResponseWithOkJsonBodyAndGet(APIGatewayV2HTTPResponse response, String responseBody) {
+    public APIGatewayV2HTTPResponse updateResponseWithOkAndGet(APIGatewayV2HTTPResponse response, String responseBody) {
         return verifiedResponseWithBodyAndStatusCode(response, responseBody, OK);
     }
 
+    @SneakyThrows
     @Override
-    public APIGatewayV2HTTPResponse updateResponseWithOkAndGet(APIGatewayV2HTTPResponse response) {
-        return Optional.ofNullable(response)
-                .map(this::withOkStatusCode)
-                .orElseThrow();
-    }
-
-    private APIGatewayV2HTTPResponse withOkStatusCode(APIGatewayV2HTTPResponse response) {
+    public APIGatewayV2HTTPResponse updateResponseWithOkAndGet(APIGatewayV2HTTPResponse response, S3Object s3Object) {
+        ObjectMetadata objectMetadata = s3Object.getObjectMetadata();
+        String fileName = URLEncoder.encode(s3Object.getKey(), UTF_8);
+        Map<String, String> headers = new HashMap<>();
+        headers.put(CONTENT_TYPE, objectMetadata.getContentType());
+        headers.put(CONTENT_LENGTH, String.valueOf(objectMetadata.getContentLength()));
+        headers.put(CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", fileName));
+        response.setHeaders(headers);
+        response.setBody(Base64.getEncoder().encodeToString(toByteArray(s3Object.getObjectContent())));
+        response.setIsBase64Encoded(true);
         response.setStatusCode(OK.value());
         return response;
     }
