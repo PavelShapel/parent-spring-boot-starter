@@ -3,6 +3,7 @@ package com.pavelshapel.aws.spring.boot.starter.impl.service;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.pavelshapel.aop.spring.boot.starter.annotation.ExceptionWrapped;
 import com.pavelshapel.aws.spring.boot.starter.api.service.ResponseHandler;
 import com.pavelshapel.json.spring.boot.starter.converter.JsonConverter;
@@ -57,7 +58,9 @@ public class ApiGatewayResponseHandler implements ResponseHandler {
         headers.put(CONTENT_LENGTH, String.valueOf(objectMetadata.getContentLength()));
         headers.put(CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", fileName));
         response.setHeaders(headers);
-        response.setBody(Base64.getEncoder().encodeToString(toByteArray(s3Object.getObjectContent())));
+        try (S3ObjectInputStream objectContent = s3Object.getObjectContent()) {
+            response.setBody(Base64.getEncoder().encodeToString(toByteArray(objectContent)));
+        }
         response.setIsBase64Encoded(true);
         response.setStatusCode(OK.value());
         return response;
