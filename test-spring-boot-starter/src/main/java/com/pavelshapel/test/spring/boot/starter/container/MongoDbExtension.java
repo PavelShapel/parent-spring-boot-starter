@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
-public class MongoDBExtension implements BeforeAllCallback, AfterAllCallback {
+public class MongoDbExtension implements BeforeAllCallback, AfterAllCallback {
     private static final String DEFAULT_TAG = "5.0.3";
     private static final DockerImageName DEFAULT_IMAGE_NAME = DockerImageName.parse("mongo");
     private static final String MONGO_URI_PROPERTY_PATH = "spring.data.mongodb.uri";
