@@ -11,14 +11,10 @@ import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.services.s3.model.VersionListing;
 import com.pavelshapel.aop.spring.boot.starter.annotation.ExceptionWrapped;
 import com.pavelshapel.aws.spring.boot.starter.api.service.BucketHandler;
-import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
-import com.pavelshapel.aws.spring.boot.starter.properties.nested.AbstractServiceProperties;
-import com.pavelshapel.aws.spring.boot.starter.properties.nested.S3ServiceProperties;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collections;
@@ -31,17 +27,6 @@ import java.util.stream.Collectors;
 public class S3BucketHandler implements BucketHandler {
     @Autowired
     AmazonS3 amazonS3;
-    @Autowired
-    AwsProperties awsProperties;
-
-    @PostConstruct
-    private void postConstruct() {
-        Optional.ofNullable(awsProperties)
-                .map(AwsProperties::getS3)
-                .filter(AbstractServiceProperties::getEnabled)
-                .map(S3ServiceProperties::getObject)
-                .ifPresent(this::createBucketIfNotExists);
-    }
 
     @Override
     public List<String> getBucketNames() {
