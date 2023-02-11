@@ -24,12 +24,14 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(S3AwsExtension.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -65,7 +67,7 @@ class S3BucketHandlerTest extends AbstractTest {
     @ParameterizedTest
     @ArgumentsSource(OneStringProvider.class)
     void isBucketExists_WithNotExistBucketAsParameter_ShouldReturnFalse(String bucketName) {
-        bucketName = createValidBucketName(bucketName);
+        bucketName = createValidName(bucketName);
 
         boolean result = bucketHandler.isBucketExists(bucketName);
 
@@ -92,7 +94,7 @@ class S3BucketHandlerTest extends AbstractTest {
     @ParameterizedTest
     @ArgumentsSource(OneStringProvider.class)
     void createBucketIfNotExists_WithNotExistBucketAsParameter_ShouldInvokeCreateBucketMethod(String bucketName) {
-        bucketName = createValidBucketName(bucketName);
+        bucketName = createValidName(bucketName);
 
         String result = bucketHandler.createBucketIfNotExists(bucketName);
 
@@ -122,7 +124,7 @@ class S3BucketHandlerTest extends AbstractTest {
     @ParameterizedTest
     @ArgumentsSource(OneStringProvider.class)
     void deleteBucketIfExists_WithNotExistBucketAsParameter_ShouldNotInvokeDeleteBucketMethod(String bucketName) {
-        bucketName = createValidBucketName(bucketName);
+        bucketName = createValidName(bucketName);
 
         String result = bucketHandler.deleteBucketIfExists(bucketName);
 
@@ -169,7 +171,7 @@ class S3BucketHandlerTest extends AbstractTest {
     @ParameterizedTest
     @ArgumentsSource(OneStringProvider.class)
     void clearBucket_WithNotExistBucketAsParameter_ShouldNotInvokeDeleteObject(String bucketName) {
-        bucketName = createValidBucketName(bucketName);
+        bucketName = createValidName(bucketName);
 
         String result = bucketHandler.clearBucket(bucketName);
 
@@ -180,7 +182,7 @@ class S3BucketHandlerTest extends AbstractTest {
     @ParameterizedTest
     @ArgumentsSource(OneStringProvider.class)
     void clearBucket_WithNotExistBucketAsParameter_ShouldNotInvokeDeleteVersion(String bucketName) {
-        bucketName = createValidBucketName(bucketName);
+        bucketName = createValidName(bucketName);
 
         String result = bucketHandler.clearBucket(bucketName);
 
@@ -310,19 +312,7 @@ class S3BucketHandlerTest extends AbstractTest {
     }
 
     private String createBucket(String bucketName) {
-        return bucketHandler.createBucketIfNotExists(createValidBucketName(bucketName));
-    }
-
-    private String createValidBucketName(String bucketName) {
-        return Optional.ofNullable(bucketName)
-                .map(String::toLowerCase)
-                .map("com-pavelshapel-"::concat)
-                .map(this::getVerifiedBucketName)
-                .orElseThrow();
-    }
-
-    private String getVerifiedBucketName(String bucket) {
-        return bucket.length() > 63 ? bucket.substring(0, 63) : bucket;
+        return bucketHandler.createBucketIfNotExists(createValidName(bucketName));
     }
 
     private String buildObjectPath(String bucketName, String key) {

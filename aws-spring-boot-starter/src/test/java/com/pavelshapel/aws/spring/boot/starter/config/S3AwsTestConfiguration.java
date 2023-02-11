@@ -1,6 +1,5 @@
-package com.pavelshapel.aws.spring.boot.starter;
+package com.pavelshapel.aws.spring.boot.starter.config;
 
-import com.pavelshapel.aws.spring.boot.starter.config.AbstractS3AwsConfiguration;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
