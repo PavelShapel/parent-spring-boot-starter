@@ -1,4 +1,4 @@
-package com.pavelshapel.aws.spring.boot.starter.config;
+package com.pavelshapel.aws.spring.boot.starter.context;
 
 import com.pavelshapel.aws.spring.boot.starter.impl.service.AbstractDynamoDbService;
 
