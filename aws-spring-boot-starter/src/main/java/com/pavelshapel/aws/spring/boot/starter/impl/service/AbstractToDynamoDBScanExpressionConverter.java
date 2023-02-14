@@ -1,10 +1,9 @@
 package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.document.ItemUtils;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.pavelshapel.aws.spring.boot.starter.api.service.ToDynamoDBScanExpressionConverter;
-import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
 import org.springframework.lang.Nullable;
 
@@ -14,19 +13,19 @@ import java.util.stream.Collectors;
 
 import static org.springframework.util.CollectionUtils.isEmpty;
 
-public abstract class AbstractToDynamoDBScanExpressionConverter<T extends Entity<String>> implements ToDynamoDBScanExpressionConverter<T> {
+public abstract class AbstractToDynamoDBScanExpressionConverter implements ToDynamoDBScanExpressionConverter {
     @Override
-    public DynamoDBQueryExpression<T> convert(@Nullable Set<SearchCriterion> searchCriteria) {
-        DynamoDBQueryExpression<T> dynamoDBQueryExpression = new DynamoDBQueryExpression<>();
+    public DynamoDBScanExpression convert(@Nullable Set<SearchCriterion> searchCriteria) {
+        DynamoDBScanExpression dynamoDBScanExpression = new DynamoDBScanExpression();
         if (!isEmpty(searchCriteria)) {
-            dynamoDBQueryExpression
-                    .withKeyConditionExpression(updateKeyConditionExpression(searchCriteria))
+            dynamoDBScanExpression
+                    .withFilterExpression(updateFilterExpression(searchCriteria))
                     .withExpressionAttributeValues(updateExpressionAttributeValues(searchCriteria));
         }
-        return dynamoDBQueryExpression;
+        return dynamoDBScanExpression;
     }
 
-    private String updateKeyConditionExpression(Set<SearchCriterion> searchCriteria) {
+    private String updateFilterExpression(Set<SearchCriterion> searchCriteria) {
         return searchCriteria.stream()
                 .map(searchCriterion -> String.format(searchCriterion.getOperation().getSearchOperationPattern(), searchCriterion.getField()))
                 .collect(Collectors.joining(" and "));

@@ -1,9 +1,8 @@
 package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.pavelshapel.aws.spring.boot.starter.api.service.ToDynamoDBScanExpressionConverter;
-import com.pavelshapel.aws.spring.boot.starter.context.User;
 import com.pavelshapel.aws.spring.boot.starter.context.UserToDynamoDBScanExpressionConverter;
 import com.pavelshapel.core.spring.boot.starter.api.model.Named;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
@@ -26,7 +25,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class AbstractToDynamoDBScanExpressionConverterTest {
     @Autowired
-    ToDynamoDBScanExpressionConverter<User> userToDynamoDBScanExpressionConverter;
+    ToDynamoDBScanExpressionConverter toDynamoDBScanExpressionConverter;
 
     @ParameterizedTest
     @EnumSource(SearchOperation.class)
@@ -36,10 +35,10 @@ class AbstractToDynamoDBScanExpressionConverterTest {
         searchCriterion.setField(Named.NAME_FIELD);
         searchCriterion.setValue("Pavel,STRING");
 
-        DynamoDBQueryExpression<User> result = userToDynamoDBScanExpressionConverter.convert(Set.of(searchCriterion));
+        DynamoDBScanExpression result = toDynamoDBScanExpressionConverter.convert(Set.of(searchCriterion));
 
         assertThat(result)
-                .hasFieldOrPropertyWithValue("keyConditionExpression", String.format(searchOperation.getSearchOperationPattern(), Named.NAME_FIELD))
+                .hasFieldOrPropertyWithValue("filterExpression", String.format(searchOperation.getSearchOperationPattern(), Named.NAME_FIELD))
                 .hasFieldOrPropertyWithValue("expressionAttributeValues", Map.of(String.format(":%s", Named.NAME_FIELD), new AttributeValue().withS("Pavel")));
 
     }
@@ -48,10 +47,10 @@ class AbstractToDynamoDBScanExpressionConverterTest {
     @NullSource
     @EmptySource
     void convert_WithEmptyParameter_ShouldReturnAppropriateDynamoDBQueryExpression(Set<SearchCriterion> searchCriteria) {
-        DynamoDBQueryExpression<User> result = userToDynamoDBScanExpressionConverter.convert(searchCriteria);
+        DynamoDBScanExpression result = toDynamoDBScanExpressionConverter.convert(searchCriteria);
 
         assertThat(result)
-                .hasFieldOrPropertyWithValue("keyConditionExpression", null)
+                .hasFieldOrPropertyWithValue("filterExpression", null)
                 .hasFieldOrPropertyWithValue("expressionAttributeValues", null);
 
     }
