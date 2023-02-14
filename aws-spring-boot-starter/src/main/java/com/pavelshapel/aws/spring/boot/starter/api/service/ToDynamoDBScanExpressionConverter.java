@@ -7,5 +7,5 @@ import org.springframework.core.convert.converter.Converter;
 
 import java.util.Set;
 
-public interface ToDynamoDBQueryExpressionConverter<T extends Entity<String>> extends Converter<Set<SearchCriterion>, DynamoDBQueryExpression<T>> {
+public interface ToDynamoDBScanExpressionConverter<T extends Entity<String>> extends Converter<Set<SearchCriterion>, DynamoDBQueryExpression<T>> {
 }
