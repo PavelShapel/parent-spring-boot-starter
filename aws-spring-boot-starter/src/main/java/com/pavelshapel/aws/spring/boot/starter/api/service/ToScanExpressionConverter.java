@@ -6,5 +6,5 @@ import org.springframework.core.convert.converter.Converter;
 
 import java.util.Set;
 
-public interface ToDynamoDBScanExpressionConverter extends Converter<Set<SearchCriterion>, DynamoDBScanExpression> {
+public interface ToScanExpressionConverter extends Converter<Set<SearchCriterion>, DynamoDBScanExpression> {
 }

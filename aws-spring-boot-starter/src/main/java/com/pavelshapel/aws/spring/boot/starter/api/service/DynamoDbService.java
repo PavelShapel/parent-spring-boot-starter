@@ -1,32 +1,22 @@
 package com.pavelshapel.aws.spring.boot.starter.api.service;
 
-import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
-import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
-import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Set;
 
 public interface DynamoDbService<T extends Entity<String>> {
-    boolean createTableIfNotExists(List<KeySchemaElement> keySchemaElements, List<AttributeDefinition> attributeDefinitions, ProvisionedThroughput provisionedThroughput);
-
-    boolean createDefaultTableIfNotExists();
-
-    boolean deleteTableIfExists();
-
     T save(T entity);
 
     List<T> saveAll(List<T> entities);
 
-//    <ID, T extends Entity<ID>> T findById(Class<T> targetClass, ID id);
-//
-//    <ID, T extends Entity<ID>> List<T> findAll(Class<T> entityClass);
-//
-//    <ID, T extends Entity<ID>> List<DynamoDBMapper.FailedBatch> deleteAll(List<T> entities);
-//
-//    <ID, T extends Entity<ID>> List<DynamoDBMapper.FailedBatch> deleteAll(Class<T> entityClass);
+    T findById(String id);
+
+    List<T> findAll(Set<SearchCriterion> searchCriteria, Pageable pageable);
+
+    void deleteById(String id);
 
     Class<T> getEntityClass();
-
-    String getTableName();
 }
