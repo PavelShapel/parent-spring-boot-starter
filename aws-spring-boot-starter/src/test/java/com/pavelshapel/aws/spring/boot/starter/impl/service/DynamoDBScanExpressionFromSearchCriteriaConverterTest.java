@@ -2,7 +2,7 @@ package com.pavelshapel.aws.spring.boot.starter.impl.service;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.pavelshapel.aws.spring.boot.starter.api.service.ToScanExpressionConverter;
+import com.pavelshapel.aws.spring.boot.starter.api.service.ScanExpressionFromSearchCriteriaConverter;
 import com.pavelshapel.core.spring.boot.starter.api.model.Named;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchOperation;
@@ -18,13 +18,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Map;
 import java.util.Set;
 
+import static com.pavelshapel.jpa.spring.boot.starter.service.search.SearchOperation.IS_NOT_NULL;
+import static com.pavelshapel.jpa.spring.boot.starter.service.search.SearchOperation.IS_NULL;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@SpringBootTest(classes = SearchCriteriaToScanExpressionConverter.class)
+@SpringBootTest(classes = DynamoDBScanExpressionFromSearchCriteriaConverter.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-class SearchCriteriaToScanExpressionConverterTest {
+class DynamoDBScanExpressionFromSearchCriteriaConverterTest {
     @Autowired
-    ToScanExpressionConverter toScanExpressionConverter;
+    ScanExpressionFromSearchCriteriaConverter scanExpressionFromSearchCriteriaConverter;
 
     @ParameterizedTest
     @EnumSource(SearchOperation.class)
@@ -34,12 +36,13 @@ class SearchCriteriaToScanExpressionConverterTest {
         searchCriterion.setField(Named.NAME_FIELD);
         searchCriterion.setValue("Pavel,STRING");
 
-        DynamoDBScanExpression result = toScanExpressionConverter.convert(Set.of(searchCriterion));
+        DynamoDBScanExpression result = scanExpressionFromSearchCriteriaConverter.convert(Set.of(searchCriterion));
 
         assertThat(result)
                 .hasFieldOrPropertyWithValue("filterExpression", String.format(searchOperation.getSearchOperationPattern(), Named.NAME_FIELD))
                 .hasFieldOrPropertyWithValue("expressionAttributeNames", Map.of(String.format("#%s", Named.NAME_FIELD), Named.NAME_FIELD))
-                .hasFieldOrPropertyWithValue("expressionAttributeValues", Map.of(String.format(":%s", Named.NAME_FIELD), new AttributeValue().withS("Pavel")));
+                .hasFieldOrPropertyWithValue("expressionAttributeValues",
+                        IS_NULL.equals(searchOperation) || IS_NOT_NULL.equals(searchOperation) ? null : Map.of(String.format(":%s", Named.NAME_FIELD), new AttributeValue().withS("Pavel")));
 
     }
 
@@ -47,7 +50,7 @@ class SearchCriteriaToScanExpressionConverterTest {
     @NullSource
     @EmptySource
     void convert_WithEmptyParameter_ShouldReturnAppropriateDynamoDBQueryExpression(Set<SearchCriterion> searchCriteria) {
-        DynamoDBScanExpression result = toScanExpressionConverter.convert(searchCriteria);
+        DynamoDBScanExpression result = scanExpressionFromSearchCriteriaConverter.convert(searchCriteria);
 
         assertThat(result)
                 .hasFieldOrPropertyWithValue("filterExpression", null)
