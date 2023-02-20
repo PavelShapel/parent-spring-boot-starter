@@ -4,9 +4,12 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.pavelshapel.aws.spring.boot.starter.annotation.ConditionalOnPropertyDynamoDb;
-import com.pavelshapel.aws.spring.boot.starter.api.service.ToScanExpressionConverter;
-import com.pavelshapel.aws.spring.boot.starter.impl.service.SearchCriteriaToScanExpressionConverter;
+import com.pavelshapel.aws.spring.boot.starter.api.service.ScanExpressionFromSearchCriteriaConverter;
+import com.pavelshapel.aws.spring.boot.starter.api.service.TransactionWriteExpressionFromSearchCriteriaConverter;
+import com.pavelshapel.aws.spring.boot.starter.impl.service.DynamoDBScanExpressionFromSearchCriteriaConverter;
+import com.pavelshapel.aws.spring.boot.starter.impl.service.DynamoDBTransactionWriteExpressionFromSearchCriteriaConverter;
 import com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -37,7 +40,19 @@ public abstract class AbstractDynamoDbAwsConfiguration extends AbstractAwsConfig
 
     @Bean
     @ConditionalOnPropertyDynamoDb
-    public ToScanExpressionConverter toScanExpressionConverter() {
-        return new SearchCriteriaToScanExpressionConverter();
+    public ScanExpressionFromSearchCriteriaConverter scanExpressionFromSearchCriteriaConverter() {
+        return new DynamoDBScanExpressionFromSearchCriteriaConverter();
+    }
+
+    @Bean
+    @ConditionalOnPropertyDynamoDb
+    public TransactionWriteExpressionFromSearchCriteriaConverter transactionWriteExpressionFromSearchCriteriaConverter() {
+        return new DynamoDBTransactionWriteExpressionFromSearchCriteriaConverter();
+    }
+
+    @Bean
+    @ConditionalOnPropertyDynamoDb
+    public DynamoDB dynamoDB() {
+        return new DynamoDB(amazonDynamoDB());
     }
 }
