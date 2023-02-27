@@ -8,4 +8,6 @@ public interface ClassUtils {
     Optional<Class<?>> getGenericSuperclass(Class<?> sourceClass, int index);
 
     void copyFields(Object source, Object destination);
+
+    Object getFieldValue(String fieldName, Object entity);
 }

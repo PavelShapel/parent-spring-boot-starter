@@ -1,6 +1,7 @@
 package com.pavelshapel.core.spring.boot.starter.impl.util;
 
 import com.pavelshapel.core.spring.boot.starter.api.util.ClassUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -55,5 +56,21 @@ public class CoreClassUtils implements ClassUtils {
         return !Modifier.isStatic(field.getModifiers()) &&
                 !Modifier.isFinal(field.getModifiers()) &&
                 !Modifier.isTransient(field.getModifiers());
+    }
+
+    @Override
+    public Object getFieldValue(String fieldName, Object entity) {
+        return Optional.ofNullable(fieldName)
+                .filter(StringUtils::hasText)
+                .filter(unused -> nonNull(entity))
+                .map(name -> findField(entity.getClass(), name))
+                .map(this::makeFieldAccessible)
+                .map(field -> getField(field, entity))
+                .orElseThrow();
+    }
+
+    private Field makeFieldAccessible(Field field) {
+        makeAccessible(field);
+        return field;
     }
 }
