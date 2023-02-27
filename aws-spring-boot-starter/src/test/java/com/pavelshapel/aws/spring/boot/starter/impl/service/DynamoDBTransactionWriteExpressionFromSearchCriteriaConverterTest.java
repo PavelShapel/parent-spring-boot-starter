@@ -31,10 +31,11 @@ class DynamoDBTransactionWriteExpressionFromSearchCriteriaConverterTest {
     @ParameterizedTest
     @EnumSource(SearchOperation.class)
     void convert_WithValidParameter_ShouldReturnAppropriateDynamoDBQueryExpression(SearchOperation searchOperation) {
-        SearchCriterion searchCriterion = new SearchCriterion();
-        searchCriterion.setOperation(searchOperation);
-        searchCriterion.setField(Named.NAME_FIELD);
-        searchCriterion.setValue("Pavel,STRING");
+        SearchCriterion searchCriterion = SearchCriterion.builder()
+                .operation(searchOperation)
+                .field(Named.NAME_FIELD)
+                .value("test,STRING")
+                .build();
 
         DynamoDBTransactionWriteExpression result = transactionWriteExpressionFromSearchCriteriaConverter.convert(Set.of(searchCriterion));
 
@@ -42,7 +43,7 @@ class DynamoDBTransactionWriteExpressionFromSearchCriteriaConverterTest {
                 .hasFieldOrPropertyWithValue("conditionExpression", String.format(searchOperation.getSearchOperationPattern(), Named.NAME_FIELD))
                 .hasFieldOrPropertyWithValue("expressionAttributeNames", Map.of(String.format("#%s", Named.NAME_FIELD), Named.NAME_FIELD))
                 .hasFieldOrPropertyWithValue("expressionAttributeValues",
-                        IS_NULL.equals(searchOperation) || IS_NOT_NULL.equals(searchOperation) ? null : Map.of(String.format(":%s", Named.NAME_FIELD), new AttributeValue().withS("Pavel")));
+                        IS_NULL.equals(searchOperation) || IS_NOT_NULL.equals(searchOperation) ? null : Map.of(String.format(":%s", Named.NAME_FIELD), new AttributeValue().withS("test")));
 
     }
 
