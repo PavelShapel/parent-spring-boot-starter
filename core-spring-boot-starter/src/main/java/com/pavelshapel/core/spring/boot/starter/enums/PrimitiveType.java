@@ -24,6 +24,7 @@ public enum PrimitiveType {
     STRING(PrimitiveType::getRandomString, PrimitiveType::castToString),
     LONG(PrimitiveType::getRandomLong, PrimitiveType::castToLong),
     INTEGER(PrimitiveType::getRandomInteger, PrimitiveType::castToInteger),
+    BYTE(PrimitiveType::getRandomByte, PrimitiveType::castToByte),
     DOUBLE(PrimitiveType::getRandomDouble, PrimitiveType::castToDouble),
     DATE(PrimitiveType::getRandomDate, PrimitiveType::castToDate),
     LOCAL_DATE(PrimitiveType::getRandomLocalDate, PrimitiveType::castToLocalDate);
@@ -58,6 +59,10 @@ public enum PrimitiveType {
         return ThreadLocalRandom.current().nextInt(Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
+    private static byte getRandomByte() {
+        return (byte) ThreadLocalRandom.current().nextInt(Byte.MIN_VALUE, Byte.MAX_VALUE);
+    }
+
     private static long getRandomLong() {
         return ThreadLocalRandom.current().nextLong(Long.MIN_VALUE, Long.MAX_VALUE);
     }
@@ -84,6 +89,10 @@ public enum PrimitiveType {
 
     private static Integer castToInteger(String source) {
         return Integer.valueOf(source);
+    }
+
+    private static Byte castToByte(String source) {
+        return Byte.valueOf(source);
     }
 
     private static Double castToDouble(String source) {
