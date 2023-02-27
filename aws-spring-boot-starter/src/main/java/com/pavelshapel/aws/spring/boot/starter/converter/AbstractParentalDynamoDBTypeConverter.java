@@ -1,9 +1,9 @@
 package com.pavelshapel.aws.spring.boot.starter.converter;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverter;
+import com.pavelshapel.aws.spring.boot.starter.api.service.DynamoDbService;
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity;
-import com.pavelshapel.jpa.spring.boot.starter.service.DaoService;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
@@ -13,35 +13,36 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class AbstractParentalDynamoDBTypeConverter<ID, T extends ParentalEntity<ID, T>> implements DynamoDBTypeConverter<ID, T> {
-    private static DaoService staticDaoService;
+public abstract class AbstractParentalDynamoDBTypeConverter<T extends ParentalEntity<String, T>> implements DynamoDBTypeConverter<String, T> {
+    private static DynamoDbService<?> staticDynamoDBService;
 
-    protected AbstractParentalDynamoDBTypeConverter(DaoService<ID, T> daoService) {
-        staticDaoService = daoService;
-        Arrays.stream(getClass().getConstructors())
+    protected AbstractParentalDynamoDBTypeConverter(DynamoDbService<T> dynamoDbService) {
+        staticDynamoDBService = dynamoDbService;
+        boolean isNoArgsConstructorNotExists = Arrays.stream(getClass().getConstructors())
                 .map(Executable::getParameters)
                 .map(parameters -> parameters.length)
-                .filter(length -> length.equals(0))
-                .findFirst()
-                .orElseThrow(this::createNoArgumentsConstructorMustBeImplementedException);
+                .noneMatch(Integer.valueOf(0)::equals);
+        if (isNoArgsConstructorNotExists) {
+            throw noArgsConstructorMustBeImplementedException();
+        }
     }
 
-    private NotImplementedException createNoArgumentsConstructorMustBeImplementedException() {
+    private NotImplementedException noArgsConstructorMustBeImplementedException() {
         String message = String.format("the constructor for class [%s] with no arguments must be implemented", getClass().getSimpleName());
         return new NotImplementedException(message);
     }
 
     @Override
-    public ID convert(T entity) {
+    public String convert(T entity) {
         return Optional.ofNullable(entity)
                 .map(Entity::getId)
                 .orElse(null);
     }
 
     @Override
-    public T unconvert(ID id) {
+    public T unconvert(String id) {
         return (T) Optional.ofNullable(id)
-                .map(notNullId -> staticDaoService.findById(notNullId))
+                .map(notNullId -> staticDynamoDBService.findById(notNullId))
                 .orElse(null);
     }
 }
