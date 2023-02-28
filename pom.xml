@@ -16,7 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <testcontainers.version>1.17.5</testcontainers.version>
         <springdoc.version>1.6.8</springdoc.version>
-        <amazonaws.version>1.12.290</amazonaws.version>
+        <amazonaws.version>1.12.410</amazonaws.version>
         <derjust.version>5.1.0</derjust.version>
         <aws-lambda-java-events.version>3.11.0</aws-lambda-java-events.version>
         <aws-lambda-java-core.version>1.2.1</aws-lambda-java-core.version>
