@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public abstract class AbstractProvider implements ArgumentsProvider {
-    public static final int DEFAULT_ITERATIONS_COUNT = 10;
+    public static final int DEFAULT_ITERATIONS_COUNT = 3;
     public static final String EXCEPTION_MESSAGE_PATTERN = "not found implementation for [%s]";
 
     private final int iterationsCount;

@@ -10,11 +10,11 @@ import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchOperation;
 
 public interface MockSearchCriterion {
     default SearchCriterion getMockSearchCriterion(String value, PrimitiveType valueType, String field, SearchOperation searchOperation) {
-        SearchCriterion searchCriterion = new SearchCriterion();
-        searchCriterion.setField(field);
-        searchCriterion.setValue(String.format("%s,%s", value, valueType));
-        searchCriterion.setOperation(searchOperation);
-        return searchCriterion;
+        return SearchCriterion.builder()
+                .field(field)
+                .value(String.format("%s<%s>", value, valueType))
+                .operation(searchOperation)
+                .build();
     }
 
     default SearchCriterion getMockSearchCriterionId(String value, PrimitiveType valueType, SearchOperation searchOperation) {
