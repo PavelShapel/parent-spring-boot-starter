@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.pavelshapel.aws.spring.boot.starter.api.service.ScanExpressionFromSearchCriteriaConverter;
 import com.pavelshapel.core.spring.boot.starter.api.model.Named;
+import com.pavelshapel.core.spring.boot.starter.enums.PrimitiveType;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchOperation;
 import lombok.AccessLevel;
@@ -34,7 +35,7 @@ class DynamoDBScanExpressionFromSearchCriteriaConverterTest {
         SearchCriterion searchCriterion = SearchCriterion.builder()
                 .operation(searchOperation)
                 .field(Named.NAME_FIELD)
-                .value("test,STRING")
+                .value(String.format("test<%s>", PrimitiveType.STRING.name()))
                 .build();
 
         DynamoDBScanExpression result = scanExpressionFromSearchCriteriaConverter.convert(Set.of(searchCriterion));

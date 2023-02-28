@@ -12,7 +12,10 @@ import com.amazonaws.services.dynamodbv2.util.TableUtils;
 import com.pavelshapel.aws.spring.boot.starter.AbstractTest;
 import com.pavelshapel.aws.spring.boot.starter.api.service.DynamoDbService;
 import com.pavelshapel.aws.spring.boot.starter.context.User;
+import com.pavelshapel.aws.spring.boot.starter.provider.OneByteProvider;
 import com.pavelshapel.aws.spring.boot.starter.provider.OneStringProvider;
+import com.pavelshapel.aws.spring.boot.starter.provider.TwoStringProvider;
+import com.pavelshapel.core.spring.boot.starter.enums.PrimitiveType;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchOperation;
 import com.pavelshapel.test.spring.boot.starter.container.DynamoDbAwsExtension;
@@ -21,7 +24,6 @@ import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
@@ -41,9 +43,12 @@ import java.util.stream.IntStream;
 
 import static com.pavelshapel.core.spring.boot.starter.api.model.Entity.ID_FIELD;
 import static com.pavelshapel.core.spring.boot.starter.api.model.Named.NAME_FIELD;
+import static com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity.PARENT_FIELD;
+import static com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity.ROOT_ID;
+import static java.lang.Math.abs;
+import static java.lang.Math.min;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(DynamoDbAwsExtension.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -63,24 +68,83 @@ class AbstractDynamoDbServiceTest extends AbstractTest {
 
     @AfterEach
     void tearDown() {
-        List<User> all = userDynamoDbService.findAll(null, null);
-        all.stream()
-                .map(User::getId)
-                .forEach(id -> userDynamoDbService.deleteById(id));
+        userDynamoDbService.deleteAll(userDynamoDbService.findAll());
     }
 
     @ParameterizedTest
     @ArgumentsSource(OneStringProvider.class)
-    void save_WithValidParameter_ShouldSaveAndReturnEntity(String userName) {
-        User user = createUser(userName);
+    void save_RootWithValidParameter_ShouldSaveAndReturnEntity(String userName) {
+        User rootUser = createUser(null, userName);
 
-        User result = userDynamoDbService.save(user);
+        User result = userDynamoDbService.save(rootUser);
+        int count = userDynamoDbService.getCount();
+        User rootConstraintEntity = userDynamoDbService.findById(ROOT_ID);
 
         assertThat(result)
-                .hasFieldOrPropertyWithValue("name", userName)
+                .hasFieldOrPropertyWithValue(NAME_FIELD, rootUser.getName())
+                .hasFieldOrPropertyWithValue(PARENT_FIELD, rootUser.getParent())
+                .extracting(User::getId)
+                .isNotNull();
+        assertThat(count)
+                .isEqualTo(2);
+        assertThat(rootConstraintEntity)
+                .hasFieldOrPropertyWithValue(ID_FIELD, ROOT_ID);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(OneStringProvider.class)
+    void save_RootTwiceWithValidParameter_ShouldThrowException(String userName) {
+        User rootUser = createUser(null, userName);
+        userDynamoDbService.save(rootUser);
+        User newRootUser = createUser(null, userName);
+
+        assertThatThrownBy(() -> userDynamoDbService.save(newRootUser))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(OneStringProvider.class)
+    void save_ChildWithValidParameter_ShouldSaveAndReturnEntity(String userName) {
+        User rootUser = createUser(null, userName);
+        userDynamoDbService.save(rootUser);
+        User childUser = createUser(rootUser, userName);
+
+        User result = userDynamoDbService.save(childUser);
+
+        assertThat(result)
+                .hasFieldOrPropertyWithValue(NAME_FIELD, childUser.getName())
+                .hasFieldOrPropertyWithValue(PARENT_FIELD, childUser.getParent())
                 .extracting(User::getId)
                 .isNotNull();
     }
+
+    @ParameterizedTest
+    @ArgumentsSource(TwoStringProvider.class)
+    void save_ChildWithoutParent_ShouldThrowException(String id, String userName) {
+        User rootUser = createUser(null, userName);
+        rootUser.setId(id);
+        User childUser = createUser(rootUser, userName);
+
+        assertThatThrownBy(() -> userDynamoDbService.save(childUser))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(TwoStringProvider.class)
+    void save_UpdateChildWithoutParent_ShouldThrowException(String id, String userName) {
+        User rootUser = createUser(null, userName);
+        userDynamoDbService.save(rootUser);
+        User childUser = createUser(rootUser, userName);
+        userDynamoDbService.save(childUser);
+        User newRootUser = createUser(null, userName);
+        newRootUser.setId(id);
+
+        childUser.setParent(newRootUser);
+
+        assertThatThrownBy(() -> userDynamoDbService.save(childUser))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 
     @ParameterizedTest
     @NullSource
@@ -92,9 +156,9 @@ class AbstractDynamoDbServiceTest extends AbstractTest {
     @ParameterizedTest
     @ArgumentsSource(OneStringProvider.class)
     void saveAll_WithValidParameter_ShouldSaveAndReturnEntities(String userName) {
-        User user = createUser(userName);
+        User user = createUser(null, userName);
 
-        Collection<User> result = userDynamoDbService.saveAll(List.of(user));
+        List<User> result = userDynamoDbService.saveAll(List.of(user));
 
         assertThat(result)
                 .asList()
@@ -105,24 +169,24 @@ class AbstractDynamoDbServiceTest extends AbstractTest {
                 .isNotNull();
     }
 
+
     @ParameterizedTest
     @EmptySource
     @NullSource
-    void saveAll_WithNullOrEmptyParameter_ShouldSaveAndReturnEntity(List<User> users) {
-        userDynamoDbService.saveAll(users);
-
-        verifyNoInteractions(dynamoDBMapper);
+    void saveAll_WithNullOrEmptyParameter_ShouldThrowException(List<User> users) {
+        assertThatThrownBy(() -> userDynamoDbService.saveAll(users))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest
     @ArgumentsSource(OneStringProvider.class)
     void findById_WithValidParameter_ShouldReturnEntity(String userName) {
-        User user = createUser(userName);
-        User savedUser = userDynamoDbService.save(user);
+        User user = createUser(null, userName);
+        userDynamoDbService.save(user);
 
-        User result = userDynamoDbService.findById(savedUser.getId());
+        User result = userDynamoDbService.findById(user.getId());
 
-        assertThat(result).isEqualTo(savedUser);
+        assertThat(result).isEqualTo(user);
     }
 
     @ParameterizedTest
@@ -133,17 +197,21 @@ class AbstractDynamoDbServiceTest extends AbstractTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
-    void findAll_StartsWith_ShouldReturnEntities() {
+    @ParameterizedTest
+    @ArgumentsSource(OneStringProvider.class)
+    void findAll_StartsWith_ShouldReturnEntities(String userName) {
+        User rootUser = createUser(null, userName);
+        userDynamoDbService.save(rootUser);
         List<User> users = IntStream.range(1, 11)
-                .mapToObj(index -> createUser(String.format("Pavel%d", index)))
+                .mapToObj(index -> createUser(rootUser, String.format("%s_%d", userName, index)))
                 .collect(Collectors.toList());
-        SearchCriterion searchCriterion = new SearchCriterion();
-        searchCriterion.setOperation(SearchOperation.STARTS_WITH);
-        searchCriterion.setField(NAME_FIELD);
-        searchCriterion.setValue("Pavel,STRING");
-        PageRequest pageRequest = PageRequest.of(1, 3, Sort.by(NAME_FIELD).descending());
         userDynamoDbService.saveAll(users);
+        SearchCriterion searchCriterion = SearchCriterion.builder()
+                .operation(SearchOperation.STARTS_WITH)
+                .field(NAME_FIELD)
+                .value(String.format("%s_<%s>", userName, PrimitiveType.STRING.name()))
+                .build();
+        PageRequest pageRequest = PageRequest.of(1, 3, Sort.by(NAME_FIELD).descending());
 
         List<User> result = userDynamoDbService.findAll(Set.of(searchCriterion), pageRequest);
 
@@ -152,28 +220,114 @@ class AbstractDynamoDbServiceTest extends AbstractTest {
                 .extracting(userStream -> userStream.map(User::getName))
                 .extracting(stringStream -> stringStream.collect(Collectors.toList()))
                 .asList()
-                .contains("Pavel6", "Pavel5", "Pavel4");
+                .contains(String.format("%s_6", userName))
+                .contains(String.format("%s_5", userName))
+                .contains(String.format("%s_4", userName));
     }
 
-    @Test
-    void findAll_Contains_ShouldReturnEntities() {
+    @ParameterizedTest
+    @ArgumentsSource(OneStringProvider.class)
+    void findAll_Contains_ShouldReturnEntities(String userName) {
+        User rootUser = createUser(null, userName);
+        userDynamoDbService.save(rootUser);
         List<User> users = IntStream.range(1, 11)
-                .mapToObj(index -> createUser(String.format("Pavel%d", index)))
+                .mapToObj(index -> createUser(rootUser, String.format("%s_%d", userName, index)))
                 .collect(Collectors.toList());
-        SearchCriterion searchCriterion = new SearchCriterion();
-        searchCriterion.setOperation(SearchOperation.CONTAINS);
-        searchCriterion.setField(NAME_FIELD);
-        searchCriterion.setValue("1,STRING");
         userDynamoDbService.saveAll(users);
+        SearchCriterion searchCriterion = SearchCriterion.builder()
+                .operation(SearchOperation.CONTAINS)
+                .field(NAME_FIELD)
+                .value(String.format("_1<%s>", PrimitiveType.STRING.name()))
+                .build();
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(NAME_FIELD).descending());
 
-        List<User> result = userDynamoDbService.findAll(Set.of(searchCriterion), null);
+        List<User> result = userDynamoDbService.findAll(Set.of(searchCriterion), pageRequest);
 
         assertThat(result)
                 .extracting(Collection::stream)
                 .extracting(userStream -> userStream.map(User::getName))
                 .extracting(stringStream -> stringStream.collect(Collectors.toList()))
                 .asList()
-                .contains("Pavel1", "Pavel10");
+                .contains(String.format("%s_1", userName))
+                .contains(String.format("%s_10", userName));
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(OneStringProvider.class)
+    void deleteById_WithValidParameter_ShouldDeleteEntity(String userName) {
+        User user = createUser(null, userName);
+        userDynamoDbService.save(user);
+
+        String id = user.getId();
+        userDynamoDbService.deleteById(id);
+        User result = userDynamoDbService.findById(id);
+
+        assertThat(result).isNull();
+    }
+
+    @ParameterizedTest
+    @NullSource
+    void deleteById_WithNullParameter_ShouldThrowException(String id) {
+        assertThatThrownBy(() -> userDynamoDbService.deleteById(id))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(OneByteProvider.class)
+    void getCount_WithValidParameter_ShouldReturnCount(Byte count) {
+        User rootUser = createUser(null, "root");
+        userDynamoDbService.save(rootUser);
+        int verifiedCount = min(abs(count), 20);
+        List<User> users = IntStream.range(0, verifiedCount)
+                .mapToObj(index -> createUser(rootUser, String.format("user_%d", index)))
+                .collect(Collectors.toList());
+        userDynamoDbService.saveAll(users);
+
+        int result = userDynamoDbService.getCount();
+
+        assertThat(result)
+                .isEqualTo(verifiedCount + 2);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(OneByteProvider.class)
+    void getChildren_WithValidParameter_ShouldReturnChildren(Byte count) {
+        User rootUser = createUser(null, "root");
+        userDynamoDbService.save(rootUser);
+        int verifiedCount = min(abs(count), 20);
+        List<User> users = IntStream.range(0, verifiedCount)
+                .mapToObj(index -> createUser(rootUser, String.format("user_%d", index)))
+                .collect(Collectors.toList());
+        userDynamoDbService.saveAll(users);
+
+        List<User> result = userDynamoDbService.getChildren(rootUser.getId());
+
+        assertThat(result)
+                .asList()
+                .hasSameElementsAs(users);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    void getChildren_WithNullParameter_ShouldThrowException(String id) {
+        assertThatThrownBy(() -> userDynamoDbService.getChildren(id))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(OneStringProvider.class)
+    void getParentage_WithValidParameter_ShouldReturnParentage(String userName) {
+        User rootUser = createUser(null, "root");
+        userDynamoDbService.save(rootUser);
+        User childUser = createUser(rootUser, "child");
+        userDynamoDbService.save(childUser);
+        User leafUser = createUser(childUser, "leaf");
+        userDynamoDbService.save(leafUser);
+
+        List<User> result = userDynamoDbService.getParentage(leafUser.getId());
+
+        assertThat(result)
+                .isEqualTo(List.of(leafUser, childUser, rootUser));
     }
 
     private void createDefaultTableIfNotExists() {
@@ -204,9 +358,10 @@ class AbstractDynamoDbServiceTest extends AbstractTest {
         }
     }
 
-    private User createUser(String userName) {
-        User user = new User();
-        user.setName(userName);
+    private User createUser(User parent, String name) {
+        User user = userDynamoDbService.create();
+        user.setParent(parent);
+        user.setName(name);
         return user;
     }
 }
