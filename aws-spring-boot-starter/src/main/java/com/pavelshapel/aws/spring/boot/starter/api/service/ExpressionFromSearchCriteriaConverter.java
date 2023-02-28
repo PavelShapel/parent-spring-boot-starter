@@ -16,14 +16,14 @@ import static java.util.function.Predicate.not;
 public interface ExpressionFromSearchCriteriaConverter<T> extends Converter<Set<SearchCriterion>, T> {
     default String updateExpression(Set<SearchCriterion> searchCriteria) {
         return searchCriteria.stream()
-                .map(searchCriterion -> String.format(searchCriterion.getOperation().getSearchOperationPattern(), searchCriterion.getField()))
-                .collect(Collectors.joining(" and "));
+                .map(searchCriterion -> String.format(searchCriterion.getOperation().getSearchOperationPattern(), createExpressionAttributeName(searchCriterion)))
+                .collect(Collectors.joining(" or "));
     }
 
     default Map<String, String> updateExpressionAttributeNames(Set<SearchCriterion> searchCriteria) {
         return searchCriteria.stream()
                 .collect(Collectors.toMap(
-                        searchCriterion -> String.format("#%s", searchCriterion.getField()),
+                        searchCriterion -> String.format("#%s", createExpressionAttributeName(searchCriterion)),
                         SearchCriterion::getField));
     }
 
@@ -31,8 +31,12 @@ public interface ExpressionFromSearchCriteriaConverter<T> extends Converter<Set<
         Map<String, AttributeValue> expressionAttributeValues = searchCriteria.stream()
                 .filter(not(searchCriterion -> IS_NULL.equals(searchCriterion.getOperation())))
                 .filter(not(searchCriterion -> IS_NOT_NULL.equals(searchCriterion.getOperation())))
-                .collect(Collectors.toMap(searchCriterion -> String.format(":%s", searchCriterion.getField()),
+                .collect(Collectors.toMap(searchCriterion -> String.format(":%s", createExpressionAttributeName(searchCriterion)),
                         searchCriterion -> ItemUtils.toAttributeValue(searchCriterion.getCastedValue())));
         return expressionAttributeValues.isEmpty() ? null : expressionAttributeValues;
+    }
+
+    private String createExpressionAttributeName(SearchCriterion searchCriterion) {
+        return String.format("%s_%d", searchCriterion.getField(), searchCriterion.hashCode()).replace("-", "minus");
     }
 }
