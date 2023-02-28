@@ -37,14 +37,15 @@ class DynamoDBScanExpressionFromSearchCriteriaConverterTest {
                 .field(Named.NAME_FIELD)
                 .value(String.format("test<%s>", PrimitiveType.STRING.name()))
                 .build();
+        String expressionAttributeName = scanExpressionFromSearchCriteriaConverter.createExpressionAttributeName(searchCriterion);
 
         DynamoDBScanExpression result = scanExpressionFromSearchCriteriaConverter.convert(Set.of(searchCriterion));
 
         assertThat(result)
-                .hasFieldOrPropertyWithValue("filterExpression", String.format(searchOperation.getSearchOperationPattern(), Named.NAME_FIELD))
-                .hasFieldOrPropertyWithValue("expressionAttributeNames", Map.of(String.format("#%s", Named.NAME_FIELD), Named.NAME_FIELD))
+                .hasFieldOrPropertyWithValue("filterExpression", String.format(searchOperation.getSearchOperationPattern(), expressionAttributeName))
+                .hasFieldOrPropertyWithValue("expressionAttributeNames", Map.of(String.format("#%s", expressionAttributeName), Named.NAME_FIELD))
                 .hasFieldOrPropertyWithValue("expressionAttributeValues",
-                        IS_NULL.equals(searchOperation) || IS_NOT_NULL.equals(searchOperation) ? null : Map.of(String.format(":%s", Named.NAME_FIELD), new AttributeValue().withS("test")));
+                        IS_NULL.equals(searchOperation) || IS_NOT_NULL.equals(searchOperation) ? null : Map.of(String.format(":%s", expressionAttributeName), new AttributeValue().withS("test")));
 
     }
 

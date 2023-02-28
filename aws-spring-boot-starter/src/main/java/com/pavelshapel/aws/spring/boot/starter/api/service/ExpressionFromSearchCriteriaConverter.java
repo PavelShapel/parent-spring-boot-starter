@@ -36,7 +36,7 @@ public interface ExpressionFromSearchCriteriaConverter<T> extends Converter<Set<
         return expressionAttributeValues.isEmpty() ? null : expressionAttributeValues;
     }
 
-    private String createExpressionAttributeName(SearchCriterion searchCriterion) {
+    default String createExpressionAttributeName(SearchCriterion searchCriterion) {
         return String.format("%s_%d", searchCriterion.getField(), searchCriterion.hashCode()).replace("-", "minus");
     }
 }
