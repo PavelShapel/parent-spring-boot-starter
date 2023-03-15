@@ -229,13 +229,6 @@ public abstract class AbstractDynamoDbService<T extends Entity<String>> implemen
     }
 
     @Override
-    public Class<T> getEntityClass() {
-        return classUtils.getGenericSuperclass(getClass())
-                .map(entityClass -> (Class<T>) entityClass)
-                .orElseThrow();
-    }
-
-    @Override
     public int getCount() {
         return dynamoDBMapper.count(getEntityClass(), new DynamoDBScanExpression());
     }
@@ -265,5 +258,12 @@ public abstract class AbstractDynamoDbService<T extends Entity<String>> implemen
                 .map(String.class::cast)
                 .ifPresent(parentId -> parents.addAll(getParentage(parentId)));
         return parents;
+    }
+
+    @Override
+    public Class<T> getEntityClass() {
+        return classUtils.getGenericSuperclass(getClass())
+                .map(entityClass -> (Class<T>) entityClass)
+                .orElseThrow();
     }
 }

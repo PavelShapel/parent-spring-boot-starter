@@ -38,9 +38,9 @@ public interface DynamoDbService<T extends Entity<String>> {
 
     int getCount();
 
-    Class<T> getEntityClass();
-
     List<T> getChildren(String id);
 
     List<T> getParentage(String id);
+
+    Class<T> getEntityClass();
 }
