@@ -9,7 +9,7 @@ import com.pavelshapel.jpa.spring.boot.starter.service.search.AbstractSearchSpec
 import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.experimental.FieldDefaults;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -24,16 +24,14 @@ import java.util.Optional;
 import static com.pavelshapel.jpa.spring.boot.starter.service.search.SearchOperation.EQUALS;
 import static java.util.Collections.singletonList;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Transactional
+@RequiredArgsConstructor
 public abstract class AbstractDaoService<ID, T extends Entity<ID>> implements DaoService<ID, T> {
     @Getter(AccessLevel.PROTECTED)
+    private final DaoRepository<ID, T> daoRepository;
+    private final ObjectFactory<AbstractSearchSpecification<T>> searchSpecificationFactory;
     @Autowired
-    DaoRepository<ID, T> daoRepository;
-    @Autowired
-    ClassUtils classUtils;
-    @Autowired
-    ObjectFactory<AbstractSearchSpecification<T>> searchSpecificationFactory;
+    private ClassUtils classUtils;
 
     @Override
     public T save(T entity) {
