@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +43,6 @@ public abstract class AbstractDaoRestController<ID, E extends Entity<ID>, D exte
     public static final String ID_PATH = "/{id}" + EMPTY;
     public static final String SEARCH_PATH = "/search" + EMPTY;
     public static final String PARENTAGE_PATH = ID_PATH + "/parentage";
-    public static final String FORM_PATH = ID_PATH + "/form";
-    public static final String TABLE_PATH = "/table" + EMPTY;
     public static final String BULK_PATH = "/bulk" + EMPTY;
 
     private final DaoService<ID, E> daoService;
@@ -117,9 +118,9 @@ public abstract class AbstractDaoRestController<ID, E extends Entity<ID>, D exte
     }
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<D>> findAll(@RequestBody List<@Valid SearchCriterion> searchCriteria) {
+    public ResponseEntity<List<D>> findAll(ArrayList<@Valid SearchCriterion> searchCriteria, @PageableDefault Pageable pageable) {
         return Optional.ofNullable(searchCriteria)
-                .map(criteria -> daoService.findAll(searchCriteria))
+                .map(criteria -> daoService.findAll(searchCriteria, pageable))
                 .orElseGet(daoService::findAll)
                 .stream()
                 .map(toDtoConverter::convert)
