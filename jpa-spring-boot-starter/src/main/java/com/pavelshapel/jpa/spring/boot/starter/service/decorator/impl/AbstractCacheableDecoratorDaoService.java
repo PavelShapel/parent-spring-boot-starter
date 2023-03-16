@@ -1,11 +1,13 @@
 package com.pavelshapel.jpa.spring.boot.starter.service.decorator.impl;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
-import com.pavelshapel.jpa.spring.boot.starter.service.decorator.AbstractDecoratorSpecificationDaoService;
+import com.pavelshapel.jpa.spring.boot.starter.service.decorator.AbstractDecoratorDaoService;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +15,7 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 
 
-public abstract class AbstractCacheableDecoratorDaoService<ID, T extends Entity<ID>> extends AbstractDecoratorSpecificationDaoService<ID, T> {
+public abstract class AbstractCacheableDecoratorDaoService<ID, T extends Entity<ID>> extends AbstractDecoratorDaoService<ID, T> {
     @Autowired
     private CacheManager cacheManager;
 
@@ -37,6 +39,27 @@ public abstract class AbstractCacheableDecoratorDaoService<ID, T extends Entity<
     @Override
     public T findById(ID id) {
         return getFromCache(id).orElseGet(() -> putToCache(super.findById(id)));
+    }
+
+    @Override
+    public List<T> findAllById(Iterable<ID> ids) {
+        return super.findAllById(ids).stream()
+                .map(this::putToCache)
+                .collect(toList());
+    }
+
+    @Override
+    public List<T> findAll() {
+        return super.findAll().stream()
+                .map(this::putToCache)
+                .collect(toList());
+    }
+
+    @Override
+    public List<T> findAll(Iterable<SearchCriterion> searchCriteria, Pageable pageable) {
+        return super.findAll(searchCriteria, pageable).stream()
+                .map(this::putToCache)
+                .collect(toList());
     }
 
     @Override

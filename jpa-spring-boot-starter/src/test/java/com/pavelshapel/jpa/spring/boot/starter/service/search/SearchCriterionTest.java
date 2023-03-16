@@ -1,6 +1,7 @@
 package com.pavelshapel.jpa.spring.boot.starter.service.search;
 
 
+import com.pavelshapel.core.spring.boot.starter.enums.PrimitiveType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
@@ -12,7 +13,7 @@ class SearchCriterionTest {
     @Test
     void getCastedValue_WithValidParameter_ShouldReturnValue() {
         SearchCriterion searchCriterion = SearchCriterion.builder()
-                .value("test<STRING>")
+                .value(String.format("test<%s>", PrimitiveType.STRING.name()))
                 .build();
 
         Comparable<?> result = searchCriterion.getCastedValue();
@@ -49,7 +50,7 @@ class SearchCriterionTest {
     @Test
     void getCastedValue_WithoutValueInParameter_ShouldThrowException() {
         SearchCriterion searchCriterion = SearchCriterion.builder()
-                .value("null<STRING>")
+                .value(String.format("null<%s>", PrimitiveType.STRING.name()))
                 .build();
 
         assertThatThrownBy(searchCriterion::getCastedValue)

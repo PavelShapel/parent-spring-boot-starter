@@ -1,9 +1,9 @@
 package com.pavelshapel.jpa.spring.boot.starter.service.search;
 
 import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.ContainsPredicate;
-import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.EndsWithPredicate;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.EqualsPredicate;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.GreaterThanPredicate;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.InPredicate;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.IsNullPredicate;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.LessThanPredicate;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.predicate.StartsWithPredicate;
@@ -21,19 +21,20 @@ import java.util.function.Predicate;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @ToString
 public enum SearchOperation {
-    EQUALS(SearchOperation::equalsPredicate),
-    NOT_EQUALS(SearchOperation::notEqualsPredicate),
-    GREATER_THAN(SearchOperation::greaterThanPredicate),
-    GREATER_THAN_OR_EQUAL_TO(SearchOperation::greaterThanOrEqualToPredicate),
-    LESS_THAN(SearchOperation::lessThanPredicate),
-    LESS_THAN_OR_EQUAL_TO(SearchOperation::lessThanOrEqualToPredicate),
-    STARTS_WITH(SearchOperation::startsWithPredicate),
-    ENDS_WITH(SearchOperation::endsWithPredicate),
-    CONTAINS(SearchOperation::containsPredicate),
-    IS_NULL(SearchOperation::isNullPredicate),
-    IS_NOT_NULL(SearchOperation::isNotNullPredicate);
+    EQUALS(SearchOperation::equalsPredicate, "#%1$s = :%1$s"),
+    NOT_EQUALS(SearchOperation::notEqualsPredicate, "#%1$s <> :%1$s"),
+    GREATER_THAN(SearchOperation::greaterThanPredicate, "#%1$s > :%1$s"),
+    GREATER_THAN_OR_EQUAL_TO(SearchOperation::greaterThanOrEqualToPredicate, "#%1$s >= :%1$s"),
+    LESS_THAN(SearchOperation::lessThanPredicate, "#%1$s < :%1$s"),
+    LESS_THAN_OR_EQUAL_TO(SearchOperation::lessThanOrEqualToPredicate, "#%1$s <= :%1$s"),
+    STARTS_WITH(SearchOperation::startsWithPredicate, "begins_with(#%1$s, :%1$s)"),
+    CONTAINS(SearchOperation::containsPredicate, "contains(#%1$s, :%1$s)"),
+    IN(SearchOperation::inPredicate, "#%1$s IN (:%1$s)"),
+    IS_NULL(SearchOperation::isNullPredicate, "attribute_not_exists(#%1$s)"),
+    IS_NOT_NULL(SearchOperation::isNotNullPredicate, "attribute_exists(#%1$s)");
 
     Function<Comparable<?>, Predicate<Comparable<Object>>> function;
+    String searchOperationPattern;
 
     private static Predicate<Comparable<Object>> equalsPredicate(Object pattern) {
         return new EqualsPredicate(pattern);
@@ -71,11 +72,12 @@ public enum SearchOperation {
         return new StartsWithPredicate(pattern);
     }
 
-    private static Predicate<Comparable<Object>> endsWithPredicate(Object pattern) {
-        return new EndsWithPredicate(pattern);
-    }
-
     private static Predicate<Comparable<Object>> containsPredicate(Object pattern) {
         return new ContainsPredicate(pattern);
     }
+
+    private static Predicate<Comparable<Object>> inPredicate(Object pattern) {
+        return new InPredicate(pattern);
+    }
+
 }

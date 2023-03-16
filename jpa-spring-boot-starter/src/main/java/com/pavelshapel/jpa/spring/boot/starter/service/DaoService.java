@@ -2,17 +2,16 @@ package com.pavelshapel.jpa.spring.boot.starter.service;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
-import org.springframework.data.domain.Page;
+import lombok.SneakyThrows;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 public interface DaoService<ID, T extends Entity<ID>> {
-    T create();
-
-    T createAndSave();
+    @SneakyThrows
+    default T create() {
+        return getEntityClass().getDeclaredConstructor().newInstance();
+    }
 
     T save(T entity);
 
@@ -27,12 +26,7 @@ public interface DaoService<ID, T extends Entity<ID>> {
 
     List<T> findAll();
 
-    Page<T> findAll(Pageable pageable);
-
-    List<T> findAll(Collection<SearchCriterion> searchCriteria);
-
-    Stream<T> filterStream(Collection<SearchCriterion> searchCriteria, Stream<T> stream);
-
+    List<T> findAll(Iterable<SearchCriterion> searchCriteria, Pageable pageable);
 
     void deleteById(ID id);
 
@@ -45,8 +39,6 @@ public interface DaoService<ID, T extends Entity<ID>> {
 
 
     List<T> getChildren(T entity);
-
-    boolean hasChildren(T entity);
 
     List<T> getParentage(ID id);
 

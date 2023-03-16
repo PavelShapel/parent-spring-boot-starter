@@ -2,14 +2,11 @@ package com.pavelshapel.jpa.spring.boot.starter.service.decorator.impl;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity;
-import com.pavelshapel.jpa.spring.boot.starter.service.decorator.AbstractDecoratorSpecificationDaoService;
+import com.pavelshapel.jpa.spring.boot.starter.service.decorator.AbstractDecoratorDaoService;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,7 +18,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.joining;
 
-public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<ID>> extends AbstractDecoratorSpecificationDaoService<ID, T> {
+public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<ID>> extends AbstractDecoratorDaoService<ID, T> {
     @Override
     public T save(T entity) {
         verifyRootExists(null, entity);
@@ -56,33 +53,11 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
     }
 
     @Override
-    public Page<T> findAll(Pageable pageable) {
-        Page<T> entities = super.findAll(pageable);
-        verifyCount(entities.getTotalElements());
+    public List<T> findAll(Iterable<SearchCriterion> searchCriteria, Pageable pageable) {
+        List<T> entities = super.findAll(searchCriteria, pageable);
+        verifyCount(entities.size());
         return entities;
     }
-
-    @Override
-    public List<T> findAll(Collection<SearchCriterion> searchCriteria) {
-        List<T> entities = super.findAll(searchCriteria);
-        verifyCollection(entities);
-        return entities;
-    }
-
-    @Override
-    public List<T> findAll(Specification<T> specification) {
-        List<T> entities = super.findAll(specification);
-        verifyCollection(entities);
-        return entities;
-    }
-
-    @Override
-    public Page<T> findAll(Specification<T> specification, Pageable pageable) {
-        Page<T> entities = super.findAll(specification, pageable);
-        verifyCount(entities.getTotalElements());
-        return entities;
-    }
-
 
     @Override
     public void deleteById(ID id) {
@@ -136,7 +111,7 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
     private void verifyChildren(ID id) {
         T entity = findById(id);
         String message = String.format("entity [%s] has children", entity);
-        if (entity instanceof ParentalEntity && hasChildren(entity)) {
+        if (entity instanceof ParentalEntity && !getChildren(entity).isEmpty()) {
             throw new UnsupportedOperationException(message);
         }
     }
@@ -146,22 +121,23 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
                 .filter(ParentalEntity.class::isInstance)
                 .map(ParentalEntity.class::cast)
                 .filter(parentalEntity -> isNull(parentalEntity.getParent()) && rootExists(id))
-                .ifPresent(unused -> throwRootAlreadyExistsException());
-    }
-
-    private void throwRootAlreadyExistsException() {
-        throw new UnsupportedOperationException("root already exists");
+                .ifPresent(this::throwRootAlreadyExistsException);
     }
 
     private boolean rootExists(ID id) {
-        SearchCriterion searchCriterion = new SearchCriterion();
-        searchCriterion.setField(ParentalEntity.PARENT_FIELD);
-        searchCriterion.setOperation(IS_NULL);
-        return super.findAll(singletonList(searchCriterion)).stream()
+        SearchCriterion searchCriterion = SearchCriterion.builder()
+                .field(ParentalEntity.PARENT_FIELD)
+                .operation(IS_NULL)
+                .build();
+        return super.findAll(singletonList(searchCriterion), Pageable.unpaged()).stream()
                 .findFirst()
                 .map(Entity::getId)
                 .map(rootId -> Objects.equals(id, rootId))
                 .filter(Boolean.FALSE::equals)
                 .isPresent();
+    }
+
+    private void throwRootAlreadyExistsException(ParentalEntity<?, ?> entity) {
+        throw new UnsupportedOperationException(String.format("root [%s] already exists", entity.toString()));
     }
 }

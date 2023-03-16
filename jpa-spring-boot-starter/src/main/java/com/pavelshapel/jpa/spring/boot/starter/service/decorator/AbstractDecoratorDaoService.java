@@ -7,12 +7,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 
 @Getter(AccessLevel.PROTECTED)
@@ -24,11 +21,6 @@ public abstract class AbstractDecoratorDaoService<ID, T extends Entity<ID>> impl
     @Override
     public T create() {
         return wrapped.create();
-    }
-
-    @Override
-    public T createAndSave() {
-        return wrapped.createAndSave();
     }
 
     @Override
@@ -63,18 +55,8 @@ public abstract class AbstractDecoratorDaoService<ID, T extends Entity<ID>> impl
     }
 
     @Override
-    public Page<T> findAll(Pageable pageable) {
-        return wrapped.findAll(pageable);
-    }
-
-    @Override
-    public List<T> findAll(Collection<SearchCriterion> searchCriteria) {
-        return wrapped.findAll(searchCriteria);
-    }
-
-    @Override
-    public Stream<T> filterStream(Collection<SearchCriterion> searchCriteria, Stream<T> stream) {
-        return wrapped.filterStream(searchCriteria, stream);
+    public List<T> findAll(Iterable<SearchCriterion> searchCriteria, Pageable pageable) {
+        return wrapped.findAll(searchCriteria, pageable);
     }
 
     @Override
@@ -101,11 +83,6 @@ public abstract class AbstractDecoratorDaoService<ID, T extends Entity<ID>> impl
     @Override
     public List<T> getChildren(T entity) {
         return wrapped.getChildren(entity);
-    }
-
-    @Override
-    public boolean hasChildren(T entity) {
-        return wrapped.hasChildren(entity);
     }
 
     @Override
