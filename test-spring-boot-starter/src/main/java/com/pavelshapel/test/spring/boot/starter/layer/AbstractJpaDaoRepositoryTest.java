@@ -2,7 +2,6 @@ package com.pavelshapel.test.spring.boot.starter.layer;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.jpa.spring.boot.starter.repository.DaoRepository;
-import com.pavelshapel.jpa.spring.boot.starter.repository.SpecificationDaoRepository;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.AbstractSearchSpecification;
 import com.pavelshapel.rdbms.spring.boot.starter.RdbmsStarterAutoConfiguration;
 import com.pavelshapel.test.spring.boot.starter.container.PostgreSQLExtension;
@@ -33,9 +32,5 @@ public abstract class AbstractJpaDaoRepositoryTest<ID, T extends Entity<ID>> {
 
     protected T save(T entity) {
         return testEntityManager.persistFlushFind(entity);
-    }
-
-    protected SpecificationDaoRepository<ID, T> getSpecificationDaoRepository() {
-        return (SpecificationDaoRepository<ID, T>) daoRepository;
     }
 }
