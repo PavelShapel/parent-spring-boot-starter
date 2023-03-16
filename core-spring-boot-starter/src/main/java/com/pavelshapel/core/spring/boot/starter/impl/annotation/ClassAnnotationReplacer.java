@@ -16,13 +16,13 @@ public class ClassAnnotationReplacer implements AnnotationReplacer {
 
     @SneakyThrows
     @Override
-    public <T extends Annotation> void replace(Class<?> targetClass, Class<T> annotationClass, T newAnnotation) {
+    public <T extends Annotation> void replace(Class<?> targetClass, T annotation) {
         Method method = Class.class.getDeclaredMethod(ANNOTATION_METHOD);
         makeAccessible(method);
         Object annotationData = method.invoke(targetClass);
         Field annotations = annotationData.getClass().getDeclaredField(ANNOTATIONS);
         makeAccessible(annotations);
         Map<Class<T>, T> map = (Map<Class<T>, T>) annotations.get(annotationData);
-        map.put(annotationClass, newAnnotation);
+        map.put((Class<T>) annotation.annotationType(), annotation);
     }
 }

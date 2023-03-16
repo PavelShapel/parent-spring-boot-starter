@@ -33,7 +33,7 @@ class ClassAnnotationReplacerTest {
             }
         };
 
-        annotationReplacer.replace(AnnotationReplacerTester.class, Replaced.class, newAnnotation);
+        annotationReplacer.replace(AnnotationReplacerTester.class, newAnnotation);
 
         assertThat(getReplacedAnnotation().value()).isEqualTo(NEW_MESSAGE);
     }
