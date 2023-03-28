@@ -9,6 +9,10 @@ public class ConcurrentTester extends AbstractForkJoinTask<Integer> {
         super(payload);
     }
 
+    public ConcurrentTester(List<Integer> payload, Integer threshold) {
+        super(payload, threshold);
+    }
+
     @Override
     protected Integer process(List<Integer> payload) {
         return payload.stream()
