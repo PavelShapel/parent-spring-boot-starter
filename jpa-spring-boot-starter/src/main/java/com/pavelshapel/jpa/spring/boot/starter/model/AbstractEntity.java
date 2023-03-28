@@ -1,11 +1,15 @@
-package com.pavelshapel.rdbms.spring.boot.starter.model;
+package com.pavelshapel.jpa.spring.boot.starter.model;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 @Data

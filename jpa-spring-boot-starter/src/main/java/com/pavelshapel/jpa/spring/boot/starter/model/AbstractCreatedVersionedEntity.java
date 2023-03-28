@@ -1,4 +1,4 @@
-package com.pavelshapel.rdbms.spring.boot.starter.model;
+package com.pavelshapel.jpa.spring.boot.starter.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pavelshapel.core.spring.boot.starter.api.model.Created;

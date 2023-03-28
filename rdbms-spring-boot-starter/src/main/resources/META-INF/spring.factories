@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.pavelshapel.rdbms.spring.boot.starter.RdbmsStarterAutoConfiguration
