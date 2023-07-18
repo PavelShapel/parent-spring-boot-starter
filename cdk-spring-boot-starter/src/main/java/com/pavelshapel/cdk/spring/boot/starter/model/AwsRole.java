@@ -3,6 +3,7 @@ package com.pavelshapel.cdk.spring.boot.starter.model;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.util.CollectionUtils;
 import software.amazon.awscdk.services.iam.Role;
 import software.constructs.Construct;
 
@@ -35,7 +36,7 @@ public enum AwsRole {
 
     private static Role createLambdaRole(Construct scope, String id) {
         return Role.Builder.create(scope, id)
-                .assumedBy(AwsServicePrincipal.LAMBDA.getServicePrincipal())
+                .assumedBy(CollectionUtils.firstElement(AwsServicePrincipal.LAMBDA.getServicePrincipals()))
                 .build();
     }
 }

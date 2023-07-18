@@ -34,16 +34,19 @@ public class SpringBootLambdaFunction {
                 .build();
     }
 
-    public void addFunctionUrlWithNoneAuthType() {
-        Optional.of(FunctionUrlOptions.builder())
+    public String addFunctionUrlWithNoneAuthType() {
+        return Optional.of(FunctionUrlOptions.builder())
                 .map(builder -> builder.authType(FunctionUrlAuthType.NONE))
                 .map(FunctionUrlOptions.Builder::build)
                 .map(function::addFunctionUrl)
-                .ifPresent(this::addCfnOutput);
+                .map(this::addCfnOutput)
+                .map(CfnOutput::getValue)
+                .map(Object::toString)
+                .orElseThrow();
     }
 
-    private void addCfnOutput(FunctionUrl functionUrl) {
-        CfnOutput.Builder.create(properties.getScope(), CfnOutput.class.getSimpleName())
+    private CfnOutput addCfnOutput(FunctionUrl functionUrl) {
+        return CfnOutput.Builder.create(properties.getScope(), CfnOutput.class.getSimpleName())
                 .value(functionUrl.getUrl())
                 .build();
     }

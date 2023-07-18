@@ -6,11 +6,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import software.amazon.awscdk.services.iam.ServicePrincipal;
 
+import java.util.List;
+
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public enum AwsServicePrincipal {
-    LAMBDA(new ServicePrincipal("lambda.amazonaws.com"));
+    LAMBDA(List.of(new ServicePrincipal("lambda.amazonaws.com"))),
+    ALL(List.of(new ServicePrincipal("*")));
 
-    ServicePrincipal servicePrincipal;
+    List<ServicePrincipal> servicePrincipals;
 }

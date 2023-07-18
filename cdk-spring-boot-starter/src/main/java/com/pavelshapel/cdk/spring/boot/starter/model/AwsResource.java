@@ -5,11 +5,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public enum AwsResource {
-    ALL_RESOURCES("*");
+    ALL(List.of("*"));
 
-    String resource;
+    List<String> resources;
 }

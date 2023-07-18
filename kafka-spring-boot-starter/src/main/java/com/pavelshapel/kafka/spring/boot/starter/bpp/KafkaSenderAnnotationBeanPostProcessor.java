@@ -1,7 +1,7 @@
 package com.pavelshapel.kafka.spring.boot.starter.bpp;
 
-import com.pavelshapel.core.spring.boot.starter.impl.annotation.AutowiredLazy;
 import com.pavelshapel.core.spring.boot.starter.api.model.Dto;
+import com.pavelshapel.core.spring.boot.starter.impl.annotation.AutowiredLazy;
 import com.pavelshapel.kafka.spring.boot.starter.service.KafkaProducer;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
@@ -12,7 +12,11 @@ import org.springframework.lang.NonNull;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
