@@ -10,40 +10,40 @@
     <packaging>pom</packaging>
 
     <properties>
-        <spring.boot.version>2.6.2</spring.boot.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <spring.boot.version>3.1.3</spring.boot.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <testcontainers.version>1.17.5</testcontainers.version>
-        <springdoc.version>1.6.8</springdoc.version>
+        <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
         <amazonaws.version>1.12.410</amazonaws.version>
         <derjust.version>5.1.0</derjust.version>
         <aws-lambda-java-events.version>3.11.0</aws-lambda-java-events.version>
         <aws-lambda-java-core.version>1.2.1</aws-lambda-java-core.version>
         <aws-lambda-java-serialization.version>1.0.0</aws-lambda-java-serialization.version>
-        <spring-cloud-dependencies.version>2021.0.1</spring-cloud-dependencies.version>
+        <spring-cloud-dependencies.version>2022.0.3</spring-cloud-dependencies.version>
         <aws-serverless-java-container-springboot2.version>1.8.1</aws-serverless-java-container-springboot2.version>
         <commons-text.version>1.10.0</commons-text.version>
         <aws-lambda-java-tests.version>1.1.1</aws-lambda-java-tests.version>
-        <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
         <junit-jupiter-engine.version>5.9.0</junit-jupiter-engine.version>
         <aws-cdk-lib.version>2.28.1</aws-cdk-lib.version>
         <constructs.version>[10.0.0,11.0.0)</constructs.version>
     </properties>
 
     <modules>
-        <module>aop-spring-boot-starter</module>
+<!--        <module>aop-spring-boot-starter</module>-->
         <module>json-spring-boot-starter</module>
-        <module>test-spring-boot-starter</module>
-        <module>random-spring-boot-starter</module>
-        <module>web-spring-boot-starter</module>
+<!--        <module>test-spring-boot-starter</module>-->
+<!--        <module>random-spring-boot-starter</module>-->
+<!--        <module>web-spring-boot-starter</module>-->
         <module>core-spring-boot-starter</module>
         <module>jpa-spring-boot-starter</module>
         <module>cache-spring-boot-starter</module>
-        <module>kafka-spring-boot-starter</module>
-        <module>aws-spring-boot-starter</module>
-        <module>webflux-spring-boot-starter</module>
-        <module>cdk-spring-boot-starter</module>
+<!--        <module>kafka-spring-boot-starter</module>-->
+<!--        <module>aws-spring-boot-starter</module>-->
+<!--        <module>webflux-spring-boot-starter</module>-->
+<!--        <module>cdk-spring-boot-starter</module>-->
     </modules>
 
     <dependencyManagement>
@@ -62,6 +62,12 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc-openapi.version}</version>
+            </dependency>
+            <!--testcontainers-->
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers</artifactId>
