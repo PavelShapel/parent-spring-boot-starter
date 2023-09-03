@@ -63,18 +63,16 @@ public class LoggableAspect {
     }
 
     private boolean isResponseEntityErrorNotLogged(LoggableJoinPointSpecification loggableJoinPointSpecification, Object result) {
-        if (result instanceof ResponseEntity) {
-            ResponseEntity<?> responseEntity = (ResponseEntity<?>) result;
-            if (responseEntity.getStatusCode().isError()) {
-                Object[] params = {
-                        loggableJoinPointSpecification.getClassName(),
-                        loggableJoinPointSpecification.getMethodName(),
-                        LoggableType.METHOD_EXCEPTION.getPrefix(),
-                        getVerifiedLogResult(responseEntity)
-                };
-                log.log(SEVERE, LOG_PATTERN, params);
-                return false;
-            }
+        if (result instanceof ResponseEntity<?> responseEntity && (responseEntity.getStatusCode().isError())) {
+            Object[] params = {
+                    loggableJoinPointSpecification.getClassName(),
+                    loggableJoinPointSpecification.getMethodName(),
+                    LoggableType.METHOD_EXCEPTION.getPrefix(),
+                    getVerifiedLogResult(responseEntity)
+            };
+            log.log(SEVERE, LOG_PATTERN, params);
+            return false;
+
         }
         return true;
     }

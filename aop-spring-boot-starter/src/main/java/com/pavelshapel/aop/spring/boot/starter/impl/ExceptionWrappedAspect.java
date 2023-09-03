@@ -42,8 +42,7 @@ public class ExceptionWrappedAspect {
 
     @SneakyThrows
     private void throwWrappedException(ExceptionWrappedJoinPointSpecification exceptionWrappedJoinPointSpecification, Throwable exception) {
-        String message = String.format(
-                "%s method parameters %s, cause [%s]",
+        String message = "[%s] method parameters [%s], cause [%s]".formatted(
                 getPrefix(exceptionWrappedJoinPointSpecification),
                 joinParameters(exceptionWrappedJoinPointSpecification),
                 exception.toString());
