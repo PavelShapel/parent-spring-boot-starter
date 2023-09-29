@@ -4,9 +4,9 @@ import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.model.ParentalEntity;
 import com.pavelshapel.jpa.spring.boot.starter.service.decorator.AbstractDecoratorDaoService;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -100,17 +100,15 @@ public abstract class AbstractThrowableDecoratorDaoService<ID, T extends Entity<
                 .collect(joining(", "));
 
         throw new EntityNotFoundException(
-                String.format(
-                        "service: [%s]; ids: [%s]",
+                "service: [%s]; ids: [%s]".formatted(
                         getClass().getSimpleName(),
-                        stringOfIds.isEmpty() ? "not defined" : stringOfIds
-                )
+                        stringOfIds.isEmpty() ? "not defined" : stringOfIds)
         );
     }
 
     private void verifyChildren(ID id) {
         T entity = findById(id);
-        String message = String.format("entity [%s] has children", entity);
+        String message = "entity [%s] has children".formatted(entity);
         if (entity instanceof ParentalEntity && !getChildren(entity).isEmpty()) {
             throw new UnsupportedOperationException(message);
         }

@@ -1,16 +1,16 @@
 package com.pavelshapel.jpa.spring.boot.starter.service.search;
 
 import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.AccessLevel;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.stream.StreamSupport;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -28,30 +28,22 @@ public abstract class AbstractSearchSpecification<T extends Entity<?>> implement
 
     private Predicate getPredicate(SearchCriterion searchCriterion, Root<T> root, CriteriaBuilder builder) {
         String field = searchCriterion.getField();
-        Comparable<?> value = searchCriterion.getCastedValue();
-        switch (searchCriterion.getOperation()) {
-            case EQUALS:
-                return builder.equal(root.get(field), value);
-            case NOT_EQUALS:
-                return builder.notEqual(root.get(field), value);
-            case GREATER_THAN:
-                return builder.greaterThan(root.get(field), value.toString());
-            case GREATER_THAN_OR_EQUAL_TO:
-                return builder.greaterThanOrEqualTo(root.get(field), value.toString());
-            case LESS_THAN:
-                return builder.lessThan(root.get(field), value.toString());
-            case LESS_THAN_OR_EQUAL_TO:
-                return builder.lessThanOrEqualTo(root.get(field), value.toString());
-            case STARTS_WITH:
-                return builder.like(builder.lower(root.get(field)), builder.lower(builder.literal(value + "%")));
-            case CONTAINS:
-                return builder.like(builder.lower(root.get(field)), builder.lower(builder.literal("%" + value + "%")));
-            case IS_NULL:
-                return builder.isNull(root.get(field));
-            case IS_NOT_NULL:
-                return builder.isNotNull(root.get(field));
-            default:
-                throw new UnsupportedOperationException(String.format("search criteria operation [%s] not implemented", searchCriterion.getOperation()));
-        }
+        var value = searchCriterion.getCastedValue();
+        return switch (searchCriterion.getOperation()) {
+            case EQUALS -> builder.equal(root.get(field), value);
+            case NOT_EQUALS -> builder.notEqual(root.get(field), value);
+            case GREATER_THAN -> builder.greaterThan(root.get(field), value.toString());
+            case GREATER_THAN_OR_EQUAL_TO -> builder.greaterThanOrEqualTo(root.get(field), value.toString());
+            case LESS_THAN -> builder.lessThan(root.get(field), value.toString());
+            case LESS_THAN_OR_EQUAL_TO -> builder.lessThanOrEqualTo(root.get(field), value.toString());
+            case STARTS_WITH ->
+                    builder.like(builder.lower(root.get(field)), builder.lower(builder.literal(value + "%")));
+            case CONTAINS ->
+                    builder.like(builder.lower(root.get(field)), builder.lower(builder.literal("%" + value + "%")));
+            case IS_NULL -> builder.isNull(root.get(field));
+            case IS_NOT_NULL -> builder.isNotNull(root.get(field));
+            default ->
+                    throw new UnsupportedOperationException(String.format("search criteria operation [%s] not implemented", searchCriterion.getOperation()));
+        };
     }
 }

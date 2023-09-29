@@ -22,7 +22,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 public class SearchCriterion {
     public static final String TYPE_PREFIX = "<";
     public static final String TYPE_SUFFIX = ">";
-    public static final String TYPE_REGEX = String.format("%s.+%s$", TYPE_PREFIX, TYPE_SUFFIX);
+    public static final String TYPE_REGEX = "%s.+%s$".formatted(TYPE_PREFIX, TYPE_SUFFIX);
 
     private String field;
     private String value;
@@ -43,11 +43,11 @@ public class SearchCriterion {
                 .map(Matcher::group)
                 .map(type -> type.replace(TYPE_PREFIX, EMPTY))
                 .map(type -> type.replace(TYPE_SUFFIX, EMPTY))
-                .orElseThrow(() -> new IllegalArgumentException(String.format("type not found [%s]", value)));
+                .orElseThrow(() -> new IllegalArgumentException("type not found [%s]".formatted(value)));
         String primitiveValue = Optional.of(value.replaceAll(TYPE_REGEX, EMPTY))
                 .filter(not("null"::equals))
                 .filter(StringUtils::hasText)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("invalid value [%s]", value)));
+                .orElseThrow(() -> new IllegalArgumentException("invalid value [%s]".formatted(value)));
         return Pair.of(primitiveValue, PrimitiveType.valueOf(primitiveType));
     }
 

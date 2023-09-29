@@ -1,7 +1,7 @@
 package com.pavelshapel.jpa.spring.boot.starter;
 
-import com.pavelshapel.jpa.spring.boot.starter.service.search.bfpp.SearchSpecificationBeanFactoryPostProcessor;
 import com.pavelshapel.jpa.spring.boot.starter.service.decorator.DecorateDaoServiceAnnotationBeanPostProcessor;
+import com.pavelshapel.jpa.spring.boot.starter.service.search.bfpp.SearchSpecificationBeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
