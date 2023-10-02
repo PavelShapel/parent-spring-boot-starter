@@ -101,7 +101,7 @@ public class CoreStreamUtils implements StreamUtils {
 
     @Override
     public <T> List<T> iterableToList(Iterable<T> iterable) {
-        return iterableToStream(iterable).collect(Collectors.toList());
+        return iterableToStream(iterable).toList();
     }
 
     @Override

@@ -5,7 +5,6 @@ import com.pavelshapel.core.spring.boot.starter.api.util.CompletableFutureUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public class CoreCompletableFutureUtils implements CompletableFutureUtils {
     @Override
@@ -13,7 +12,7 @@ public class CoreCompletableFutureUtils implements CompletableFutureUtils {
         return CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]))
                 .thenApply(unused -> completableFutures.stream()
                         .map(CompletableFuture::join)
-                        .collect(Collectors.toList())
+                        .toList()
                 );
     }
 

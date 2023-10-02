@@ -1,6 +1,5 @@
 package com.pavelshapel.core.spring.boot.starter;
 
-import com.pavelshapel.core.spring.boot.starter.api.annotation.AnnotationReplacer;
 import com.pavelshapel.core.spring.boot.starter.api.util.ClassUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.CompletableFutureUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.MathUtils;
@@ -8,7 +7,6 @@ import com.pavelshapel.core.spring.boot.starter.api.util.RandomUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
 import com.pavelshapel.core.spring.boot.starter.api.util.SubstitutionUtils;
 import com.pavelshapel.core.spring.boot.starter.bpp.SelfAutowiredAnnotationBeanPostProcessor;
-import com.pavelshapel.core.spring.boot.starter.impl.annotation.ClassAnnotationReplacer;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreClassUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreCompletableFutureUtils;
 import com.pavelshapel.core.spring.boot.starter.impl.util.CoreMathUtils;
@@ -25,11 +23,6 @@ public class CoreStarterAutoConfiguration {
     @Bean
     public CoreContextRefreshedListener coreContextRefreshedListener() {
         return new CoreContextRefreshedListener();
-    }
-
-    @Bean
-    public AnnotationReplacer annotationReplacer() {
-        return new ClassAnnotationReplacer();
     }
 
     @Bean

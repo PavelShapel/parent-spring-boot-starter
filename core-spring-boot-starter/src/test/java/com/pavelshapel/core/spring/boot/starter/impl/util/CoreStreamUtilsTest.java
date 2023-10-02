@@ -4,6 +4,8 @@ import com.pavelshapel.core.spring.boot.starter.CoreStarterAutoConfiguration;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +15,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -53,10 +53,9 @@ class CoreStreamUtilsTest {
                 .hasValue(COLLECTION_ELEMENT);
     }
 
-    @Test
-    void toSingleton_WithEmptyCollection_ShouldReturnOptionalEmpty() {
-        List<Object> list = emptyList();
-
+    @ParameterizedTest
+    @EmptySource
+    void toSingleton_WithEmptyCollection_ShouldReturnOptionalEmpty(List<Object> list) {
         Optional<Object> singleton = list.stream().collect(streamUtils.toSingleton());
 
         assertThat(singleton).isEmpty();
@@ -223,10 +222,10 @@ class CoreStreamUtilsTest {
         List<String> filteredList = Stream.of(COLLECTION_ELEMENT)
                 .filter(startsWithC)
                 .filter(endsWithT)
-                .collect(Collectors.toList());
+                .toList();
         List<Predicate<String>> predicates = asList(startsWithC, endsWithT);
 
-        List<String> resultList = streamUtils.filterStream(predicates, Stream.of(COLLECTION_ELEMENT)).collect(Collectors.toList());
+        List<String> resultList = streamUtils.filterStream(predicates, Stream.of(COLLECTION_ELEMENT)).toList();
 
         assertThat(resultList)
                 .isNotNull()

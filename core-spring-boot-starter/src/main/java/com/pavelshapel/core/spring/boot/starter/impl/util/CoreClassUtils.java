@@ -9,7 +9,11 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
-import static org.springframework.util.ReflectionUtils.*;
+import static org.springframework.util.ReflectionUtils.doWithFields;
+import static org.springframework.util.ReflectionUtils.findField;
+import static org.springframework.util.ReflectionUtils.getField;
+import static org.springframework.util.ReflectionUtils.makeAccessible;
+import static org.springframework.util.ReflectionUtils.setField;
 
 public class CoreClassUtils implements ClassUtils {
     @Override

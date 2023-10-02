@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
-import java.util.stream.Collectors;
 
 public abstract class AbstractForkJoinTask<T> extends RecursiveTask<T> {
 
@@ -29,7 +28,7 @@ public abstract class AbstractForkJoinTask<T> extends RecursiveTask<T> {
             List<T> subResults = ForkJoinTask.invokeAll(createSubtasks())
                     .stream()
                     .map(ForkJoinTask::join)
-                    .collect(Collectors.toList());
+                    .toList();
             return process(subResults);
         } else {
             return process(payload);

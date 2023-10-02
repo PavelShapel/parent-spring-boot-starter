@@ -1,7 +1,7 @@
 package com.pavelshapel.core.spring.boot.starter.impl.util;
 
-import com.pavelshapel.core.spring.boot.starter.impl.model.properties.StringProperties;
 import com.pavelshapel.core.spring.boot.starter.api.util.SubstitutionUtils;
+import com.pavelshapel.core.spring.boot.starter.impl.model.properties.StringProperties;
 import org.apache.commons.text.StringSubstitutor;
 
 import java.io.BufferedReader;

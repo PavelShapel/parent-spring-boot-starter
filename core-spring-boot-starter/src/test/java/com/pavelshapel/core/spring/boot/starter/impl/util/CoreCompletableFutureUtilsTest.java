@@ -74,7 +74,7 @@ class CoreCompletableFutureUtilsTest {
     private List<String> generateStrings() {
         return Stream.generate(this::createString)
                 .limit(ThreadLocalRandom.current().nextInt(Byte.MAX_VALUE))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<CompletableFuture<String>> generateCompletableFutures(Collection<String> strings) {

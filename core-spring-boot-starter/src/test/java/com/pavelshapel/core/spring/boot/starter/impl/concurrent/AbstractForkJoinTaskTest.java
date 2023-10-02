@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,7 +16,7 @@ class AbstractForkJoinTaskTest {
         List<Integer> integers = ThreadLocalRandom.current().ints()
                 .limit(Byte.MAX_VALUE)
                 .boxed()
-                .collect(Collectors.toList());
+                .toList();
         int sum = integers.stream()
                 .mapToInt(value -> value)
                 .sum();
