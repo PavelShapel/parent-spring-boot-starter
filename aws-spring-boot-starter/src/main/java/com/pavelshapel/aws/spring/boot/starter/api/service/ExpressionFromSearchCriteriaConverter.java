@@ -31,12 +31,12 @@ public interface ExpressionFromSearchCriteriaConverter<T> extends Converter<Set<
         Map<String, AttributeValue> expressionAttributeValues = searchCriteria.stream()
                 .filter(not(searchCriterion -> IS_NULL.equals(searchCriterion.getOperation())))
                 .filter(not(searchCriterion -> IS_NOT_NULL.equals(searchCriterion.getOperation())))
-                .collect(Collectors.toMap(searchCriterion -> String.format(":%s", createExpressionAttributeName(searchCriterion)),
+                .collect(Collectors.toMap(searchCriterion -> ":%s".formatted(createExpressionAttributeName(searchCriterion)),
                         searchCriterion -> ItemUtils.toAttributeValue(searchCriterion.getCastedValue())));
         return expressionAttributeValues.isEmpty() ? null : expressionAttributeValues;
     }
 
     default String createExpressionAttributeName(SearchCriterion searchCriterion) {
-        return String.format("%s_%d", searchCriterion.getField(), searchCriterion.hashCode()).replace("-", "minus");
+        return "%s_%d".formatted(searchCriterion.getField(), searchCriterion.hashCode()).replace("-", "minus");
     }
 }

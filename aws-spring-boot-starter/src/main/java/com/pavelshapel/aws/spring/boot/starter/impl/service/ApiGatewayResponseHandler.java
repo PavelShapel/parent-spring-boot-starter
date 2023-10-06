@@ -15,7 +15,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
 import java.net.URLEncoder;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
@@ -83,9 +83,9 @@ public class ApiGatewayResponseHandler implements ResponseHandler {
         return Optional.ofNullable(supportedHttpMethods)
                 .map(this::getUnsupportedHttpMethods)
                 .map(Collection::stream)
-                .map(stream -> stream.map(Enum::name))
+                .map(stream -> stream.map(HttpMethod::name))
                 .map(stream -> stream.collect(Collectors.joining(", ")))
-                .map(responseBody -> String.format(METHOD_NOT_SUPPORTED_PATTERN, responseBody))
+                .map(METHOD_NOT_SUPPORTED_PATTERN::formatted)
                 .map(this::createExceptionResponseBody)
                 .map(jsonConverter::pojoToJson)
                 .map(responseBody -> verifiedResponseWithBodyAndStatusCode(response, responseBody, BAD_REQUEST))
@@ -99,8 +99,7 @@ public class ApiGatewayResponseHandler implements ResponseHandler {
     }
 
     private List<HttpMethod> getAllHttpMethods() {
-        return Arrays.stream(HttpMethod.values())
-                .collect(Collectors.toList());
+        return new ArrayList<>(List.of(HttpMethod.values()));
     }
 
     private APIGatewayV2HTTPResponse verifiedResponseWithBodyAndStatusCode(APIGatewayV2HTTPResponse response,

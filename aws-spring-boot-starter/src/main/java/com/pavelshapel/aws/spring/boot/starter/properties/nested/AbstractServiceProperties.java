@@ -1,6 +1,10 @@
 package com.pavelshapel.aws.spring.boot.starter.properties.nested;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 import static com.pavelshapel.aws.spring.boot.starter.properties.AwsProperties.SERVICE_ENDPOINT_PATTERN;

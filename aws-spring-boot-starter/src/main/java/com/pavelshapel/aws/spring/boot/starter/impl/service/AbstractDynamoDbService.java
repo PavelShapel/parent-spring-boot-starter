@@ -162,7 +162,7 @@ public abstract class AbstractDynamoDbService<T extends Entity<String>> implemen
                 .sorted(createPageableComparator(verifiedPageable))
                 .skip((long) verifiedPageable.getPageNumber() * verifiedPageable.getPageSize())
                 .limit(verifiedPageable.getPageSize())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Pageable createDefaultPageableIfNull(Pageable pageable) {

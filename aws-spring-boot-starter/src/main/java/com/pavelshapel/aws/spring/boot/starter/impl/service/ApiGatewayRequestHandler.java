@@ -40,7 +40,7 @@ public class ApiGatewayRequestHandler implements RequestHandler {
     public boolean isRequestMethod(APIGatewayV2HTTPEvent request, HttpMethod httpMethod) {
         return Optional.ofNullable(httpMethod)
                 .filter(unused -> nonNull(request))
-                .map(Enum::name)
+                .map(HttpMethod::name)
                 .map(httpMethodName -> getRequestHttpMethod(request).equalsIgnoreCase(httpMethodName))
                 .orElseThrow();
     }

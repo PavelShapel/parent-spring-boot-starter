@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.pavelshapel.core.spring.boot.starter.api.model.Entity.ID_FIELD;
@@ -204,7 +203,7 @@ class AbstractDynamoDbServiceTest extends AbstractTest {
         userDynamoDbService.save(rootUser);
         List<User> users = IntStream.range(1, 11)
                 .mapToObj(index -> createUser(rootUser, String.format("%s_%d", userName, index)))
-                .collect(Collectors.toList());
+                .toList();
         userDynamoDbService.saveAll(users);
         SearchCriterion searchCriterion = SearchCriterion.builder()
                 .operation(SearchOperation.STARTS_WITH)
@@ -218,7 +217,7 @@ class AbstractDynamoDbServiceTest extends AbstractTest {
         assertThat(result)
                 .extracting(Collection::stream)
                 .extracting(userStream -> userStream.map(User::getName))
-                .extracting(stringStream -> stringStream.collect(Collectors.toList()))
+                .extracting(stringStream -> stringStream.toList())
                 .asList()
                 .contains(String.format("%s_6", userName))
                 .contains(String.format("%s_5", userName))
@@ -232,7 +231,7 @@ class AbstractDynamoDbServiceTest extends AbstractTest {
         userDynamoDbService.save(rootUser);
         List<User> users = IntStream.range(1, 11)
                 .mapToObj(index -> createUser(rootUser, String.format("%s_%d", userName, index)))
-                .collect(Collectors.toList());
+                .toList();
         userDynamoDbService.saveAll(users);
         SearchCriterion searchCriterion = SearchCriterion.builder()
                 .operation(SearchOperation.CONTAINS)
@@ -246,7 +245,7 @@ class AbstractDynamoDbServiceTest extends AbstractTest {
         assertThat(result)
                 .extracting(Collection::stream)
                 .extracting(userStream -> userStream.map(User::getName))
-                .extracting(stringStream -> stringStream.collect(Collectors.toList()))
+                .extracting(stringStream -> stringStream.toList())
                 .asList()
                 .contains(String.format("%s_1", userName))
                 .contains(String.format("%s_10", userName));
@@ -280,7 +279,7 @@ class AbstractDynamoDbServiceTest extends AbstractTest {
         int verifiedCount = min(abs(count), 20);
         List<User> users = IntStream.range(0, verifiedCount)
                 .mapToObj(index -> createUser(rootUser, String.format("user_%d", index)))
-                .collect(Collectors.toList());
+                .toList();
         userDynamoDbService.saveAll(users);
 
         int result = userDynamoDbService.getCount();
@@ -297,7 +296,7 @@ class AbstractDynamoDbServiceTest extends AbstractTest {
         int verifiedCount = min(abs(count), 20);
         List<User> users = IntStream.range(0, verifiedCount)
                 .mapToObj(index -> createUser(rootUser, String.format("user_%d", index)))
-                .collect(Collectors.toList());
+                .toList();
         userDynamoDbService.saveAll(users);
 
         List<User> result = userDynamoDbService.getChildren(rootUser.getId());

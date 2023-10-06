@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @ExceptionWrapped
@@ -35,7 +34,7 @@ public class S3BucketHandler implements BucketHandler {
                 .orElseGet(Collections::emptyList)
                 .stream()
                 .map(Bucket::getName)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -46,7 +45,8 @@ public class S3BucketHandler implements BucketHandler {
 
     @Override
     public String createBucketIfNotExists(String bucketName) {
-        return Optional.of(isBucketExists(bucketName))
+        return Optional.of(bucketName)
+                .map(this::isBucketExists)
                 .filter(Boolean.FALSE::equals)
                 .map(unused -> createBucket(bucketName))
                 .orElse(bucketName);
@@ -61,7 +61,8 @@ public class S3BucketHandler implements BucketHandler {
 
     @Override
     public String deleteBucketIfExists(String bucketName) {
-        return Optional.of(isBucketExists(bucketName))
+        return Optional.of(bucketName)
+                .map(this::isBucketExists)
                 .filter(Boolean.TRUE::equals)
                 .map(unused -> deleteBucket(bucketName))
                 .orElse(bucketName);
@@ -76,7 +77,8 @@ public class S3BucketHandler implements BucketHandler {
 
     @Override
     public String clearBucket(String bucketName) {
-        return Optional.of(isBucketExists(bucketName))
+        return Optional.of(bucketName)
+                .map(this::isBucketExists)
                 .filter(Boolean.TRUE::equals)
                 .map(unused -> bucketName)
                 .map(this::deleteAllObjectVersions)
@@ -128,7 +130,7 @@ public class S3BucketHandler implements BucketHandler {
         return amazonS3.listObjects(bucketName)
                 .getObjectSummaries().stream()
                 .map(S3ObjectSummary::getKey)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private String deleteAllObjects(String bucketName) {

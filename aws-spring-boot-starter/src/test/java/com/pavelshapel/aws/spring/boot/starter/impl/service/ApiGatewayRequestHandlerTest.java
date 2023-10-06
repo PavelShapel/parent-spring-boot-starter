@@ -180,7 +180,7 @@ class ApiGatewayRequestHandlerTest extends AbstractTest {
 
     private APIGatewayV2HTTPEvent createRequestWithHttpMethod(HttpMethod httpMethod, Map<String, String> queryStringParameters) {
         return Optional.of(httpMethod)
-                .map(Enum::name)
+                .map(HttpMethod::name)
                 .map(httpMethodName -> APIGatewayV2HTTPEvent.RequestContext.Http.builder()
                         .withMethod(httpMethodName)
                         .build())
