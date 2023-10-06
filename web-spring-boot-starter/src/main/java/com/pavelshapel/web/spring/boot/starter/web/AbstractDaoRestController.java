@@ -8,6 +8,7 @@ import com.pavelshapel.core.spring.boot.starter.api.model.Entity;
 import com.pavelshapel.core.spring.boot.starter.api.util.StreamUtils;
 import com.pavelshapel.jpa.spring.boot.starter.service.DaoService;
 import com.pavelshapel.jpa.spring.boot.starter.service.search.SearchCriterion;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,13 +27,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -39,6 +38,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter(AccessLevel.PROTECTED)
 @Loggable
+@Validated
 public abstract class AbstractDaoRestController<ID, E extends Entity<ID>, D extends Dto<ID>> {
     public static final String ID_PATH = "/{id}" + EMPTY;
     public static final String SEARCH_PATH = "/search" + EMPTY;
@@ -83,19 +83,19 @@ public abstract class AbstractDaoRestController<ID, E extends Entity<ID>, D exte
         return Optional.ofNullable(responseDtos)
                 .orElseGet(Collections::emptyList).stream()
                 .map(Dto::getId)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<E> fromDtoListConverter(List<D> dtos) {
         return dtos.stream()
                 .map(fromDtoConverter::convert)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<D> toDtoListConverter(List<E> entities) {
         return entities.stream()
                 .map(toDtoConverter::convert)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @PutMapping(path = ID_PATH, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -118,7 +118,7 @@ public abstract class AbstractDaoRestController<ID, E extends Entity<ID>, D exte
     }
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<D>> findAll(ArrayList<@Valid SearchCriterion> searchCriteria, @PageableDefault Pageable pageable) {
+    public ResponseEntity<List<D>> findAll(List<@Valid SearchCriterion> searchCriteria, @PageableDefault Pageable pageable) {
         return Optional.ofNullable(searchCriteria)
                 .map(criteria -> daoService.findAll(searchCriteria, pageable))
                 .orElseGet(daoService::findAll)

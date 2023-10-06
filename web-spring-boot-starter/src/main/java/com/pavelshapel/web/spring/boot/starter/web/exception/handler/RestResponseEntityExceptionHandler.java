@@ -1,6 +1,7 @@
 package com.pavelshapel.web.spring.boot.starter.web.exception.handler;
 
 import com.pavelshapel.web.spring.boot.starter.web.exception.ErrorResponse;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.persistence.EntityNotFoundException;
 
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -26,10 +26,9 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return createErrorResponseEntity(exception, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
-    @Override
     @ExceptionHandler(Exception.class)
     @NonNull
-    protected ResponseEntity<Object> handleExceptionInternal(@NonNull Exception exception, Object body,@NonNull HttpHeaders headers,@NonNull HttpStatus status,@NonNull WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(@NonNull Exception exception, Object body, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
         return createErrorResponseEntity(exception, headers, HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
