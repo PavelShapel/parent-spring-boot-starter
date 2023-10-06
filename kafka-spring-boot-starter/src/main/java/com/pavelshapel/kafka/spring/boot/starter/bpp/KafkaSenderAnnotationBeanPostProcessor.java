@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class KafkaSenderAnnotationBeanPostProcessor implements BeanPostProcessor {
@@ -29,7 +28,7 @@ public class KafkaSenderAnnotationBeanPostProcessor implements BeanPostProcessor
     public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
         List<Method> methods = Arrays.stream(bean.getClass().getDeclaredMethods())
                 .filter(this::isAnnotationKafkaSenderPresent)
-                .collect(Collectors.toList());
+                .toList();
         if (!methods.isEmpty()) {
             kafkaSenderBeans.put(beanName, methods);
         }

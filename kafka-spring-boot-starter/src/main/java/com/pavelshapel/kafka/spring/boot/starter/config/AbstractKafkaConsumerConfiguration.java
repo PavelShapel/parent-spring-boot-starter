@@ -35,7 +35,7 @@ public abstract class AbstractKafkaConsumerConfiguration<T extends Dto<String>> 
         ConcurrentKafkaListenerContainerFactory<String, T> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.setBatchListener(true);
-        factory.setMessageConverter(new BatchMessagingMessageConverter(converter()));
+        factory.setBatchMessageConverter(new BatchMessagingMessageConverter(converter()));
         return factory;
     }
 
@@ -44,7 +44,7 @@ public abstract class AbstractKafkaConsumerConfiguration<T extends Dto<String>> 
         ConcurrentKafkaListenerContainerFactory<String, T> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.setBatchListener(false);
-        factory.setMessageConverter(converter());
+        factory.setRecordMessageConverter(converter());
         return factory;
     }
 

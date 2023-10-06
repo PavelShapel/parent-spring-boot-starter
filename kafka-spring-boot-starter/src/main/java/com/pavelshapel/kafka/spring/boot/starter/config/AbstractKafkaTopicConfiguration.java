@@ -1,6 +1,7 @@
 package com.pavelshapel.kafka.spring.boot.starter.config;
 
 import com.pavelshapel.kafka.spring.boot.starter.properties.KafkaProperties;
+import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -11,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.kafka.core.KafkaAdmin;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
