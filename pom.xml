@@ -29,25 +29,32 @@
         <junit-jupiter-engine.version>5.9.0</junit-jupiter-engine.version>
         <aws-cdk-lib.version>2.28.1</aws-cdk-lib.version>
         <constructs.version>[10.0.0,11.0.0)</constructs.version>
+        <commons-jexl3.version>3.0</commons-jexl3.version>
+        <snakeyaml.version>2.2</snakeyaml.version>
     </properties>
 
     <modules>
-<!--        <module>aop-spring-boot-starter</module>-->
+        <module>aop-spring-boot-starter</module>
         <module>json-spring-boot-starter</module>
-<!--        <module>test-spring-boot-starter</module>-->
-<!--        <module>random-spring-boot-starter</module>-->
-<!--        <module>web-spring-boot-starter</module>-->
+        <module>test-spring-boot-starter</module>
+        <module>random-spring-boot-starter</module>
+        <module>web-spring-boot-starter</module>
         <module>core-spring-boot-starter</module>
         <module>jpa-spring-boot-starter</module>
         <module>cache-spring-boot-starter</module>
-<!--        <module>kafka-spring-boot-starter</module>-->
-<!--        <module>aws-spring-boot-starter</module>-->
-<!--        <module>webflux-spring-boot-starter</module>-->
-<!--        <module>cdk-spring-boot-starter</module>-->
+        <module>retry-spring-boot-starter</module>
+        <module>kafka-spring-boot-starter</module>
+        <module>aws-spring-boot-starter</module>
+        <module>cdk-spring-boot-starter</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
