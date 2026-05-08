@@ -1,21 +1,22 @@
 package com.pavelshapel.cache.spring.boot.starter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-@Configuration
+@AutoConfiguration
 @EnableCaching
 @Profile("!test")
 public class CacheStarterAutoConfiguration {
-    public static final String TYPE = "cache";
+    private static final Logger log = LoggerFactory.getLogger(CacheStarterAutoConfiguration.class);
 
-    @Bean
-    public CacheContextRefreshedListener cacheContextRefreshedListener() {
-        return new CacheContextRefreshedListener();
+    CacheStarterAutoConfiguration() {
+        log.info("cache-spring-boot-starter was applied ✅");
     }
 
     @Bean

@@ -41,7 +41,7 @@
         <!--        <module>web-spring-boot-starter</module>-->
         <!--        <module>core-spring-boot-starter</module>-->
         <!--        <module>jpa-spring-boot-starter</module>-->
-        <!--        <module>cache-spring-boot-starter</module>-->
+                <module>cache-spring-boot-starter</module>
         <!--        <module>retry-spring-boot-starter</module>-->
         <!--        <module>kafka-spring-boot-starter</module>-->
         <!--        <module>aws-spring-boot-starter</module>-->
