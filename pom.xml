@@ -10,51 +10,53 @@
     <packaging>pom</packaging>
 
     <properties>
-        <spring.boot.version>3.1.3</spring.boot.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <spring.boot.version>4.0.6</spring.boot.version>
+        <java.version>21</java.version>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <testcontainers.version>1.17.5</testcontainers.version>
-        <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
-        <amazonaws.version>1.12.410</amazonaws.version>
-        <derjust.version>5.1.0</derjust.version>
-        <aws-lambda-java-events.version>3.11.0</aws-lambda-java-events.version>
-        <aws-lambda-java-core.version>1.2.1</aws-lambda-java-core.version>
-        <aws-lambda-java-serialization.version>1.0.0</aws-lambda-java-serialization.version>
-        <spring-cloud-dependencies.version>2022.0.3</spring-cloud-dependencies.version>
-        <aws-serverless-java-container-springboot2.version>1.8.1</aws-serverless-java-container-springboot2.version>
-        <commons-text.version>1.10.0</commons-text.version>
-        <aws-lambda-java-tests.version>1.1.1</aws-lambda-java-tests.version>
-        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
-        <junit-jupiter-engine.version>5.9.0</junit-jupiter-engine.version>
-        <aws-cdk-lib.version>2.28.1</aws-cdk-lib.version>
-        <constructs.version>[10.0.0,11.0.0)</constructs.version>
-        <commons-jexl3.version>3.0</commons-jexl3.version>
-        <snakeyaml.version>2.2</snakeyaml.version>
+        <!--        <testcontainers.version>1.17.5</testcontainers.version>-->
+        <!--        <springdoc-openapi.version>2.2.0</springdoc-openapi.version>-->
+        <!--        <amazonaws.version>1.12.410</amazonaws.version>-->
+        <!--        <derjust.version>5.1.0</derjust.version>-->
+        <!--        <aws-lambda-java-events.version>3.11.0</aws-lambda-java-events.version>-->
+        <!--        <aws-lambda-java-core.version>1.2.1</aws-lambda-java-core.version>-->
+        <!--        <aws-lambda-java-serialization.version>1.0.0</aws-lambda-java-serialization.version>-->
+        <!--        <spring-cloud-dependencies.version>2022.0.3</spring-cloud-dependencies.version>-->
+        <!--        <aws-serverless-java-container-springboot2.version>1.8.1</aws-serverless-java-container-springboot2.version>-->
+        <!--        <commons-text.version>1.10.0</commons-text.version>-->
+        <!--        <aws-lambda-java-tests.version>1.1.1</aws-lambda-java-tests.version>-->
+        <!--        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>-->
+        <!--        <junit-jupiter-engine.version>5.9.0</junit-jupiter-engine.version>-->
+        <!--        <aws-cdk-lib.version>2.28.1</aws-cdk-lib.version>-->
+        <!--        <constructs.version>[10.0.0,11.0.0)</constructs.version>-->
+        <!--        <commons-jexl3.version>3.0</commons-jexl3.version>-->
+        <!--        <snakeyaml.version>2.2</snakeyaml.version>-->
     </properties>
 
     <modules>
-        <module>aop-spring-boot-starter</module>
-        <module>json-spring-boot-starter</module>
-        <module>test-spring-boot-starter</module>
-        <module>random-spring-boot-starter</module>
-        <module>web-spring-boot-starter</module>
-        <module>core-spring-boot-starter</module>
-        <module>jpa-spring-boot-starter</module>
-        <module>cache-spring-boot-starter</module>
-        <module>retry-spring-boot-starter</module>
-        <module>kafka-spring-boot-starter</module>
-        <module>aws-spring-boot-starter</module>
-        <module>cdk-spring-boot-starter</module>
+        <!--        <module>aop-spring-boot-starter</module>-->
+        <!--        <module>json-spring-boot-starter</module>-->
+        <!--        <module>test-spring-boot-starter</module>-->
+        <!--        <module>random-spring-boot-starter</module>-->
+        <!--        <module>web-spring-boot-starter</module>-->
+        <!--        <module>core-spring-boot-starter</module>-->
+        <!--        <module>jpa-spring-boot-starter</module>-->
+        <!--        <module>cache-spring-boot-starter</module>-->
+        <!--        <module>retry-spring-boot-starter</module>-->
+        <!--        <module>kafka-spring-boot-starter</module>-->
+        <!--        <module>aws-spring-boot-starter</module>-->
+        <!--        <module>cdk-spring-boot-starter</module>-->
+        <module>log-spring-boot-starter</module>
+        <module>ordered-spring-boot-starter</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>${snakeyaml.version}</version>
-            </dependency>
+            <!--            <dependency>-->
+            <!--                <groupId>org.yaml</groupId>-->
+            <!--                <artifactId>snakeyaml</artifactId>-->
+            <!--                <version>${snakeyaml.version}</version>-->
+            <!--            </dependency>-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -62,100 +64,100 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud-dependencies.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-                <version>${springdoc-openapi.version}</version>
-            </dependency>
+            <!--            <dependency>-->
+            <!--                <groupId>org.springframework.cloud</groupId>-->
+            <!--                <artifactId>spring-cloud-dependencies</artifactId>-->
+            <!--                <version>${spring-cloud-dependencies.version}</version>-->
+            <!--                <scope>import</scope>-->
+            <!--                <type>pom</type>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.springdoc</groupId>-->
+            <!--                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>-->
+            <!--                <version>${springdoc-openapi.version}</version>-->
+            <!--            </dependency>-->
             <!--testcontainers-->
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers</artifactId>
-                <version>${testcontainers.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>junit-jupiter</artifactId>
-                <version>${testcontainers.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${testcontainers.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>mongodb</artifactId>
-                <version>${testcontainers.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>${testcontainers.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>kafka</artifactId>
-                <version>${testcontainers.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>dynalite</artifactId>
-                <version>${testcontainers.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>localstack</artifactId>
-                <version>${testcontainers.version}</version>
-            </dependency>
+            <!--            <dependency>-->
+            <!--                <groupId>org.testcontainers</groupId>-->
+            <!--                <artifactId>testcontainers</artifactId>-->
+            <!--                <version>${testcontainers.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.testcontainers</groupId>-->
+            <!--                <artifactId>junit-jupiter</artifactId>-->
+            <!--                <version>${testcontainers.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.testcontainers</groupId>-->
+            <!--                <artifactId>postgresql</artifactId>-->
+            <!--                <version>${testcontainers.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.testcontainers</groupId>-->
+            <!--                <artifactId>mongodb</artifactId>-->
+            <!--                <version>${testcontainers.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.testcontainers</groupId>-->
+            <!--                <artifactId>elasticsearch</artifactId>-->
+            <!--                <version>${testcontainers.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.testcontainers</groupId>-->
+            <!--                <artifactId>kafka</artifactId>-->
+            <!--                <version>${testcontainers.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.testcontainers</groupId>-->
+            <!--                <artifactId>dynalite</artifactId>-->
+            <!--                <version>${testcontainers.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.testcontainers</groupId>-->
+            <!--                <artifactId>localstack</artifactId>-->
+            <!--                <version>${testcontainers.version}</version>-->
+            <!--            </dependency>-->
             <!--com.pavelshapel-->
-            <dependency>
-                <groupId>com.pavelshapel</groupId>
-                <artifactId>aop-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.pavelshapel</groupId>
-                <artifactId>core-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.pavelshapel</groupId>
-                <artifactId>jpa-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.pavelshapel</groupId>
-                <artifactId>json-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.pavelshapel</groupId>
-                <artifactId>test-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.pavelshapel</groupId>
-                <artifactId>web-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.pavelshapel</groupId>
-                <artifactId>cache-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.pavelshapel</groupId>
-                <artifactId>aws-spring-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+            <!--            <dependency>-->
+            <!--                <groupId>com.pavelshapel</groupId>-->
+            <!--                <artifactId>aop-spring-boot-starter</artifactId>-->
+            <!--                <version>${project.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.pavelshapel</groupId>-->
+            <!--                <artifactId>core-spring-boot-starter</artifactId>-->
+            <!--                <version>${project.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.pavelshapel</groupId>-->
+            <!--                <artifactId>jpa-spring-boot-starter</artifactId>-->
+            <!--                <version>${project.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.pavelshapel</groupId>-->
+            <!--                <artifactId>json-spring-boot-starter</artifactId>-->
+            <!--                <version>${project.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.pavelshapel</groupId>-->
+            <!--                <artifactId>test-spring-boot-starter</artifactId>-->
+            <!--                <version>${project.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.pavelshapel</groupId>-->
+            <!--                <artifactId>web-spring-boot-starter</artifactId>-->
+            <!--                <version>${project.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.pavelshapel</groupId>-->
+            <!--                <artifactId>cache-spring-boot-starter</artifactId>-->
+            <!--                <version>${project.version}</version>-->
+            <!--            </dependency>-->
+            <!--            <dependency>-->
+            <!--                <groupId>com.pavelshapel</groupId>-->
+            <!--                <artifactId>aws-spring-boot-starter</artifactId>-->
+            <!--                <version>${project.version}</version>-->
+            <!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
@@ -167,41 +169,46 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.version}</version>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.junit.jupiter</groupId>
-                        <artifactId>junit-jupiter-engine</artifactId>
-                        <version>${junit-jupiter-engine.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
+    <!--    <build>-->
+    <!--        <plugins>-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.springframework.boot</groupId>-->
+    <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+    <!--                <version>${spring.boot.version}</version>-->
+    <!--                <configuration>-->
+    <!--                    <excludes>-->
+    <!--                        <exclude>-->
+    <!--                            <groupId>org.projectlombok</groupId>-->
+    <!--                            <artifactId>lombok</artifactId>-->
+    <!--                        </exclude>-->
+    <!--                    </excludes>-->
+    <!--                </configuration>-->
+    <!--            </plugin>-->
+    <!--            <plugin>-->
+    <!--                <groupId>org.apache.maven.plugins</groupId>-->
+    <!--                <artifactId>maven-surefire-plugin</artifactId>-->
+    <!--                <version>${maven-surefire-plugin.version}</version>-->
+    <!--                <dependencies>-->
+    <!--                    <dependency>-->
+    <!--                        <groupId>org.junit.jupiter</groupId>-->
+    <!--                        <artifactId>junit-jupiter-engine</artifactId>-->
+    <!--                        <version>${junit-jupiter-engine.version}</version>-->
+    <!--                    </dependency>-->
+    <!--                </dependencies>-->
+    <!--            </plugin>-->
+    <!--        </plugins>-->
+    <!--    </build>-->
 </project>
