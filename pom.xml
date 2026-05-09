@@ -35,19 +35,20 @@
 
     <modules>
         <!--        <module>aop-spring-boot-starter</module>-->
-        <!--        <module>json-spring-boot-starter</module>-->
+        <module>json-spring-boot-starter</module>
         <!--        <module>test-spring-boot-starter</module>-->
         <!--        <module>random-spring-boot-starter</module>-->
         <!--        <module>web-spring-boot-starter</module>-->
         <!--        <module>core-spring-boot-starter</module>-->
         <!--        <module>jpa-spring-boot-starter</module>-->
-                <module>cache-spring-boot-starter</module>
+        <module>cache-spring-boot-starter</module>
         <!--        <module>retry-spring-boot-starter</module>-->
         <!--        <module>kafka-spring-boot-starter</module>-->
         <!--        <module>aws-spring-boot-starter</module>-->
         <!--        <module>cdk-spring-boot-starter</module>-->
         <module>log-spring-boot-starter</module>
         <module>ordered-spring-boot-starter</module>
+        <module>bot-api-spring-boot-starter</module>
     </modules>
 
     <dependencyManagement>

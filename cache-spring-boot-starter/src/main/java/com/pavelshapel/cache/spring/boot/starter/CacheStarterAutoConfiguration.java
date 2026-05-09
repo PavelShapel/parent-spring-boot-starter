@@ -13,14 +13,14 @@ import org.springframework.context.annotation.Profile;
 @EnableCaching
 @Profile("!test")
 public class CacheStarterAutoConfiguration {
-    private static final Logger log = LoggerFactory.getLogger(CacheStarterAutoConfiguration.class);
+  private static final Logger log = LoggerFactory.getLogger(CacheStarterAutoConfiguration.class);
 
-    CacheStarterAutoConfiguration() {
-        log.info("cache-spring-boot-starter was applied ✅");
-    }
+  CacheStarterAutoConfiguration() {
+    log.info("cache-spring-boot-starter was applied ✅");
+  }
 
-    @Bean
-    public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager();
-    }
+  @Bean
+  public CacheManager cacheManager() {
+    return new ConcurrentMapCacheManager();
+  }
 }
