@@ -1,5 +1,10 @@
 package com.pavelshapel.log.spring.boot.starter;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.inOrder;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,59 +13,48 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.inOrder;
-
 @ExtendWith(MockitoExtension.class)
 class LoggerProviderTest {
-    @Mock
-    private Logger mockLogger;
+  @Mock private Logger mockLogger;
 
-    private UnderTest underTest;
+  private UnderTest underTest;
 
-    private record UnderTest(Logger logger) implements LoggerProvider {
-        String executeAndLog(String message) {
-            return executeAndLog(message, () -> "result");
-        }
-
-        @Override
-        public Logger getLogger() {
-            return logger;
-        }
+  private record UnderTest(Logger logger) implements LoggerProvider {
+    String executeAndLog(String message) {
+      return executeAndLog(message, () -> "result");
     }
 
-    @BeforeEach
-    void setUp() {
-        underTest = new UnderTest(mockLogger);
+    @Override
+    public Logger getLogger() {
+      return logger;
     }
+  }
 
-    @Test
-    void shouldReturnValidResult() {
-        String message = "Test DURATION log";
+  @BeforeEach
+  void setUp() {
+    underTest = new UnderTest(mockLogger);
+  }
 
-        String result = underTest.executeAndLog(message);
+  @Test
+  void shouldReturnValidResult() {
+    String message = "Test DURATION log";
 
-        assertThat(result)
-                .isEqualTo("result");
-    }
+    String result = underTest.executeAndLog(message);
 
-    @Test
-    void shouldInvokeLoggerTwice() {
-        String message = "Test DURATION log";
-        underTest.executeAndLog(message);
+    assertThat(result).isEqualTo("result");
+  }
 
-        InOrder inOrder = inOrder(mockLogger);
+  @Test
+  void shouldInvokeLoggerTwice() {
+    String message = "Test DURATION log";
+    underTest.executeAndLog(message);
 
-        inOrder.verify(mockLogger).info(
-                "[→] {}...",
-                "Test DURATION log"
-        );
-        inOrder.verify(mockLogger).info(
-                eq("[←] completed in [{}] ms. {}"),
-                anyLong(),
-                eq("Test DURATION log"));
-        inOrder.verifyNoMoreInteractions();
-    }
+    InOrder inOrder = inOrder(mockLogger);
+
+    inOrder.verify(mockLogger).info("[→] {}...", "Test DURATION log");
+    inOrder
+        .verify(mockLogger)
+        .info(eq("[←] completed in [{}] ms. {}"), anyLong(), eq("Test DURATION log"));
+    inOrder.verifyNoMoreInteractions();
+  }
 }
