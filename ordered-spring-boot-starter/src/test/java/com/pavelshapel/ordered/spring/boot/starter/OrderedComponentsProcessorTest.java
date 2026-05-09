@@ -1,100 +1,99 @@
 package com.pavelshapel.ordered.spring.boot.starter;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(classes = {OrderedComponentsProcessorTest.ApplicableTestOrderedComponent1.class,
-        OrderedComponentsProcessorTest.NotApplicableTestOrderedComponent2.class,
-        OrderedComponentsProcessorTest.ApplicableTestOrderedComponent3.class,
-        OrderedComponentsProcessorTest.TestOrderedComponentsProcessorInProcessingOrder.class,
-        OrderedComponentsProcessorTest.TestOrderedComponentsProcessorInDefinedOrder.class}
-)
+@SpringBootTest(
+    classes = {
+      OrderedComponentsProcessorTest.ApplicableTestOrderedComponent1.class,
+      OrderedComponentsProcessorTest.NotApplicableTestOrderedComponent2.class,
+      OrderedComponentsProcessorTest.ApplicableTestOrderedComponent3.class,
+      OrderedComponentsProcessorTest.TestOrderedComponentsProcessorInProcessingOrder.class,
+      OrderedComponentsProcessorTest.TestOrderedComponentsProcessorInDefinedOrder.class
+    })
 class OrderedComponentsProcessorTest {
-    abstract static class TestOrderedComponent extends OrderedComponent<String, String> {
-        private final int order;
-        private final boolean isApplicable;
+  abstract static class TestOrderedComponent extends OrderedComponent<String, String> {
+    private final int order;
+    private final boolean isApplicable;
 
-        TestOrderedComponent(int order, boolean isApplicable) {
-            this.order = order;
-            this.isApplicable = isApplicable;
-        }
-
-        @Override
-        public String apply(String payload) {
-            return "%s%d".formatted(payload, order);
-        }
-
-        @Override
-        protected boolean isApplicable(String payload) {
-            return isApplicable;
-        }
-
-        @Override
-        public int getOrder() {
-            return order;
-        }
+    TestOrderedComponent(int order, boolean isApplicable) {
+      this.order = order;
+      this.isApplicable = isApplicable;
     }
 
-    @Component
-    static class ApplicableTestOrderedComponent1 extends TestOrderedComponent {
-        ApplicableTestOrderedComponent1() {
-            super(/* order= */ 1, /* isApplicable= */ true);
-        }
+    @Override
+    public String apply(String payload) {
+      return "%s%d".formatted(payload, order);
     }
 
-    @Component
-    static class NotApplicableTestOrderedComponent2 extends TestOrderedComponent {
-        NotApplicableTestOrderedComponent2() {
-            super(/* order= */ 2, /* isApplicable= */ false);
-        }
+    @Override
+    protected boolean isApplicable(String payload) {
+      return isApplicable;
     }
 
-    @Component
-    static class ApplicableTestOrderedComponent3 extends TestOrderedComponent {
-        ApplicableTestOrderedComponent3() {
-            super(/* order= */ 3, /* isApplicable= */ true);
-        }
+    @Override
+    public int getOrder() {
+      return order;
     }
+  }
 
-    @Component
-    static class TestOrderedComponentsProcessorInDefinedOrder extends OrderedComponentsProcessor<String, String, TestOrderedComponent> {
+  @Component
+  static class ApplicableTestOrderedComponent1 extends TestOrderedComponent {
+    ApplicableTestOrderedComponent1() {
+      super(/* order= */ 1, /* isApplicable= */ true);
     }
+  }
 
-    @Component
-    static class TestOrderedComponentsProcessorInProcessingOrder extends OrderedComponentsProcessor<String, String, TestOrderedComponent> {
-        @Override
-        protected List<Class<? extends TestOrderedComponent>> getClassesInProcessingOrder() {
-            return List.of(ApplicableTestOrderedComponent3.class, NotApplicableTestOrderedComponent2.class, ApplicableTestOrderedComponent1.class);
-        }
+  @Component
+  static class NotApplicableTestOrderedComponent2 extends TestOrderedComponent {
+    NotApplicableTestOrderedComponent2() {
+      super(/* order= */ 2, /* isApplicable= */ false);
     }
+  }
 
-    @Autowired
-    private TestOrderedComponentsProcessorInDefinedOrder inDefinedOrderProcessor;
-
-    @Autowired
-    private TestOrderedComponentsProcessorInProcessingOrder inProcessingOrderProcessor;
-
-    @Test
-    void shouldApplyOnlyApplicableComponentsInDefinedOrder() {
-        List<String> result = inDefinedOrderProcessor.apply("testPayload");
-
-        assertThat(result)
-                .containsExactly("testPayload1", "testPayload3");
+  @Component
+  static class ApplicableTestOrderedComponent3 extends TestOrderedComponent {
+    ApplicableTestOrderedComponent3() {
+      super(/* order= */ 3, /* isApplicable= */ true);
     }
+  }
 
-    @Test
-    void shouldApplyAllComponentsInProcessingOrder() {
-        List<String> result = inProcessingOrderProcessor.apply("testPayload");
+  @Component
+  static class TestOrderedComponentsProcessorInDefinedOrder
+      extends OrderedComponentsProcessor<String, String, TestOrderedComponent> {}
 
-        assertThat(result)
-                .containsExactly("testPayload3", "testPayload1");
+  @Component
+  static class TestOrderedComponentsProcessorInProcessingOrder
+      extends OrderedComponentsProcessor<String, String, TestOrderedComponent> {
+    @Override
+    protected List<Class<? extends TestOrderedComponent>> getClassesInProcessingOrder() {
+      return List.of(
+          ApplicableTestOrderedComponent3.class,
+          NotApplicableTestOrderedComponent2.class,
+          ApplicableTestOrderedComponent1.class);
     }
+  }
+
+  @Autowired private TestOrderedComponentsProcessorInDefinedOrder inDefinedOrderProcessor;
+
+  @Autowired private TestOrderedComponentsProcessorInProcessingOrder inProcessingOrderProcessor;
+
+  @Test
+  void shouldApplyOnlyApplicableComponentsInDefinedOrder() {
+    List<String> result = inDefinedOrderProcessor.apply("testPayload");
+
+    assertThat(result).containsExactly("testPayload1", "testPayload3");
+  }
+
+  @Test
+  void shouldApplyAllComponentsInProcessingOrder() {
+    List<String> result = inProcessingOrderProcessor.apply("testPayload");
+
+    assertThat(result).containsExactly("testPayload3", "testPayload1");
+  }
 }
-
-

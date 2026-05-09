@@ -6,9 +6,9 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 
 @AutoConfiguration
 final class OrderedStarterAutoConfiguration {
-    private static final Logger log = LoggerFactory.getLogger(OrderedStarterAutoConfiguration.class);
+  private static final Logger log = LoggerFactory.getLogger(OrderedStarterAutoConfiguration.class);
 
-    OrderedStarterAutoConfiguration() {
-        log.info("ordered-spring-boot-starter was applied ✅");
-    }
+  OrderedStarterAutoConfiguration() {
+    log.info("ordered-spring-boot-starter was applied ✅");
+  }
 }

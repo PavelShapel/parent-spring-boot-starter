@@ -71,17 +71,17 @@ class JacksonJsonConverterTest {
 
   @Test
   void shouldReturnTrueWhenValidJsonIsChecked() {
-    boolean isValidJson = jsonConverter.isValidJson(JSON_POJO);
+    boolean result = jsonConverter.isValidJson(JSON_POJO);
 
-    assertThat(isValidJson).isTrue();
+    assertThat(result).isTrue();
   }
 
   @ParameterizedTest
   @ValueSource(strings = {"null", NAME_VALUE})
   void shouldReturnFalseWhenInvalidJsonIsChecked(String json) {
-    boolean isValidJson = jsonConverter.isValidJson(json);
+    boolean result = jsonConverter.isValidJson(json);
 
-    assertThat(isValidJson).isFalse();
+    assertThat(result).isFalse();
   }
 
   @Test

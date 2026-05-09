@@ -1,39 +1,38 @@
 package com.pavelshapel.ordered.spring.boot.starter;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import static java.lang.Integer.MAX_VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 class OrderedComponentTest {
-    private OrderedComponent<String, String> orderedComponent;
+  private OrderedComponent<String, String> orderedComponent;
 
-    @BeforeEach
-    void setUp() {
-        orderedComponent = new OrderedComponent<>() {
-            @Override
-            public String apply(String payload) {
-                return payload;
-            }
+  @BeforeEach
+  void setUp() {
+    orderedComponent =
+        new OrderedComponent<>() {
+          @Override
+          public String apply(String payload) {
+            return payload;
+          }
         };
-    }
+  }
 
-    @Test
-    void shouldReturnTrueByDefault() {
-        String payload = "testPayload";
+  @Test
+  void shouldReturnTrueByDefault() {
+    String payload = "testPayload";
 
-        var result = orderedComponent.isApplicable(payload);
+    boolean result = orderedComponent.isApplicable(payload);
 
-        assertThat(result)
-                .isTrue();
-    }
+    assertThat(result).isTrue();
+  }
 
-    @Test
-    void shouldReturnLowestPrecedence() {
-        var result = orderedComponent.getOrder();
+  @Test
+  void shouldReturnLowestPrecedence() {
+    int result = orderedComponent.getOrder();
 
-        assertThat(result)
-                .isEqualTo(MAX_VALUE);
-    }
+    assertThat(result).isEqualTo(MAX_VALUE);
+  }
 }
