@@ -5,8 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>parent-spring-boot-starter</artifactId>
     <groupId>com.pavelshapel</groupId>
+    <artifactId>parent-spring-boot-starter</artifactId>
     <version>1.0.0</version>
   </parent>
 
