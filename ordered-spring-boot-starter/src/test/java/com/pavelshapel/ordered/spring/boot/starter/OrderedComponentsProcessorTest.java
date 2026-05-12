@@ -65,11 +65,22 @@ class OrderedComponentsProcessorTest {
 
   @Component
   static class TestOrderedComponentsProcessorInDefinedOrder
-      extends OrderedComponentsProcessor<String, String, TestOrderedComponent> {}
+      extends OrderedComponentsProcessor<String, String, TestOrderedComponent> {
+
+    protected TestOrderedComponentsProcessorInDefinedOrder(List<TestOrderedComponent> components) {
+      super(components);
+    }
+  }
 
   @Component
   static class TestOrderedComponentsProcessorInProcessingOrder
       extends OrderedComponentsProcessor<String, String, TestOrderedComponent> {
+
+    protected TestOrderedComponentsProcessorInProcessingOrder(
+        List<TestOrderedComponent> components) {
+      super(components);
+    }
+
     @Override
     protected List<Class<? extends TestOrderedComponent>> getClassesInProcessingOrder() {
       return List.of(

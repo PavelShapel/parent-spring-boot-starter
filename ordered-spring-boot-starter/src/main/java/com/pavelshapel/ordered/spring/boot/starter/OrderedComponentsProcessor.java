@@ -7,13 +7,16 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.function.Function;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class OrderedComponentsProcessor<P, R, C extends OrderedComponent<P, R>>
     implements Function<P, List<R>> {
-  @Autowired private List<C> components;
+  private final List<C> components;
 
   private List<C> orderedComponents;
+
+  protected OrderedComponentsProcessor(List<C> components) {
+    this.components = components;
+  }
 
   @PostConstruct
   private void init() {
