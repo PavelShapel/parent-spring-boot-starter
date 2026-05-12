@@ -17,7 +17,7 @@ final class JsonStarterAutoConfiguration {
 
   @Bean
   @ConditionalOnClass(ObjectMapper.class)
-  public JsonConverter jacksonJsonConverter(ObjectMapper objectMapper) {
+  JsonConverter jacksonJsonConverter(ObjectMapper objectMapper) {
     return new JacksonJsonConverter(objectMapper);
   }
 }

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Profile;
 @AutoConfiguration
 @EnableCaching
 @Profile("!test")
-public class CacheStarterAutoConfiguration {
+final class CacheStarterAutoConfiguration {
   private static final Logger log = LoggerFactory.getLogger(CacheStarterAutoConfiguration.class);
 
   CacheStarterAutoConfiguration() {
@@ -20,7 +20,7 @@ public class CacheStarterAutoConfiguration {
   }
 
   @Bean
-  public CacheManager cacheManager() {
+  CacheManager cacheManager() {
     return new ConcurrentMapCacheManager();
   }
 }

@@ -13,7 +13,6 @@ import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
 final class JacksonJsonConverter implements JsonConverter {
-
   private final ObjectMapper objectMapper;
 
   JacksonJsonConverter(ObjectMapper objectMapper) {
