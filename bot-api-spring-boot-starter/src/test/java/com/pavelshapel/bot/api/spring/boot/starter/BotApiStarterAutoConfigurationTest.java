@@ -27,9 +27,7 @@ class BotApiStarterAutoConfigurationTest {
     }
 
     @Override
-    public Void apply(WorkerContext payload) {
-      return null;
-    }
+    public void doWork(WorkerContext payload) {}
 
     @Override
     protected boolean isApplicable(WorkerContext payload) {

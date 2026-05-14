@@ -6,7 +6,7 @@ import java.util.List;
 
 final class WorkersProcessor extends OrderedComponentsProcessor<WorkerContext, Void, Worker> {
 
-  WorkersProcessor(List<Worker> components) {
-    super(components);
+  WorkersProcessor(List<Worker> workers) {
+    super(workers);
   }
 }

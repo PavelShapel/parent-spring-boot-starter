@@ -6,8 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class PayloadConsumer<P, C extends PayloadConverter<P>> implements LoggerProvider {
   @Autowired private WorkersProcessor workersProcessor;
-  @Autowired private C payloadConverter;
-  @Autowired private Logger logger;
+
+  private final C payloadConverter;
+  private final Logger logger;
+
+  protected PayloadConsumer(C payloadConverter, Logger logger) {
+    this.payloadConverter = payloadConverter;
+    this.logger = logger;
+  }
 
   protected final void consumeRawPayload(P payload) {
     executeAndLog(
