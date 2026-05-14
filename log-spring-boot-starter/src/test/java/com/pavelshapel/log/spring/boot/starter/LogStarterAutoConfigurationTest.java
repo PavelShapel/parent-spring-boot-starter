@@ -52,7 +52,9 @@ class LogStarterAutoConfigurationTest {
 
   @Test
   void shouldLoadLoggerBeanIntoContext() {
-    assertThat(applicationContext.containsBean("logger")).isTrue();
+    boolean result = applicationContext.containsBean("logger");
+
+    assertThat(result).isTrue();
   }
 
   @Test

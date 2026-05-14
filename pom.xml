@@ -50,6 +50,7 @@
     <module>ordered-spring-boot-starter</module>
     <module>bot-api-spring-boot-starter</module>
     <module>bot-telegram-spring-boot-starter</module>
+    <module>i18n-spring-boot-starter</module>
   </modules>
 
   <dependencyManagement>

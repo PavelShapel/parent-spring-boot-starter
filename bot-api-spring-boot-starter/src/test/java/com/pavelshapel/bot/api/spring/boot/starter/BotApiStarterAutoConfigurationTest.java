@@ -65,7 +65,9 @@ class BotApiStarterAutoConfigurationTest {
 
   @Test
   void shouldLoadWorkersProcessorBeanIntoContext() {
-    assertThat(applicationContext.containsBean("workersProcessor")).isTrue();
+    boolean result = applicationContext.containsBean("workersProcessor");
+
+    assertThat(result).isTrue();
   }
 
   @Test
@@ -84,7 +86,7 @@ class BotApiStarterAutoConfigurationTest {
   }
 
   @Test
-  void shouldHaveCacheManagerBeanWithSingletonScope() {
+  void shouldHaveWorkersProcessorBeanWithSingletonScope() {
     assertThat(applicationContext.isSingleton("workersProcessor")).isTrue();
   }
 }

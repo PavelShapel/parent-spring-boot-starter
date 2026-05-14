@@ -12,12 +12,13 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(classes = CacheStarterAutoConfiguration.class)
 @ActiveProfiles("default")
 class CacheStarterAutoConfigurationTest {
-
   @Autowired private ApplicationContext applicationContext;
 
   @Test
   void shouldLoadCacheManagerBeanIntoContext() {
-    assertThat(applicationContext.containsBean("cacheManager")).isTrue();
+    boolean result = applicationContext.containsBean("cacheManager");
+
+    assertThat(result).isTrue();
   }
 
   @Test
