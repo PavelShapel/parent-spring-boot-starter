@@ -7,15 +7,15 @@ public final class ContextRegistry {
   private final Map<String, Context> contexts = new HashMap<>();
 
   public void add(Context context) {
-    contexts.put(getKey(context), context);
+    contexts.put(getKey(context.getClass()), context);
   }
 
   @SuppressWarnings("unchecked")
-  public <C extends Context> C get(String key) {
-    return (C) contexts.get(key);
+  public <C extends Context> C get(Class<C> contextClass) {
+    return (C) contexts.get(getKey(contextClass));
   }
 
-  private static String getKey(Context context) {
-    return context.getClass().getSimpleName();
+  private static <C extends Context> String getKey(Class<C> contextClass) {
+    return contextClass.getSimpleName();
   }
 }

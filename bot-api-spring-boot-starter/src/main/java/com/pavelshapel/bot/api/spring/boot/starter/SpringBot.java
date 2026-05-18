@@ -1,10 +1,14 @@
 package com.pavelshapel.bot.api.spring.boot.starter;
 
-public abstract class SpringBot<P, C extends PayloadConverter<P>> {
-  private final PayloadConsumer<P, C> payloadConsumer;
+public abstract class SpringBot<
+    P,
+    C extends
+        PayloadConsumer<
+                P, ? extends ContextExtractorsProcessor<P, ? extends ContextExtractor<P>>>> {
+  private final C payloadConsumer;
   private final BotProperties botProperties;
 
-  protected SpringBot(PayloadConsumer<P, C> payloadConsumer, BotProperties botProperties) {
+  protected SpringBot(C payloadConsumer, BotProperties botProperties) {
     this.payloadConsumer = payloadConsumer;
     this.botProperties = botProperties;
   }
@@ -17,7 +21,7 @@ public abstract class SpringBot<P, C extends PayloadConverter<P>> {
     return botProperties.token();
   }
 
-  protected final PayloadConsumer<P, C> getPayloadConsumer() {
+  protected final C getPayloadConsumer() {
     return payloadConsumer;
   }
 }

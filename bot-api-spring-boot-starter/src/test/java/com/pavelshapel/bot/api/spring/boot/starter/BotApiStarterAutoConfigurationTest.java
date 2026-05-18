@@ -2,7 +2,7 @@ package com.pavelshapel.bot.api.spring.boot.starter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.pavelshapel.bot.api.spring.boot.starter.model.context.WorkerContext;
+import com.pavelshapel.bot.api.spring.boot.starter.model.context.ContextRegistry;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,10 +27,10 @@ class BotApiStarterAutoConfigurationTest {
     }
 
     @Override
-    public void doWork(WorkerContext payload) {}
+    public void doWork(ContextRegistry payload) {}
 
     @Override
-    protected boolean isApplicable(WorkerContext payload) {
+    protected boolean isApplicable(ContextRegistry payload) {
       return isApplicable;
     }
 
