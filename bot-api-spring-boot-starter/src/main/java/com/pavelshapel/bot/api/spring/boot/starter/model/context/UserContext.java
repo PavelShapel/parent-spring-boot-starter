@@ -1,4 +1,4 @@
-package com.pavelshapel.bot.api.spring.boot.starter.model.context.worker.nested;
+package com.pavelshapel.bot.api.spring.boot.starter.model.context;
 
 public record UserContext(
     Long id,
@@ -9,4 +9,4 @@ public record UserContext(
     String email,
     String languageCode,
     Boolean isPremium)
-    implements NestedWorkerContext {}
+    implements Context {}
