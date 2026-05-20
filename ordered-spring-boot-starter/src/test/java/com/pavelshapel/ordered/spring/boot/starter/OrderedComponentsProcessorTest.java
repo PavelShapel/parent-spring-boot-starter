@@ -1,6 +1,7 @@
 package com.pavelshapel.ordered.spring.boot.starter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -106,5 +107,30 @@ class OrderedComponentsProcessorTest {
     List<String> result = inProcessingOrderProcessor.apply("testPayload");
 
     assertThat(result).containsExactly("testPayload3", "testPayload1");
+  }
+
+  @Test
+  void shouldReturnSingleComponentWhenPredicateMatchesOnlyOne() {
+    TestOrderedComponent result =
+        inDefinedOrderProcessor.getSingle("testPayload", component -> component.getOrder() == 1);
+
+    assertThat(result).isInstanceOf(ApplicableTestOrderedComponent1.class);
+  }
+
+  @Test
+  void shouldThrowWhenMultipleApplicableComponentsPresent() {
+    assertThatThrownBy(() -> inDefinedOrderProcessor.getSingle("testPayload"))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Expected exactly 1 element");
+  }
+
+  @Test
+  void shouldThrowWhenNoComponentMatchesPredicate() {
+    assertThatThrownBy(
+            () ->
+                inDefinedOrderProcessor.getSingle(
+                    "testPayload", component -> component.getOrder() == 99))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Expected exactly 1 element");
   }
 }
