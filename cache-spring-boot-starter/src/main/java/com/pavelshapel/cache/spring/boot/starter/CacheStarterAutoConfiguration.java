@@ -3,6 +3,7 @@ package com.pavelshapel.cache.spring.boot.starter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -20,6 +21,7 @@ final class CacheStarterAutoConfiguration {
   }
 
   @Bean
+  @ConditionalOnMissingBean
   CacheManager cacheManager() {
     return new ConcurrentMapCacheManager();
   }
