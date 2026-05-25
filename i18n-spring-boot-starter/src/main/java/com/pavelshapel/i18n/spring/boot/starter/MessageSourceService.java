@@ -1,6 +1,9 @@
 package com.pavelshapel.i18n.spring.boot.starter;
 
+import static java.util.Locale.ENGLISH;
+
 import java.util.Locale;
+import java.util.Optional;
 import org.springframework.context.MessageSource;
 
 public abstract class MessageSourceService<P> {
@@ -10,9 +13,17 @@ public abstract class MessageSourceService<P> {
     this.messageSource = messageSource;
   }
 
-  protected final String get(P payload, String code, Object... args) {
+  public final String get(P payload, String code, Object... args) {
     return messageSource.getMessage(code, args, getLocale(payload));
   }
 
+  public final String get(String languageCode, String code, Object... args) {
+    return messageSource.getMessage(code, args, getLocale(languageCode));
+  }
+
   protected abstract Locale getLocale(P payload);
+
+  private static Locale getLocale(String languageCode) {
+    return Optional.ofNullable(languageCode).map(Locale::forLanguageTag).orElse(ENGLISH);
+  }
 }
