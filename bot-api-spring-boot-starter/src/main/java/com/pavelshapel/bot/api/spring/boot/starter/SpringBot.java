@@ -1,5 +1,7 @@
 package com.pavelshapel.bot.api.spring.boot.starter;
 
+import com.pavelshapel.bot.api.spring.boot.starter.properties.BotProperties;
+
 public abstract class SpringBot<
     P,
     C extends

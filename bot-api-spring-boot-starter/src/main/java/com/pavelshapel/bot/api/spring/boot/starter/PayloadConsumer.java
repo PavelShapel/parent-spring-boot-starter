@@ -2,25 +2,32 @@ package com.pavelshapel.bot.api.spring.boot.starter;
 
 import com.pavelshapel.log.spring.boot.starter.LoggerProvider;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.transaction.support.TransactionTemplate;
 
 public abstract class PayloadConsumer<
         P, E extends ContextExtractorsProcessor<P, ? extends ContextExtractor<P>>>
     implements LoggerProvider {
-  @Autowired private WorkersProcessor workersProcessor;
-
+  private final TransactionTemplate transactionTemplate;
+  private final ApplicationEventPublisher events;
   private final E contextExtractorsProcessor;
   private final Logger logger;
 
-  protected PayloadConsumer(E contextExtractorsProcessor, Logger logger) {
+  protected PayloadConsumer(
+      TransactionTemplate transactionTemplate,
+      ApplicationEventPublisher events,
+      E contextExtractorsProcessor,
+      Logger logger) {
+    this.transactionTemplate = transactionTemplate;
+    this.events = events;
     this.contextExtractorsProcessor = contextExtractorsProcessor;
     this.logger = logger;
   }
 
-  protected final void consumeRawPayload(P payload) {
-    executeAndLog(
-        "Proxying payload [%s]".formatted(payload.getClass().getSimpleName()),
-        () -> workersProcessor.apply(contextExtractorsProcessor.getContextRegistry(payload)));
+  protected final void consumeRawPayload(P payload, String payloadId) {
+    logger.info("Consuming payload with id: [{}]", payloadId);
+    transactionTemplate.executeWithoutResult(
+        _ -> events.publishEvent(contextExtractorsProcessor.getContextRegistry(payload)));
   }
 
   @Override
