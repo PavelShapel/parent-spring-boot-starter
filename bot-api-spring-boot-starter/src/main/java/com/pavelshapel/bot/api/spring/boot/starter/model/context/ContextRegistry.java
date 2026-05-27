@@ -3,8 +3,9 @@ package com.pavelshapel.bot.api.spring.boot.starter.model.context;
 import java.util.HashMap;
 
 public record ContextRegistry(HashMap<String, Context> contexts) {
-  public void add(Context context) {
+  public ContextRegistry add(Context context) {
     contexts.put(getKey(context.getClass()), context);
+    return this;
   }
 
   @SuppressWarnings("unchecked")
