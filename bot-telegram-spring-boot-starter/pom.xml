@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.pavelshapel</groupId>
+    <artifactId>parent-spring-boot-starter</artifactId>
+    <version>1.0.0</version>
+  </parent>
+
+  <artifactId>bot-telegram-spring-boot-starter</artifactId>
+
+  <properties>
+    <telegrambots.version>9.5.0</telegrambots.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.pavelshapel</groupId>
+      <artifactId>bot-api-spring-boot-starter</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.telegram</groupId>
+      <artifactId>telegrambots-client</artifactId>
+      <version>${telegrambots.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.telegram</groupId>
+      <artifactId>telegrambots-springboot-longpolling-starter</artifactId>
+      <version>${telegrambots.version}</version>
+    </dependency>
+  </dependencies>
+</project>

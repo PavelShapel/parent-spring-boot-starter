@@ -29,7 +29,7 @@ public abstract class Listener<C extends ClientService<?>>
     clientService.sendMessage(contextRegistry);
   }
 
-  protected final void editMessage(ContextRegistry contextRegistry, String text) {
+  protected final void editMessage(ContextRegistry contextRegistry) {
     clientService.editMessage(contextRegistry);
   }
 
