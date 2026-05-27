@@ -13,12 +13,12 @@ public abstract class MessageSourceService<P> {
     this.messageSource = messageSource;
   }
 
-  public final String get(P payload, String code, Object... args) {
-    return messageSource.getMessage(code, args, getLocale(payload));
+  public final String get(P payload, String key, Object... args) {
+    return messageSource.getMessage(key, args, getLocale(payload));
   }
 
-  public final String get(String languageCode, String code, Object... args) {
-    return messageSource.getMessage(code, args, getLocale(languageCode));
+  public final String get(String languageCode, String key, Object... args) {
+    return messageSource.getMessage(key, args, getLocale(languageCode));
   }
 
   protected abstract Locale getLocale(P payload);
