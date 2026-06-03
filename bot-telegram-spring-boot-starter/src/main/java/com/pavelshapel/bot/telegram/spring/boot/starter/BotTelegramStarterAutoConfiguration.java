@@ -2,7 +2,9 @@ package com.pavelshapel.bot.telegram.spring.boot.starter;
 
 import com.pavelshapel.bot.api.spring.boot.starter.BotMessageSourceService;
 import com.pavelshapel.bot.api.spring.boot.starter.properties.BotProperties;
+import com.pavelshapel.bot.api.spring.boot.starter.properties.Client;
 import java.util.List;
+import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -32,9 +34,20 @@ final class BotTelegramStarterAutoConfiguration {
   }
 
   @Bean
+  public OkHttpClient okHttpClient(BotProperties botProperties) {
+    Client client = botProperties.client();
+    return new OkHttpClient.Builder()
+        .connectTimeout(client.connectTimeout())
+        .writeTimeout(client.writeTimeout())
+        .readTimeout(client.readTimeout())
+        .retryOnConnectionFailure(client.retryOnConnectionFailure())
+        .build();
+  }
+
+  @Bean
   @ConditionalOnMissingBean
-  TelegramClient telegramClient(BotProperties botProperties) {
-    return new OkHttpTelegramClient(botProperties.token());
+  TelegramClient telegramClient(OkHttpClient okHttpClient, BotProperties botProperties) {
+    return new OkHttpTelegramClient(okHttpClient, botProperties.token());
   }
 
   @Bean
