@@ -41,7 +41,5 @@ public abstract class Listener<C extends ClientService<?>>
     events.publishEvent(contextRegistry);
   }
 
-  public boolean isApplicable(ContextRegistry contextRegistry) {
-    return true;
-  }
+  public abstract boolean isApplicable(ContextRegistry contextRegistry);
 }

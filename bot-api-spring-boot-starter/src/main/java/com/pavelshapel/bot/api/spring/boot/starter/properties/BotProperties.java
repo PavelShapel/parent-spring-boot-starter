@@ -7,4 +7,5 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 public record BotProperties(
     @DefaultValue("${BOT_NAME}") String name,
     @DefaultValue("${BOT_TOKEN}") String token,
+    Client client,
     LocalizedCommands localizedCommands) {}
