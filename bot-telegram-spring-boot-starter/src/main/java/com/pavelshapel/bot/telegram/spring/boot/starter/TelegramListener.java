@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 
 public abstract class TelegramListener extends Listener<TelegramClientService> {
-
   protected TelegramListener(
       TelegramClientService clientService, ApplicationEventPublisher events, Logger logger) {
     super(clientService, events, logger);
@@ -18,5 +17,10 @@ public abstract class TelegramListener extends Listener<TelegramClientService> {
         .get(MessageContext.class)
         .message()
         .startsWith(getClass().getSimpleName());
+  }
+
+  @Override
+  public boolean isApplicable(ContextRegistry contextRegistry) {
+    return isMessageStartsWithThisClassName(contextRegistry);
   }
 }
