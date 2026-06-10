@@ -1,4 +1,4 @@
-package com.pavelshapel.log.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.log;
 
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 

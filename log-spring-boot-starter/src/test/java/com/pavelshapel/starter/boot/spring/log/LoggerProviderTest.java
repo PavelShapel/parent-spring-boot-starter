@@ -1,4 +1,4 @@
-package com.pavelshapel.log.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.log;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
