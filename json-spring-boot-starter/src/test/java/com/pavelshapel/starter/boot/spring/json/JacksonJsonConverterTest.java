@@ -1,4 +1,4 @@
-package com.pavelshapel.json.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.json;
 
 import static java.util.Collections.singleton;
 import static org.assertj.core.api.Assertions.assertThat;

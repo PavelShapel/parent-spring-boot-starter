@@ -1,4 +1,4 @@
-package com.pavelshapel.json.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.json;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
