@@ -17,4 +17,13 @@ public interface LoggerProvider {
     getLogger().info("[←] completed in [{}] ms. {}", executionTime, message);
     return result;
   }
+
+  default void executeAndLog(String message, Runnable runnable) {
+    executeAndLog(
+        message,
+        () -> {
+          runnable.run();
+          return Void.TYPE;
+        });
+  }
 }
