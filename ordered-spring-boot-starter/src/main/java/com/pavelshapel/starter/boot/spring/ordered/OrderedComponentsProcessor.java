@@ -1,4 +1,4 @@
-package com.pavelshapel.ordered.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.ordered;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.collectingAndThen;

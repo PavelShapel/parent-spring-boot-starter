@@ -35,7 +35,7 @@ class ZoneTest {
   void shouldThrowWhenIdIsInvalid(String id) {
     assertThrows(
         IllegalArgumentException.class,
-        () -> new Zone(/* id= */ "", /* region= */ "", /* city= */ ""),
+        () -> new Zone(/* id= */ id, /* region= */ "", /* city= */ ""),
         "Id must not be empty");
   }
 

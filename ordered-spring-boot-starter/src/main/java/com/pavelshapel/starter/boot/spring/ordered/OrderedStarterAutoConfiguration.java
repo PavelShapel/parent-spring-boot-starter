@@ -1,4 +1,4 @@
-package com.pavelshapel.ordered.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.ordered;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

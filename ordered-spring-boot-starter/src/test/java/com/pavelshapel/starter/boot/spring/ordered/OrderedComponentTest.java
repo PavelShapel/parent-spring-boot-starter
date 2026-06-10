@@ -1,4 +1,4 @@
-package com.pavelshapel.ordered.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.ordered;
 
 import static java.lang.Integer.MAX_VALUE;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,4 +1,4 @@
-package com.pavelshapel.ordered.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.ordered;
 
 import java.util.function.Function;
 import org.springframework.core.Ordered;
