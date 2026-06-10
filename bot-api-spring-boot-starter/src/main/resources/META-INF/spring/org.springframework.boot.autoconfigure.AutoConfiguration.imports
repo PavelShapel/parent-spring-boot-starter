@@ -1,1 +1,1 @@
-com.pavelshapel.bot.api.spring.boot.starter.BotApiStarterAutoConfiguration
+com.pavelshapel.starter.boot.spring.bot.api.BotApiStarterAutoConfiguration
