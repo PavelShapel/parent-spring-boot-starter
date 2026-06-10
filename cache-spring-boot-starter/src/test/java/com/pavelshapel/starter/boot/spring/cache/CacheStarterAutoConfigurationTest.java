@@ -1,4 +1,4 @@
-package com.pavelshapel.cache.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

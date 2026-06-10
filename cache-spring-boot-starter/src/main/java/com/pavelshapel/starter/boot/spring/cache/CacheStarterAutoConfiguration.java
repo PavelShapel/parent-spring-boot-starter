@@ -1,4 +1,4 @@
-package com.pavelshapel.cache.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.cache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
