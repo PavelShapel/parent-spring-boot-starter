@@ -8,10 +8,13 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
 
-public abstract class ClientService<R> implements LoggerProvider {
+public abstract class ClientService<R, K, F extends KeyboardFactory<?, ?, ?, K>>
+    implements LoggerProvider {
+  private final F keyboardFactory;
   private final Logger logger;
 
-  protected ClientService(Logger logger) {
+  protected ClientService(F keyboardFactory, Logger logger) {
+    this.keyboardFactory = keyboardFactory;
     this.logger = logger;
   }
 
@@ -39,12 +42,16 @@ public abstract class ClientService<R> implements LoggerProvider {
         request);
   }
 
-  public void execute(String message, R request) {
+  public final void execute(String message, R request) {
     executeAndLog(
         Optional.ofNullable(message)
             .filter(StringUtils::hasText)
             .orElse("Send [%s] request".formatted(request.getClass().getSimpleName())),
         () -> execute(request));
+  }
+
+  protected final K buildKeyboard(ContextRegistry contextRegistry) {
+    return keyboardFactory.apply(contextRegistry);
   }
 
   protected abstract void execute(R request);
