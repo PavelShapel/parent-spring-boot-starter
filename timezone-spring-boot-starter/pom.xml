@@ -10,5 +10,5 @@
     <version>1.0.0</version>
   </parent>
 
-  <artifactId>zone-spring-boot-starter</artifactId>
+  <artifactId>timezone-spring-boot-starter</artifactId>
 </project>

@@ -1,4 +1,4 @@
-package com.pavelshapel.starter.boot.spring.zone;
+package com.pavelshapel.starter.boot.spring.timezone;
 
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.collectingAndThen;
@@ -10,38 +10,38 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Predicate;
 
-public final class ZoneRegistry {
+public final class TimezoneRegistry {
   private static final String ETC_PREFIX = "Etc";
   private static final String SYSTEM_V_PREFIX = "SystemV";
 
-  private final Map<String, Set<Zone>> zones;
+  private final Map<String, Set<Timezone>> timezones;
 
-  ZoneRegistry() {
-    this.zones =
+  TimezoneRegistry() {
+    this.timezones =
         ZoneId.getAvailableZoneIds().stream()
             .filter(isContainingSlash())
             .filter(isNotStartingWith(ETC_PREFIX))
             .filter(isNotStartingWith(SYSTEM_V_PREFIX))
-            .map(Zone::new)
+            .map(Timezone::new)
             .collect(
                 groupingBy(
-                    Zone::region,
+                    Timezone::region,
                     TreeMap::new,
                     collectingAndThen(
                         toCollection(TreeSet::new), Collections::unmodifiableNavigableSet)));
   }
 
-  public TreeSet<Zone> getZoneIdsByRegion(String region) {
-    return new TreeSet<>(zones.getOrDefault(region, emptySet()));
+  public TreeSet<Timezone> getZoneIdsByRegion(String region) {
+    return new TreeSet<>(timezones.getOrDefault(region, emptySet()));
   }
 
   public TreeSet<String> searchZoneIds(String query) {
     if (!hasText(query)) {
       return new TreeSet<>();
     }
-    return zones.values().stream()
+    return timezones.values().stream()
         .flatMap(Collection::stream)
-        .map(Zone::id)
+        .map(Timezone::id)
         .filter(zoneId -> zoneId.toLowerCase().contains(query.toLowerCase()))
         .collect(toCollection(TreeSet::new));
   }

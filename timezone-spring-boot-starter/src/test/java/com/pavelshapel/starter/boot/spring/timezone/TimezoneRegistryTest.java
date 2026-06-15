@@ -1,4 +1,4 @@
-package com.pavelshapel.starter.boot.spring.zone;
+package com.pavelshapel.starter.boot.spring.timezone;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,19 +7,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-class ZoneRegistryTest {
-  private final ZoneRegistry registry = new ZoneRegistry();
+class TimezoneRegistryTest {
+  private final TimezoneRegistry registry = new TimezoneRegistry();
 
   @Test
   void shouldReturnEmptyForUnknownRegion() {
-    TreeSet<Zone> result = registry.getZoneIdsByRegion("NO_SUCH_REGION");
+    TreeSet<Timezone> result = registry.getZoneIdsByRegion("NO_SUCH_REGION");
 
     assertThat(result).isEmpty();
   }
 
   @Test
   void shouldContainKnownZoneForDerivedRegion() {
-    TreeSet<Zone> result = registry.getZoneIdsByRegion("Europe");
+    TreeSet<Timezone> result = registry.getZoneIdsByRegion("Europe");
 
     assertThat(result).isNotEmpty();
   }

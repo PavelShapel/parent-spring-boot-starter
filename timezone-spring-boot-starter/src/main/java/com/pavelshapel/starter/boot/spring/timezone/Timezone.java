@@ -1,24 +1,26 @@
-package com.pavelshapel.starter.boot.spring.zone;
+package com.pavelshapel.starter.boot.spring.timezone;
 
 import static org.springframework.util.StringUtils.hasText;
 
 import java.util.Comparator;
 import org.jspecify.annotations.NonNull;
 
-public record Zone(String id, String region, String city) implements Comparable<Zone> {
-  public Zone {
+public record Timezone(String id, String region, String city) implements Comparable<Timezone> {
+  public Timezone {
     if (!hasText(id)) {
       throw new IllegalArgumentException("Id must not be empty");
     }
   }
 
-  public Zone(String id) {
+  public Timezone(String id) {
     this(id, getRegion(id), getCity(id));
   }
 
   @Override
-  public int compareTo(@NonNull Zone other) {
-    return Comparator.comparing(Zone::region).thenComparing(Zone::city).compare(this, other);
+  public int compareTo(@NonNull Timezone other) {
+    return Comparator.comparing(Timezone::region)
+        .thenComparing(Timezone::city)
+        .compare(this, other);
   }
 
   private static String getRegion(String id) {

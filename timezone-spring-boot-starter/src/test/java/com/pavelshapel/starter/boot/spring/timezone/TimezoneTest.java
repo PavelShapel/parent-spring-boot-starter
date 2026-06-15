@@ -1,4 +1,4 @@
-package com.pavelshapel.starter.boot.spring.zone;
+package com.pavelshapel.starter.boot.spring.timezone;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,12 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-class ZoneTest {
+class TimezoneTest {
   @Test
   void shouldParseRegionAndCity() {
-    Zone zone = new Zone(/* id= */ "Europe/Moscow");
+    Timezone timezone = new Timezone(/* id= */ "Europe/Moscow");
 
-    assertThat(zone)
+    assertThat(timezone)
         .hasFieldOrPropertyWithValue("id", "Europe/Moscow")
         .hasFieldOrPropertyWithValue("region", "Europe")
         .hasFieldOrPropertyWithValue("city", "Moscow");
@@ -20,9 +20,9 @@ class ZoneTest {
 
   @Test
   void shouldSortByRegionThenCity() {
-    Zone tokyo = new Zone(/* id= */ "Asia/Tokyo");
-    Zone zurich = new Zone(/* id= */ "Europe/Zurich");
-    Zone amsterdam = new Zone(/* id= */ "Europe/Amsterdam");
+    Timezone tokyo = new Timezone(/* id= */ "Asia/Tokyo");
+    Timezone zurich = new Timezone(/* id= */ "Europe/Zurich");
+    Timezone amsterdam = new Timezone(/* id= */ "Europe/Amsterdam");
 
     // Region comparison: Asia < Europe
     assertThat(tokyo.compareTo(zurich)).isLessThan(0);
@@ -35,15 +35,15 @@ class ZoneTest {
   void shouldThrowWhenIdIsInvalid(String id) {
     assertThrows(
         IllegalArgumentException.class,
-        () -> new Zone(/* id= */ id, /* region= */ "", /* city= */ ""),
+        () -> new Timezone(/* id= */ id, /* region= */ "", /* city= */ ""),
         "Id must not be empty");
   }
 
   @Test
   void shouldParseRegionOnlyWhenNoSlash() {
-    Zone zone = new Zone(/* id= */ "UTC");
+    Timezone timezone = new Timezone(/* id= */ "UTC");
 
-    assertThat(zone)
+    assertThat(timezone)
         .hasFieldOrPropertyWithValue("id", "UTC")
         .hasFieldOrPropertyWithValue("region", "UTC")
         .hasFieldOrPropertyWithValue("city", null);
@@ -51,9 +51,9 @@ class ZoneTest {
 
   @Test
   void shouldParseMultipleSeparators() {
-    Zone zone = new Zone(/* id= */ "Europe/London/Extra");
+    Timezone timezone = new Timezone(/* id= */ "Europe/London/Extra");
 
-    assertThat(zone)
+    assertThat(timezone)
         .hasFieldOrPropertyWithValue("id", "Europe/London/Extra")
         .hasFieldOrPropertyWithValue("region", "Europe")
         .hasFieldOrPropertyWithValue("city", "London/Extra");
@@ -61,9 +61,10 @@ class ZoneTest {
 
   @Test
   void shouldCreateWithExplicitAllArguments() {
-    Zone zone = new Zone(/* id= */ "Asia/Tokyo", /* region= */ "Asia", /* city= */ "Tokyo");
+    Timezone timezone =
+        new Timezone(/* id= */ "Asia/Tokyo", /* region= */ "Asia", /* city= */ "Tokyo");
 
-    assertThat(zone)
+    assertThat(timezone)
         .hasFieldOrPropertyWithValue("id", "Asia/Tokyo")
         .hasFieldOrPropertyWithValue("region", "Asia")
         .hasFieldOrPropertyWithValue("city", "Tokyo");
@@ -71,9 +72,9 @@ class ZoneTest {
 
   @Test
   void shouldReturnZeroForEqualZones() {
-    Zone zone1 = new Zone(/* id= */ "Europe/Moscow");
-    Zone zone2 = new Zone(/* id= */ "Europe/Moscow");
+    Timezone timezone1 = new Timezone(/* id= */ "Europe/Moscow");
+    Timezone timezone2 = new Timezone(/* id= */ "Europe/Moscow");
 
-    assertThat(zone1.compareTo(zone2)).isZero();
+    assertThat(timezone1.compareTo(timezone2)).isZero();
   }
 }

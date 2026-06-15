@@ -5,6 +5,7 @@ import static java.util.Locale.ENGLISH;
 import java.util.Locale;
 import java.util.Optional;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 public abstract class MessageSourceService<P> {
   private final MessageSource messageSource;
@@ -19,6 +20,10 @@ public abstract class MessageSourceService<P> {
 
   public final String get(String languageCode, String key, Object... args) {
     return messageSource.getMessage(key, args, getLocale(languageCode));
+  }
+
+  public final String get(String key, Object... args) {
+    return messageSource.getMessage(key, args, LocaleContextHolder.getLocale());
   }
 
   protected abstract Locale getLocale(P payload);
