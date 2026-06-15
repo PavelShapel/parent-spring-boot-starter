@@ -5,7 +5,8 @@ import com.pavelshapel.starter.boot.spring.bot.api.properties.LocalizedCommands;
 import com.pavelshapel.starter.boot.spring.log.LoggerProvider;
 import org.slf4j.Logger;
 
-public abstract class CommandRegistrar<R, C extends ClientService<R>> implements LoggerProvider {
+public abstract class CommandRegistrar<R, C extends ClientService<R, ?, ?>>
+    implements LoggerProvider {
   private final BotProperties botProperties;
   private final C clientService;
   private final BotMessageSourceService botMessageSourceService;
