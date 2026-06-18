@@ -2,12 +2,12 @@ package com.pavelshapel.starter.boot.spring.bot.api;
 
 import com.pavelshapel.starter.boot.spring.bot.api.model.KeyboardButton;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.ContextRegistry;
-import com.pavelshapel.starter.boot.spring.bot.api.model.context.ListenerContext;
 import com.pavelshapel.starter.boot.spring.ordered.OrderedComponent;
-import java.util.Set;
 
 public abstract class KeyboardButtonFactory<T extends KeyboardButton>
     extends OrderedComponent<ContextRegistry, T> {
+  protected static final String BOT = "🤖";
+  protected static final String SETTINGS = "⚙️";
   protected static final String MONEY_BAG = "💰";
   protected static final String TRIANGLE_UP = "🔼";
   protected static final String TRIANGLE_DOWN = "🔽";
@@ -36,16 +36,5 @@ public abstract class KeyboardButtonFactory<T extends KeyboardButton>
   protected final String getMessageFromSource(
       ContextRegistry contextRegistry, String key, Object... args) {
     return botMessageSourceService.get(contextRegistry, key, args);
-  }
-
-  @Override
-  protected final boolean isApplicable(ContextRegistry contextRegistry) {
-    return forListenerClassSimpleNames()
-            .contains(contextRegistry.get(ListenerContext.class).classSimpleName())
-        || forListenerClassSimpleNames().isEmpty();
-  }
-
-  protected Set<String> forListenerClassSimpleNames() {
-    return Set.of();
   }
 }
