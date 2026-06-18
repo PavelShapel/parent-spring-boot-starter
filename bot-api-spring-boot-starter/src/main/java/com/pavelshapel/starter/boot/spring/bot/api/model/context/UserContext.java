@@ -6,7 +6,6 @@ public record UserContext(
     String firstName,
     String lastName,
     String nickName,
-    String email,
     String languageCode,
     Boolean isPremium)
     implements Context {}
