@@ -3,7 +3,9 @@ package com.pavelshapel.starter.boot.spring.ordered;
 import java.util.function.Function;
 import org.springframework.core.Ordered;
 
-public abstract class OrderedComponent<P, R> implements Function<P, R>, Ordered {
+public abstract class OrderedComponent<PAYLOAD, RESULT>
+    implements Function<PAYLOAD, RESULT>, Ordered {
+  public static final int ZERO = 0;
   public static final int ONE = 1;
   public static final int TWO = 2;
   public static final int THREE = 3;
@@ -15,7 +17,7 @@ public abstract class OrderedComponent<P, R> implements Function<P, R>, Ordered 
   public static final int NINE = 9;
   public static final int TEN = 10;
 
-  protected boolean isApplicable(P payload) {
+  protected boolean isApplicable(PAYLOAD payload) {
     return true;
   }
 

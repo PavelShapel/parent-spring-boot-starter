@@ -12,13 +12,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-public abstract class OrderedComponentsProcessor<P, R, C extends OrderedComponent<P, R>>
-    implements Function<P, List<R>> {
-  private final List<C> components;
+public abstract class OrderedComponentsProcessor<
+        PAYLOAD, RESULT, COMPONENT extends OrderedComponent<PAYLOAD, RESULT>>
+    implements Function<PAYLOAD, List<RESULT>> {
+  private final List<COMPONENT> components;
 
-  private List<C> orderedComponents;
+  private List<COMPONENT> orderedComponents;
 
-  protected OrderedComponentsProcessor(List<C> components) {
+  protected OrderedComponentsProcessor(List<COMPONENT> components) {
     this.components = components;
   }
 
@@ -32,38 +33,38 @@ public abstract class OrderedComponentsProcessor<P, R, C extends OrderedComponen
   }
 
   @Override
-  public final List<R> apply(P payload) {
+  public final List<RESULT> apply(PAYLOAD payload) {
     return getApplicableComponentsStream(payload)
         .map(component -> component.apply(payload))
         .toList();
   }
 
-  public final C getSingle(P payload) {
+  public final COMPONENT getSingle(PAYLOAD payload) {
     return getSingle(payload, _ -> true);
   }
 
-  public final C getSingle(P payload, Predicate<C> predicate) {
+  public final COMPONENT getSingle(PAYLOAD payload, Predicate<COMPONENT> predicate) {
     return getApplicableComponentsStream(payload).filter(predicate).collect(toSingle());
   }
 
-  protected List<Class<? extends C>> getClassesInProcessingOrder() {
+  protected List<Class<? extends COMPONENT>> getClassesInProcessingOrder() {
     return components.stream()
-        .map(C::getClass)
-        .map(componentClass -> (Class<? extends C>) componentClass)
+        .map(COMPONENT::getClass)
+        .map(componentClass -> (Class<? extends COMPONENT>) componentClass)
         .collect(toList());
   }
 
-  private Stream<C> getApplicableComponentsStream(P payload) {
+  private Stream<COMPONENT> getApplicableComponentsStream(PAYLOAD payload) {
     return orderedComponents.stream().filter(component -> component.isApplicable(payload));
   }
 
-  private boolean isComponentPresentInProcessingOrder(C component) {
-    List<Class<? extends C>> classesInProcessingOrder = getClassesInProcessingOrder();
+  private boolean isComponentPresentInProcessingOrder(COMPONENT component) {
+    List<Class<? extends COMPONENT>> classesInProcessingOrder = getClassesInProcessingOrder();
     return !isEmpty(classesInProcessingOrder)
         && classesInProcessingOrder.contains(component.getClass());
   }
 
-  private int getProcessingOrder(C component) {
+  private int getProcessingOrder(COMPONENT component) {
     return getClassesInProcessingOrder().indexOf(component.getClass());
   }
 
