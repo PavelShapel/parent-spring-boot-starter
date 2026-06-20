@@ -31,6 +31,10 @@ public final class TimezoneRegistry {
                         toCollection(TreeSet::new), Collections::unmodifiableNavigableSet)));
   }
 
+  public TreeSet<String> getRegions() {
+    return new TreeSet<>(timezones.keySet());
+  }
+
   public TreeSet<Timezone> getZoneIdsByRegion(String region) {
     return new TreeSet<>(timezones.getOrDefault(region, emptySet()));
   }
