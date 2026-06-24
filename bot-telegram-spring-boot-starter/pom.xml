@@ -13,7 +13,7 @@
   <artifactId>bot-telegram-spring-boot-starter</artifactId>
 
   <properties>
-    <telegrambots.version>9.5.0</telegrambots.version>
+    <telegrambots.version>10.0.0</telegrambots.version>
   </properties>
 
   <dependencies>
