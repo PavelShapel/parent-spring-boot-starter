@@ -1,7 +1,7 @@
 package com.pavelshapel.starter.boot.spring.bot.api.service.replier;
 
-import com.pavelshapel.starter.boot.spring.bot.api.ClientService;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.ContextRegistry;
+import com.pavelshapel.starter.boot.spring.bot.api.service.ClientService;
 import com.pavelshapel.starter.boot.spring.ordered.OrderedComponent;
 
 public abstract class Replier<PAYLOAD, CLIENT extends ClientService<?, ?, ?>>
