@@ -1,30 +1,32 @@
-package com.pavelshapel.starter.boot.spring.bot.api;
+package com.pavelshapel.starter.boot.spring.bot.api.listener;
 
+import com.pavelshapel.starter.boot.spring.bot.api.BotMessageSourceService;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.ContextRegistry;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.ListenerContext;
-import com.pavelshapel.starter.boot.spring.bot.api.model.context.MessageContext;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.SocialContext;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.UserContext;
+import com.pavelshapel.starter.boot.spring.bot.api.replier.Replier;
+import com.pavelshapel.starter.boot.spring.bot.api.replier.RepliersProcessor;
 import com.pavelshapel.starter.boot.spring.log.LoggerProvider;
 import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 
-public abstract class Listener<C extends ClientService<?, ?, ?>>
+public abstract class Listener<REPLIERS_PROCESSOR extends RepliersProcessor<?, ?>>
     implements Consumer<ContextRegistry>, LoggerProvider {
   public static final String DOT_IS_APPLICABLE_SIGNATURE = ".isApplicable(#contextRegistry)";
 
-  private final C clientService;
+  private final REPLIERS_PROCESSOR repliersProcessor;
   private final ApplicationEventPublisher events;
   private final BotMessageSourceService botMessageSourceService;
   private final Logger logger;
 
   protected Listener(
-      C clientService,
+      REPLIERS_PROCESSOR repliersProcessor,
       ApplicationEventPublisher events,
       BotMessageSourceService botMessageSourceService,
       Logger logger) {
-    this.clientService = clientService;
+    this.repliersProcessor = repliersProcessor;
     this.events = events;
     this.botMessageSourceService = botMessageSourceService;
     this.logger = logger;
@@ -35,16 +37,12 @@ public abstract class Listener<C extends ClientService<?, ?, ?>>
     return logger;
   }
 
-  protected final void sendMessage(ContextRegistry contextRegistry) {
-    clientService.sendMessage(contextRegistry);
-  }
-
-  protected final void editMessage(ContextRegistry contextRegistry) {
-    clientService.editMessage(contextRegistry);
+  protected final void replyToMessage(ContextRegistry contextRegistry) {
+    getReplierByName(contextRegistry).reply(contextRegistry);
   }
 
   protected final void deleteMessage(ContextRegistry contextRegistry) {
-    clientService.deleteMessage(contextRegistry);
+    getReplierByName(contextRegistry).delete(contextRegistry);
   }
 
   protected final void publishEvent(ContextRegistry contextRegistry) {
@@ -62,7 +60,7 @@ public abstract class Listener<C extends ClientService<?, ?, ?>>
         "[%s] received message [%s] from user with socialId [%d], socialType [%s]"
             .formatted(
                 getClass().getSimpleName(),
-                contextRegistry.get(MessageContext.class).message(),
+                contextRegistry.getMessageText(),
                 contextRegistry.get(UserContext.class).socialId(),
                 contextRegistry.get(SocialContext.class).type()),
         () -> execute(contextRegistry));
@@ -73,8 +71,13 @@ public abstract class Listener<C extends ClientService<?, ?, ?>>
   }
 
   protected final boolean isMessageContainsThisClassName(ContextRegistry contextRegistry) {
-    return contextRegistry.get(MessageContext.class).message().contains(getClass().getSimpleName());
+    return contextRegistry.getMessageText().contains(getClass().getSimpleName());
   }
 
   protected abstract void execute(ContextRegistry contextRegistry);
+
+  private Replier<?, ?> getReplierByName(ContextRegistry contextRegistry) {
+    return repliersProcessor.getReplierByName(
+        contextRegistry.get(SocialContext.class).replierSimpleName());
+  }
 }
