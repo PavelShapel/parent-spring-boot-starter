@@ -1,22 +1,26 @@
 package com.pavelshapel.starter.boot.spring.bot.api;
 
+import com.pavelshapel.starter.boot.spring.bot.api.service.extractor.ContextExtractor;
+import com.pavelshapel.starter.boot.spring.bot.api.service.extractor.ContextExtractorsProcessor;
 import com.pavelshapel.starter.boot.spring.log.LoggerProvider;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.support.TransactionTemplate;
 
 public abstract class PayloadConsumer<
-        P, E extends ContextExtractorsProcessor<P, ? extends ContextExtractor<P>>>
+        PAYLOAD,
+        EXTRACTORS_PROCESSOR extends
+            ContextExtractorsProcessor<PAYLOAD, ? extends ContextExtractor<PAYLOAD>>>
     implements LoggerProvider {
   private final TransactionTemplate transactionTemplate;
   private final ApplicationEventPublisher events;
-  private final E contextExtractorsProcessor;
+  private final EXTRACTORS_PROCESSOR contextExtractorsProcessor;
   private final Logger logger;
 
   protected PayloadConsumer(
       TransactionTemplate transactionTemplate,
       ApplicationEventPublisher events,
-      E contextExtractorsProcessor,
+      EXTRACTORS_PROCESSOR contextExtractorsProcessor,
       Logger logger) {
     this.transactionTemplate = transactionTemplate;
     this.events = events;
@@ -24,8 +28,8 @@ public abstract class PayloadConsumer<
     this.logger = logger;
   }
 
-  protected final void consumeRawPayload(P payload, String payloadId) {
-    logger.info("Consuming payload with id: [{}]", payloadId);
+  protected final void consumeRawPayload(PAYLOAD payload, String payloadId) {
+    logger.info("Consuming [{}] with id: [{}]", payload.getClass().getSimpleName(), payloadId);
     transactionTemplate.executeWithoutResult(
         _ -> events.publishEvent(contextExtractorsProcessor.getContextRegistry(payload)));
   }

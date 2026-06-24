@@ -1,16 +1,20 @@
 package com.pavelshapel.starter.boot.spring.bot.api;
 
 import com.pavelshapel.starter.boot.spring.bot.api.properties.BotProperties;
+import com.pavelshapel.starter.boot.spring.bot.api.service.extractor.ContextExtractor;
+import com.pavelshapel.starter.boot.spring.bot.api.service.extractor.ContextExtractorsProcessor;
 
 public abstract class SpringBot<
-    P,
-    C extends
+    PAYLOAD,
+    PAYLOAD_CONSUMER extends
         PayloadConsumer<
-                P, ? extends ContextExtractorsProcessor<P, ? extends ContextExtractor<P>>>> {
-  private final C payloadConsumer;
+                PAYLOAD,
+                ? extends
+                    ContextExtractorsProcessor<PAYLOAD, ? extends ContextExtractor<PAYLOAD>>>> {
+  private final PAYLOAD_CONSUMER payloadConsumer;
   private final BotProperties botProperties;
 
-  protected SpringBot(C payloadConsumer, BotProperties botProperties) {
+  protected SpringBot(PAYLOAD_CONSUMER payloadConsumer, BotProperties botProperties) {
     this.payloadConsumer = payloadConsumer;
     this.botProperties = botProperties;
   }
@@ -23,7 +27,7 @@ public abstract class SpringBot<
     return botProperties.token();
   }
 
-  protected final C getPayloadConsumer() {
+  protected final PAYLOAD_CONSUMER getPayloadConsumer() {
     return payloadConsumer;
   }
 }
