@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration
-final class TelegramMessageRendererAutoConfiguration {
+final class TelegramReplierAutoConfiguration {
   @Bean
   TelegramTextReplier telegramTextReplier(TelegramClientService telegramClientService) {
     return new TelegramTextReplier(telegramClientService);
