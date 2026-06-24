@@ -1,11 +1,12 @@
-package com.pavelshapel.starter.boot.spring.bot.api;
+package com.pavelshapel.starter.boot.spring.bot.api.factory.button;
 
+import com.pavelshapel.starter.boot.spring.bot.api.BotMessageSourceService;
 import com.pavelshapel.starter.boot.spring.bot.api.model.KeyboardButton;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.ContextRegistry;
 import com.pavelshapel.starter.boot.spring.ordered.OrderedComponent;
 
-public abstract class KeyboardButtonFactory<T extends KeyboardButton>
-    extends OrderedComponent<ContextRegistry, T> {
+public abstract class KeyboardButtonFactory<BUTTON extends KeyboardButton>
+    extends OrderedComponent<ContextRegistry, BUTTON> {
   protected static final String BOT = "🤖";
   protected static final String SETTINGS = "⚙️";
   protected static final String MONEY_BAG = "💰";

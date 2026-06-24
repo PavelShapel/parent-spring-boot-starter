@@ -1,4 +1,4 @@
-package com.pavelshapel.starter.boot.spring.bot.api;
+package com.pavelshapel.starter.boot.spring.bot.api.factory;
 
 import com.pavelshapel.starter.boot.spring.bot.api.model.KeyboardButton;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.ContextRegistry;
@@ -18,7 +18,8 @@ public abstract class KeyboardFactory<BUTTON extends KeyboardButton, KEYBOARD>
         .collect(Collectors.toCollection(TreeSet::new));
   }
 
-  protected boolean isApplicable(ContextRegistry contextRegistry, KeyboardButton keyboardButton) {
+  private static boolean isApplicable(
+      ContextRegistry contextRegistry, KeyboardButton keyboardButton) {
     return keyboardButton.visibleInListenerSimpleNames().isEmpty()
         || keyboardButton
             .visibleInListenerSimpleNames()
