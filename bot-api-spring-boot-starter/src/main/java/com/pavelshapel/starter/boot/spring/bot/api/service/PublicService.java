@@ -1,4 +1,4 @@
-package com.pavelshapel.starter.boot.spring.bot.api;
+package com.pavelshapel.starter.boot.spring.bot.api.service;
 
 import com.pavelshapel.starter.boot.spring.bot.api.model.SocialType;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.ContextRegistry;

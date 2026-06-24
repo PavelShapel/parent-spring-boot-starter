@@ -1,4 +1,4 @@
-package com.pavelshapel.starter.boot.spring.bot.api.replier;
+package com.pavelshapel.starter.boot.spring.bot.api.service.replier;
 
 import com.pavelshapel.starter.boot.spring.bot.api.ClientService;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.ContextRegistry;

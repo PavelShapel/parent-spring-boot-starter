@@ -1,12 +1,12 @@
-package com.pavelshapel.starter.boot.spring.bot.api.listener;
+package com.pavelshapel.starter.boot.spring.bot.api.service.listener;
 
 import com.pavelshapel.starter.boot.spring.bot.api.BotMessageSourceService;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.ContextRegistry;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.ListenerContext;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.SocialContext;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.UserContext;
-import com.pavelshapel.starter.boot.spring.bot.api.replier.Replier;
-import com.pavelshapel.starter.boot.spring.bot.api.replier.RepliersProcessor;
+import com.pavelshapel.starter.boot.spring.bot.api.service.replier.Replier;
+import com.pavelshapel.starter.boot.spring.bot.api.service.replier.RepliersProcessor;
 import com.pavelshapel.starter.boot.spring.log.LoggerProvider;
 import java.util.function.Consumer;
 import org.slf4j.Logger;

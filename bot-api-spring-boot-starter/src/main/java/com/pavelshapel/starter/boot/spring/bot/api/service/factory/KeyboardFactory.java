@@ -1,4 +1,4 @@
-package com.pavelshapel.starter.boot.spring.bot.api.factory;
+package com.pavelshapel.starter.boot.spring.bot.api.service.factory;
 
 import com.pavelshapel.starter.boot.spring.bot.api.model.KeyboardButton;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.ContextRegistry;

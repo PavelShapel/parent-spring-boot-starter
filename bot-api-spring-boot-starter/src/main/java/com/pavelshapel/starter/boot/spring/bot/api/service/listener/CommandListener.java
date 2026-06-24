@@ -1,8 +1,8 @@
-package com.pavelshapel.starter.boot.spring.bot.api.listener;
+package com.pavelshapel.starter.boot.spring.bot.api.service.listener;
 
 import com.pavelshapel.starter.boot.spring.bot.api.BotMessageSourceService;
 import com.pavelshapel.starter.boot.spring.bot.api.model.context.ContextRegistry;
-import com.pavelshapel.starter.boot.spring.bot.api.replier.RepliersProcessor;
+import com.pavelshapel.starter.boot.spring.bot.api.service.replier.RepliersProcessor;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 
