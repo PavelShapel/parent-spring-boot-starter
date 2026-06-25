@@ -1,4 +1,4 @@
-package com.pavelshapel.bot.telegram.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.bot.telegram.service.extractor;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 

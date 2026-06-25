@@ -1,6 +1,7 @@
-package com.pavelshapel.bot.telegram.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.bot.telegram;
 
-import com.pavelshapel.bot.api.spring.boot.starter.ContextExtractorsProcessor;
+import com.pavelshapel.starter.boot.spring.bot.api.service.extractor.ContextExtractorsProcessor;
+import com.pavelshapel.starter.boot.spring.bot.telegram.service.extractor.TelegramContextExtractor;
 import java.util.List;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

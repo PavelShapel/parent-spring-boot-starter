@@ -1,1 +1,3 @@
-com.pavelshapel.bot.telegram.spring.boot.starter.BotTelegramStarterAutoConfiguration
+com.pavelshapel.starter.boot.spring.bot.telegram.BotTelegramStarterAutoConfiguration
+com.pavelshapel.starter.boot.spring.bot.telegram.service.replier.TelegramReplierAutoConfiguration
+com.pavelshapel.starter.boot.spring.bot.telegram.service.extractor.TelegramContextExtractorAutoConfiguration

@@ -1,6 +1,6 @@
-package com.pavelshapel.bot.telegram.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.bot.telegram;
 
-import com.pavelshapel.bot.api.spring.boot.starter.PayloadConsumer;
+import com.pavelshapel.starter.boot.spring.bot.api.PayloadConsumer;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.support.TransactionTemplate;

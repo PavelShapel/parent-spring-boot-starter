@@ -29,11 +29,6 @@ final class BotTelegramStarterAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  TelegramBotContextExtractor telegramBotContextExtractor(BotProperties botProperties) {
-    return new TelegramBotContextExtractor(botProperties);
-  }
-
-  @Bean
   public OkHttpClient okHttpClient(BotProperties botProperties) {
     Client client = botProperties.client();
     return new OkHttpClient.Builder()
@@ -85,11 +80,7 @@ final class BotTelegramStarterAutoConfiguration {
         transactionTemplate, events, contextExtractorsProcessor, logger);
   }
 
-  @Bean
-  @ConditionalOnMissingBean
-  TelegramSocialContextExtractor telegramSocialContextExtractor() {
-    return new TelegramSocialContextExtractor();
-  }
+
 
   @Bean
   @ConditionalOnMissingBean
@@ -98,23 +89,7 @@ final class BotTelegramStarterAutoConfiguration {
     return new TelegramSpringBot(payloadConsumer, botProperties);
   }
 
-  @Bean
-  @ConditionalOnMissingBean
-  TelegramTextChatWorkerContextExtractor telegramTextChatContextExtractor() {
-    return new TelegramTextChatWorkerContextExtractor();
-  }
 
-  @Bean
-  @ConditionalOnMissingBean
-  TelegramTextMessageWorkerContextExtractor telegramTextMessageWorkerContextExtractor() {
-    return new TelegramTextMessageWorkerContextExtractor();
-  }
-
-  @Bean
-  @ConditionalOnMissingBean
-  TelegramTextUserWorkerContextExtractor telegramTextUserWorkerContextExtractor() {
-    return new TelegramTextUserWorkerContextExtractor();
-  }
 
   @Bean
   @ConditionalOnProperty(prefix = "bot.localized-commands.commands[0]", name = "command")

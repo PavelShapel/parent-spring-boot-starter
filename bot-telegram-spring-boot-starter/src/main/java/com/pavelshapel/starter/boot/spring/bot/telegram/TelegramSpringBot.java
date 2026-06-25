@@ -1,7 +1,7 @@
-package com.pavelshapel.bot.telegram.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.bot.telegram;
 
-import com.pavelshapel.bot.api.spring.boot.starter.SpringBot;
-import com.pavelshapel.bot.api.spring.boot.starter.properties.BotProperties;
+import com.pavelshapel.starter.boot.spring.bot.api.SpringBot;
+import com.pavelshapel.starter.boot.spring.bot.api.properties.BotProperties;
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
 import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;

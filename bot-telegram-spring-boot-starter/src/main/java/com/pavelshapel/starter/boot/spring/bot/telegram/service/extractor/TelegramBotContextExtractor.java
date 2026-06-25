@@ -1,7 +1,7 @@
-package com.pavelshapel.bot.telegram.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.bot.telegram.service.extractor;
 
-import com.pavelshapel.bot.api.spring.boot.starter.model.context.BotContext;
-import com.pavelshapel.bot.api.spring.boot.starter.properties.BotProperties;
+import com.pavelshapel.starter.boot.spring.bot.api.model.context.BotContext;
+import com.pavelshapel.starter.boot.spring.bot.api.properties.BotProperties;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 final class TelegramBotContextExtractor extends TelegramContextExtractor {

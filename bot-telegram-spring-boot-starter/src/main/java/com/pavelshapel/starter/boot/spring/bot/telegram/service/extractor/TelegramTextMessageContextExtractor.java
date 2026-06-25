@@ -1,20 +1,18 @@
-package com.pavelshapel.bot.telegram.spring.boot.starter;
+package com.pavelshapel.starter.boot.spring.bot.telegram.service.extractor;
 
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
-import com.pavelshapel.bot.api.spring.boot.starter.model.context.MessageContext;
+import com.pavelshapel.starter.boot.spring.bot.api.model.context.MessageContext;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
-final class TelegramTextMessageWorkerContextExtractor extends TelegramTextContextExtractor {
+final class TelegramTextMessageContextExtractor extends TelegramTextContextExtractor {
   @Override
   public MessageContext apply(Update update) {
     Message message = update.getMessage();
     return new MessageContext(
         message.getMessageId().longValue(),
         message.getText(),
-        message.getNewChatMembers().stream()
-            .map(this::createUserContext)
-            .collect(toUnmodifiableSet()));
+        message.getNewChatMembers().stream().map(this::toUserContext).collect(toUnmodifiableSet()));
   }
 }
