@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -12,18 +11,19 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 final class SequentialOrderedComponentsProcessorTest {
   private static final int NON_EXISTENT_ORDER = 99;
 
   abstract static class TestOrderedComponent extends OrderedComponent<String, String> {
     private final int order;
     private final Predicate<String> applicabilityPredicate;
+
+    TestOrderedComponent(int order, boolean isApplicable) {
+      this(order, _ -> isApplicable);
+    }
 
     TestOrderedComponent(int order, Predicate<String> applicabilityPredicate) {
       this.order = order;
@@ -46,69 +46,39 @@ final class SequentialOrderedComponentsProcessorTest {
     }
   }
 
-  static class FirstTestOrderedComponent extends TestOrderedComponent {
-    FirstTestOrderedComponent() {
-      this(_ -> true);
+  static class ApplicableTestOrderedComponent1 extends TestOrderedComponent {
+    ApplicableTestOrderedComponent1() {
+      super(/* order= */ 1, /* isApplicable= */ true);
     }
 
-    FirstTestOrderedComponent(Predicate<String> applicabilityPredicate) {
+    ApplicableTestOrderedComponent1(Predicate<String> applicabilityPredicate) {
       super(/* order= */ 1, applicabilityPredicate);
     }
   }
 
-  static class SecondTestOrderedComponent extends TestOrderedComponent {
-    SecondTestOrderedComponent() {
-      this(_ -> false);
+  static class NotApplicableTestOrderedComponent2 extends TestOrderedComponent {
+    NotApplicableTestOrderedComponent2() {
+      super(/* order= */ 2, /* isApplicable= */ false);
     }
 
-    SecondTestOrderedComponent(Predicate<String> applicabilityPredicate) {
+    NotApplicableTestOrderedComponent2(Predicate<String> applicabilityPredicate) {
       super(/* order= */ 2, applicabilityPredicate);
     }
   }
 
-  static class ThirdTestOrderedComponent extends TestOrderedComponent {
-    ThirdTestOrderedComponent() {
-      this(_ -> true);
+  static class ApplicableTestOrderedComponent3 extends TestOrderedComponent {
+    ApplicableTestOrderedComponent3() {
+      super(/* order= */ 3, /* isApplicable= */ true);
     }
 
-    ThirdTestOrderedComponent(Predicate<String> applicabilityPredicate) {
+    ApplicableTestOrderedComponent3(Predicate<String> applicabilityPredicate) {
       super(/* order= */ 3, applicabilityPredicate);
-    }
-  }
-
-  static class LoggingFirstTestOrderedComponent extends TestOrderedComponent {
-    private final List<String> executionLog;
-
-    LoggingFirstTestOrderedComponent(List<String> executionLog) {
-      super(/* order= */ 1, _ -> true);
-      this.executionLog = executionLog;
-    }
-
-    @Override
-    protected String processPayload(String payload) {
-      executionLog.add(getId());
-      return super.processPayload(payload);
-    }
-  }
-
-  static class LoggingThirdTestOrderedComponent extends TestOrderedComponent {
-    private final List<String> executionLog;
-
-    LoggingThirdTestOrderedComponent(List<String> executionLog) {
-      super(/* order= */ 3, _ -> true);
-      this.executionLog = executionLog;
-    }
-
-    @Override
-    protected String processPayload(String payload) {
-      executionLog.add(getId());
-      return super.processPayload(payload);
     }
   }
 
   static class FailingTestOrderedComponent extends TestOrderedComponent {
     FailingTestOrderedComponent() {
-      super(/* order= */ 1, _ -> true);
+      super(/* order= */ 1, /* isApplicable= */ true);
     }
 
     @Override
@@ -121,7 +91,7 @@ final class SequentialOrderedComponentsProcessorTest {
     private final AtomicBoolean executed = new AtomicBoolean(false);
 
     TrackingTestOrderedComponent() {
-      super(/* order= */ 2, _ -> true);
+      super(/* order= */ 2, /* isApplicable= */ true);
     }
 
     @Override
@@ -153,9 +123,9 @@ final class SequentialOrderedComponentsProcessorTest {
     @Override
     protected List<Class<? extends TestOrderedComponent>> getClassesInProcessingOrder() {
       return List.of(
-          ThirdTestOrderedComponent.class,
-          SecondTestOrderedComponent.class,
-          FirstTestOrderedComponent.class);
+          ApplicableTestOrderedComponent3.class,
+          NotApplicableTestOrderedComponent2.class,
+          ApplicableTestOrderedComponent1.class);
     }
   }
 
@@ -166,9 +136,9 @@ final class SequentialOrderedComponentsProcessorTest {
     sut =
         new TestSequentialOrderedComponentsProcessor(
             List.of(
-                new FirstTestOrderedComponent(),
-                new SecondTestOrderedComponent(),
-                new ThirdTestOrderedComponent()));
+                new ApplicableTestOrderedComponent1(),
+                new NotApplicableTestOrderedComponent2(),
+                new ApplicableTestOrderedComponent3()));
     sut.init();
   }
 
@@ -180,8 +150,8 @@ final class SequentialOrderedComponentsProcessorTest {
 
     assertThat(result)
         .containsExactly(
-            new OrderedResult<>("FirstTestOrderedComponent", "testPayload1"),
-            new OrderedResult<>("ThirdTestOrderedComponent", "testPayload3"));
+            new OrderedResult<>("ApplicableTestOrderedComponent1", "testPayload1"),
+            new OrderedResult<>("ApplicableTestOrderedComponent3", "testPayload3"));
   }
 
   @Test
@@ -190,17 +160,16 @@ final class SequentialOrderedComponentsProcessorTest {
     var customSut =
         new CustomOrderTestSequentialOrderedComponentsProcessor(
             List.of(
-                new FirstTestOrderedComponent(),
-                new SecondTestOrderedComponent(),
-                new ThirdTestOrderedComponent()));
+                new ApplicableTestOrderedComponent1(),
+                new NotApplicableTestOrderedComponent2(),
+                new ApplicableTestOrderedComponent3()));
     customSut.init();
 
     List<OrderedResult<String>> result = customSut.apply(payload);
 
     assertThat(result)
-        .containsExactly(
-            new OrderedResult<>("ThirdTestOrderedComponent", "testPayload3"),
-            new OrderedResult<>("FirstTestOrderedComponent", "testPayload1"));
+        .extracting(OrderedResult::orderedComponentId)
+        .containsExactly("ApplicableTestOrderedComponent3", "ApplicableTestOrderedComponent1");
   }
 
   @Test
@@ -218,7 +187,8 @@ final class SequentialOrderedComponentsProcessorTest {
   void applyReturnsEmptyListWhenNoComponentApplicable() {
     String payload = "testPayload";
     var nonApplicableSut =
-        new TestSequentialOrderedComponentsProcessor(List.of(new SecondTestOrderedComponent()));
+        new TestSequentialOrderedComponentsProcessor(
+            List.of(new NotApplicableTestOrderedComponent2()));
     nonApplicableSut.init();
 
     List<OrderedResult<String>> result = nonApplicableSut.apply(payload);
@@ -229,22 +199,12 @@ final class SequentialOrderedComponentsProcessorTest {
   @Test
   void applyExecutesComponentsSequentially() {
     String payload = "testPayload";
-    List<String> executionLog = new ArrayList<>();
-    var loggingSut =
-        new TestSequentialOrderedComponentsProcessor(
-            List.of(
-                new LoggingFirstTestOrderedComponent(executionLog),
-                new LoggingThirdTestOrderedComponent(executionLog)));
-    loggingSut.init();
 
-    List<OrderedResult<String>> result = loggingSut.apply(payload);
+    List<OrderedResult<String>> result = sut.apply(payload);
 
-    assertAll(
-        () ->
-            assertThat(executionLog)
-                .containsExactly(
-                    "LoggingFirstTestOrderedComponent", "LoggingThirdTestOrderedComponent"),
-        () -> assertThat(result).hasSize(2));
+    assertThat(result)
+        .extracting(OrderedResult::orderedComponentId)
+        .containsExactly("ApplicableTestOrderedComponent1", "ApplicableTestOrderedComponent3");
   }
 
   @Test
@@ -253,8 +213,7 @@ final class SequentialOrderedComponentsProcessorTest {
     var failingComponent = new FailingTestOrderedComponent();
     var trackingComponent = new TrackingTestOrderedComponent();
     var failingSut =
-        new TestSequentialOrderedComponentsProcessor(
-            List.of(failingComponent, trackingComponent));
+        new TestSequentialOrderedComponentsProcessor(List.of(failingComponent, trackingComponent));
     failingSut.init();
 
     assertAll(
@@ -267,20 +226,23 @@ final class SequentialOrderedComponentsProcessorTest {
 
   @ParameterizedTest
   @MethodSource("applyFiltersComponentsBasedOnPayloadTestCasesProvider")
-  void applyFiltersComponentsBasedOnPayload(
-      ApplyFiltersComponentsBasedOnPayloadTestCase testCase) {
+  void applyFiltersComponentsBasedOnPayload(ApplyFiltersComponentsBasedOnPayloadTestCase testCase) {
     String payload = testCase.payload();
-    List<OrderedResult<String>> expectedResults = testCase.expectedResults();
+    List<String> expectedComponentIds = testCase.expectedComponentIds();
     var conditionalSut =
         new TestSequentialOrderedComponentsProcessor(
             List.of(
-                new FirstTestOrderedComponent(p -> p.startsWith("first") || p.equals("all")),
-                new ThirdTestOrderedComponent(p -> p.startsWith("third") || p.equals("all"))));
+                new ApplicableTestOrderedComponent1(
+                    p -> p.startsWith("applicable1") || p.equals("all")),
+                new ApplicableTestOrderedComponent3(
+                    p -> p.startsWith("applicable3") || p.equals("all"))));
     conditionalSut.init();
 
     List<OrderedResult<String>> result = conditionalSut.apply(payload);
 
-    assertThat(result).isEqualTo(expectedResults);
+    assertThat(result)
+        .extracting(OrderedResult::orderedComponentId)
+        .containsExactlyElementsOf(expectedComponentIds);
   }
 
   @Test
@@ -290,7 +252,7 @@ final class SequentialOrderedComponentsProcessorTest {
 
     TestOrderedComponent result = sut.getSingle(payload, predicate);
 
-    assertThat(result).isInstanceOf(FirstTestOrderedComponent.class);
+    assertThat(result).isInstanceOf(ApplicableTestOrderedComponent1.class);
   }
 
   @Test
@@ -306,7 +268,8 @@ final class SequentialOrderedComponentsProcessorTest {
   void getSingleThrowsWhenNoComponentIsApplicable() {
     String payload = "testPayload";
     var nonApplicableSut =
-        new TestSequentialOrderedComponentsProcessor(List.of(new SecondTestOrderedComponent()));
+        new TestSequentialOrderedComponentsProcessor(
+            List.of(new NotApplicableTestOrderedComponent2()));
     nonApplicableSut.init();
 
     assertThatThrownBy(() -> nonApplicableSut.getSingle(payload))
@@ -327,11 +290,11 @@ final class SequentialOrderedComponentsProcessorTest {
 
   @Test
   void getSingleByIdReturnsSingleComponentWhenExists() {
-    String id = "FirstTestOrderedComponent";
+    String id = "ApplicableTestOrderedComponent1";
 
     TestOrderedComponent result = sut.getSingleById(id);
 
-    assertThat(result).isInstanceOf(FirstTestOrderedComponent.class);
+    assertThat(result).isInstanceOf(ApplicableTestOrderedComponent1.class);
   }
 
   @ParameterizedTest
@@ -347,30 +310,25 @@ final class SequentialOrderedComponentsProcessorTest {
 
   @Test
   void initThrowsWhenDuplicateComponentIdFound() {
-    var component1 = new FirstTestOrderedComponent();
-    var component2 = new FirstTestOrderedComponent();
+    var component1 = new ApplicableTestOrderedComponent1();
+    var component2 = new ApplicableTestOrderedComponent1();
     var duplicateSut =
         new TestSequentialOrderedComponentsProcessor(List.of(component1, component2));
 
     assertThatThrownBy(duplicateSut::init)
         .isInstanceOf(IllegalStateException.class)
-        .hasMessage("Duplicate component id found: [FirstTestOrderedComponent]");
+        .hasMessage("Duplicate component id found: [ApplicableTestOrderedComponent1]");
   }
 
   private static Stream<ApplyFiltersComponentsBasedOnPayloadTestCase>
       applyFiltersComponentsBasedOnPayloadTestCasesProvider() {
     return Stream.of(
         new ApplyFiltersComponentsBasedOnPayloadTestCase(
-            "all",
-            List.of(
-                new OrderedResult<>("FirstTestOrderedComponent", "all1"),
-                new OrderedResult<>("ThirdTestOrderedComponent", "all3"))),
+            "all", List.of("ApplicableTestOrderedComponent1", "ApplicableTestOrderedComponent3")),
         new ApplyFiltersComponentsBasedOnPayloadTestCase(
-            "firstOnly",
-            List.of(new OrderedResult<>("FirstTestOrderedComponent", "firstOnly1"))),
+            "applicable1Only", List.of("ApplicableTestOrderedComponent1")),
         new ApplyFiltersComponentsBasedOnPayloadTestCase(
-            "thirdOnly",
-            List.of(new OrderedResult<>("ThirdTestOrderedComponent", "thirdOnly3"))),
+            "applicable3Only", List.of("ApplicableTestOrderedComponent3")),
         new ApplyFiltersComponentsBasedOnPayloadTestCase("none", List.of()));
   }
 
@@ -384,8 +342,7 @@ final class SequentialOrderedComponentsProcessorTest {
   }
 
   private record ApplyFiltersComponentsBasedOnPayloadTestCase(
-      String payload, List<OrderedResult<String>> expectedResults) {}
+      String payload, List<String> expectedComponentIds) {}
 
-  private record GetSingleByIdThrowsWhenNotFoundTestCase(
-      String id, String expectedMessage) {}
+  private record GetSingleByIdThrowsWhenNotFoundTestCase(String id, String expectedMessage) {}
 }

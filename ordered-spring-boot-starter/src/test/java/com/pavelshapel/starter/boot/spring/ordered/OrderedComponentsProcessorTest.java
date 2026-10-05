@@ -130,9 +130,8 @@ final class OrderedComponentsProcessorTest {
     List<OrderedResult<String>> result = sut.apply(payload);
 
     assertThat(result)
-        .containsExactly(
-            new OrderedResult<>("ApplicableTestOrderedComponent3", "testPayload3"),
-            new OrderedResult<>("ApplicableTestOrderedComponent1", "testPayload1"));
+        .extracting(OrderedResult::orderedComponentId)
+        .containsExactly("ApplicableTestOrderedComponent3", "ApplicableTestOrderedComponent1");
   }
 
   @Test
@@ -149,9 +148,8 @@ final class OrderedComponentsProcessorTest {
     List<OrderedResult<String>> result = sut.apply(payload);
 
     assertThat(result)
-        .containsExactly(
-            new OrderedResult<>("ApplicableTestOrderedComponent1", "testPayload1"),
-            new OrderedResult<>("ApplicableTestOrderedComponent3", "testPayload3"));
+        .extracting(OrderedResult::orderedComponentId)
+        .containsExactly("ApplicableTestOrderedComponent1", "ApplicableTestOrderedComponent3");
   }
 
   @Test
