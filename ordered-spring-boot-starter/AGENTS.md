@@ -35,7 +35,7 @@ A lightweight Spring Boot Starter that provides generic abstractions for buildin
 
 ### 2. `OrderedComponentsProcessor<PAYLOAD, RESULT, COMPONENT>`
 - Package-private abstract base processor managing `List<COMPONENT>`.
-- `@PostConstruct init()` establishes deterministic ordering via `getClassesInProcessingOrder()` and caches components by ID in `Map<String, COMPONENT>`.
+- `@PostConstruct protected void init()` establishes deterministic ordering via `getClassesInProcessingOrder()` and caches components by ID in `Map<String, COMPONENT>` (validating uniqueness of component IDs).
 - Provides lookup methods:
   - `getSingle(payload[, predicate])`: resolves exactly one applicable component using `toSingle()` (throws if 0 or >1).
   - `getSingleById(id)`: retrieves component by identifier.
@@ -64,9 +64,9 @@ A lightweight Spring Boot Starter that provides generic abstractions for buildin
   - Adopt Java Virtual Threads for parallel processing.
   - Integrate proxy-safe target class extraction via `AopProxyUtils`.
   - Integrate `StreamCollectors.toSingle()` for single-component resolution.
-- [ ] **Phase 2: Test Suite Modernization**
-  - Revamp `OrderedComponentsProcessorTest` (currently commented out) to validate `OrderedResult`, `SequentialOrderedComponentsProcessor`, and `ParallelOrderedComponentsProcessor`.
-- [ ] **Phase 3: API Surface & Visibility Review**
-  - Verify whether `apply(PAYLOAD)` in processors should remain `protected final` or be exposed as `public` for direct external callers.
+- [x] **Phase 2: Test Suite Modernization**
+  - Revamped `OrderedComponentsProcessorTest` to validate `OrderedResult`, `SequentialOrderedComponentsProcessor`, and `ParallelOrderedComponentsProcessor` (including lookup methods and collision validation).
+- [x] **Phase 3: API Surface & Visibility Review**
+  - Confirmed `apply(PAYLOAD)` and lookup methods (`getSingle`, `getSingleById`) remain `protected final` to preserve encapsulation within processor subclasses; `init()` exposed as `protected` for testability.
 - [ ] **Phase 4: Concurrency & Fault Tolerance Enhancements**
   - Optional timeout configuration and error handling strategies (fail-fast vs. best-effort result aggregation) for parallel execution.

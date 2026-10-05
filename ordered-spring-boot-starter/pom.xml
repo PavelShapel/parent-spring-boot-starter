@@ -11,4 +11,12 @@
   </parent>
 
   <artifactId>ordered-spring-boot-starter</artifactId>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.pavelshapel</groupId>
+      <artifactId>common-api-spring-boot-starter</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 </project>

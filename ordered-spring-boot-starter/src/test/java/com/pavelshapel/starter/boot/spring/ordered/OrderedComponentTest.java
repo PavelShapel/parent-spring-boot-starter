@@ -11,8 +11,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.aop.framework.ProxyFactory;
 
 final class OrderedComponentTest {
-  private static final String PAYLOAD = "test-payload";
-
   abstract static class StringOrderedComponent extends OrderedComponent<String, String> {}
 
   static class TestStringOrderedComponent extends StringOrderedComponent {
@@ -40,17 +38,21 @@ final class OrderedComponentTest {
   @ParameterizedTest
   @MethodSource("sutProvider")
   void applyReturnsOrderedResult(StringOrderedComponent sut) {
-    OrderedResult<String> result = sut.apply(PAYLOAD);
+    String payload = "testPayload";
+
+    OrderedResult<String> result = sut.apply(payload);
 
     assertThat(result)
-        .returns(PAYLOAD, OrderedResult::result)
+        .returns(payload, OrderedResult::result)
         .returns("TestStringOrderedComponent", OrderedResult::orderedComponentId);
   }
 
   @ParameterizedTest
   @MethodSource("sutProvider")
   void isApplicableReturnsTrueByDefault(StringOrderedComponent sut) {
-    boolean result = sut.isApplicable(PAYLOAD);
+    String payload = "testPayload";
+
+    boolean result = sut.isApplicable(payload);
 
     assertThat(result).isTrue();
   }

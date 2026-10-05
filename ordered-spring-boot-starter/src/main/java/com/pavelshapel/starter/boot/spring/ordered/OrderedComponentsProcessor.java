@@ -1,81 +1,81 @@
 package com.pavelshapel.starter.boot.spring.ordered;
 
+import static com.pavelshapel.starter.boot.spring.api.common.StreamCollectors.toSingle;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
-import static org.springframework.util.CollectionUtils.isEmpty;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 import jakarta.annotation.PostConstruct;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public abstract class OrderedComponentsProcessor<
-        PAYLOAD, RESULT, COMPONENT extends OrderedComponent<PAYLOAD, RESULT>>
-    implements Function<PAYLOAD, List<RESULT>> {
+abstract class OrderedComponentsProcessor<
+    PAYLOAD, RESULT, COMPONENT extends OrderedComponent<PAYLOAD, RESULT>> {
   private final List<COMPONENT> components;
 
   private List<COMPONENT> orderedComponents;
+
+  private Map<String, COMPONENT> orderedComponentsById;
 
   protected OrderedComponentsProcessor(List<COMPONENT> components) {
     this.components = components;
   }
 
   @PostConstruct
-  private void init() {
+  protected void init() {
+    List<Class<? extends COMPONENT>> classesInProcessingOrder = getClassesInProcessingOrder();
+    Map<Class<?>, Integer> processingOrder =
+        IntStream.range(0, classesInProcessingOrder.size())
+            .boxed()
+            .collect(toMap(classesInProcessingOrder::get, identity(), (existing, _) -> existing));
     orderedComponents =
         components.stream()
-            .filter(this::isComponentPresentInProcessingOrder)
-            .sorted(comparing(this::getProcessingOrder))
+            .filter(component -> processingOrder.containsKey(component.getTargetClass()))
+            .sorted(comparing(component -> processingOrder.get(component.getTargetClass())))
             .toList();
+    orderedComponentsById =
+        orderedComponents.stream()
+            .collect(
+                toMap(
+                    COMPONENT::getId,
+                    identity(),
+                    (existing, _) -> {
+                      throw new IllegalStateException(
+                          "Duplicate component id found: [%s]".formatted(existing.getId()));
+                    }));
   }
 
-  @Override
-  public final List<RESULT> apply(PAYLOAD payload) {
-    return getApplicableComponentsStream(payload)
-        .map(component -> component.apply(payload))
-        .toList();
-  }
+  protected abstract List<OrderedResult<RESULT>> apply(PAYLOAD payload);
 
-  public final COMPONENT getSingle(PAYLOAD payload) {
+  protected final COMPONENT getSingle(PAYLOAD payload) {
     return getSingle(payload, _ -> true);
   }
 
-  public final COMPONENT getSingle(PAYLOAD payload, Predicate<COMPONENT> predicate) {
+  protected final COMPONENT getSingle(PAYLOAD payload, Predicate<COMPONENT> predicate) {
     return getApplicableComponentsStream(payload).filter(predicate).collect(toSingle());
   }
 
+  protected final COMPONENT getSingleById(String id) {
+    return Optional.ofNullable(id)
+        .map(orderedComponentsById::get)
+        .orElseThrow(
+            () -> new NoSuchElementException("No component found for id [%s]".formatted(id)));
+  }
+
+  @SuppressWarnings("unchecked")
   protected List<Class<? extends COMPONENT>> getClassesInProcessingOrder() {
     return components.stream()
-        .map(COMPONENT::getClass)
-        .map(componentClass -> (Class<? extends COMPONENT>) componentClass)
-        .collect(toList());
+        .<Class<? extends COMPONENT>>map(
+            component -> (Class<? extends COMPONENT>) component.getTargetClass())
+        .toList();
   }
 
-  private Stream<COMPONENT> getApplicableComponentsStream(PAYLOAD payload) {
+  protected final Stream<COMPONENT> getApplicableComponentsStream(PAYLOAD payload) {
     return orderedComponents.stream().filter(component -> component.isApplicable(payload));
-  }
-
-  private boolean isComponentPresentInProcessingOrder(COMPONENT component) {
-    List<Class<? extends COMPONENT>> classesInProcessingOrder = getClassesInProcessingOrder();
-    return !isEmpty(classesInProcessingOrder)
-        && classesInProcessingOrder.contains(component.getClass());
-  }
-
-  private int getProcessingOrder(COMPONENT component) {
-    return getClassesInProcessingOrder().indexOf(component.getClass());
-  }
-
-  public static <T> Collector<T, ?, T> toSingle() {
-    return collectingAndThen(
-        toList(),
-        list -> {
-          if (list.size() != 1) {
-            throw new IllegalArgumentException("Expected exactly 1 element, got " + list.size());
-          }
-          return list.getFirst();
-        });
   }
 }
