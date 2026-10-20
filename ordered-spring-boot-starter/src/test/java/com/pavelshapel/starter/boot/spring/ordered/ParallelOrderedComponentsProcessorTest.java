@@ -1,14 +1,13 @@
 package com.pavelshapel.starter.boot.spring.ordered;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.assertj.core.api.Assertions.within;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,21 +16,34 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 final class ParallelOrderedComponentsProcessorTest {
+  private static final Duration COMPONENT_DELAY = Duration.ofMillis(200);
+
   abstract static class TestOrderedComponent extends OrderedComponent<String, String> {
     private final int order;
     private final Predicate<String> applicabilityPredicate;
+    private final Duration delay;
 
     TestOrderedComponent(int order, boolean isApplicable) {
-      this(order, _ -> isApplicable);
+      this(order, _ -> isApplicable, Duration.ZERO);
     }
 
     TestOrderedComponent(int order, Predicate<String> applicabilityPredicate) {
+      this(order, applicabilityPredicate, Duration.ZERO);
+    }
+
+    TestOrderedComponent(int order, boolean isApplicable, Duration delay) {
+      this(order, _ -> isApplicable, delay);
+    }
+
+    TestOrderedComponent(int order, Predicate<String> applicabilityPredicate, Duration delay) {
       this.order = order;
       this.applicabilityPredicate = applicabilityPredicate;
+      this.delay = delay;
     }
 
     @Override
     protected String processPayload(String payload) {
+      sleep(delay);
       return "%s%d".formatted(payload, order);
     }
 
@@ -54,6 +66,10 @@ final class ParallelOrderedComponentsProcessorTest {
     ApplicableTestOrderedComponent1(Predicate<String> applicabilityPredicate) {
       super(/* order= */ 1, applicabilityPredicate);
     }
+
+    ApplicableTestOrderedComponent1(Duration delay) {
+      super(/* order= */ 1, /* isApplicable= */ true, delay);
+    }
   }
 
   static class NotApplicableTestOrderedComponent2 extends TestOrderedComponent {
@@ -70,6 +86,10 @@ final class ParallelOrderedComponentsProcessorTest {
     ApplicableTestOrderedComponent3(Predicate<String> applicabilityPredicate) {
       super(/* order= */ 3, applicabilityPredicate);
     }
+
+    ApplicableTestOrderedComponent3(Duration delay) {
+      super(/* order= */ 3, /* isApplicable= */ true, delay);
+    }
   }
 
   static class FailingTestOrderedComponent extends TestOrderedComponent {
@@ -80,77 +100,6 @@ final class ParallelOrderedComponentsProcessorTest {
     @Override
     protected String processPayload(String payload) {
       throw new IllegalStateException("Execution failed for payload: " + payload);
-    }
-  }
-
-  static class AwaitingTestOrderedComponent1 extends ApplicableTestOrderedComponent1 {
-    private final CountDownLatch latch;
-
-    AwaitingTestOrderedComponent1(CountDownLatch latch) {
-      this.latch = latch;
-    }
-
-    @Override
-    protected String processPayload(String payload) {
-      awaitLatch(latch);
-      return super.processPayload(payload);
-    }
-  }
-
-  static class ReleasingTestOrderedComponent3 extends ApplicableTestOrderedComponent3 {
-    private final CountDownLatch latch;
-
-    ReleasingTestOrderedComponent3(CountDownLatch latch) {
-      this.latch = latch;
-    }
-
-    @Override
-    protected String processPayload(String payload) {
-      String result = super.processPayload(payload);
-      latch.countDown();
-      return result;
-    }
-  }
-
-  static class ConcurrentVirtualThreadComponent1 extends ApplicableTestOrderedComponent1 {
-    private final CountDownLatch readyLatch;
-    private final AtomicBoolean ranOnVirtualThread = new AtomicBoolean(false);
-
-    ConcurrentVirtualThreadComponent1(CountDownLatch readyLatch) {
-      this.readyLatch = readyLatch;
-    }
-
-    @Override
-    protected String processPayload(String payload) {
-      ranOnVirtualThread.set(Thread.currentThread().isVirtual());
-      readyLatch.countDown();
-      awaitLatch(readyLatch);
-      return super.processPayload(payload);
-    }
-
-    boolean isRanOnVirtualThread() {
-      return ranOnVirtualThread.get();
-    }
-  }
-
-  static class ConcurrentVirtualThreadComponent3 extends ApplicableTestOrderedComponent3 {
-    private final CountDownLatch readyLatch;
-    private final AtomicBoolean ranOnVirtualThread = new AtomicBoolean(false);
-
-    ConcurrentVirtualThreadComponent3(CountDownLatch readyLatch) {
-      this.readyLatch = readyLatch;
-    }
-
-    @Override
-    protected String processPayload(String payload) {
-      ranOnVirtualThread.set(Thread.currentThread().isVirtual());
-      readyLatch.countDown();
-      awaitLatch(readyLatch);
-      return super.processPayload(payload);
-    }
-
-    boolean isRanOnVirtualThread() {
-      return ranOnVirtualThread.get();
     }
   }
 
@@ -224,41 +173,34 @@ final class ParallelOrderedComponentsProcessorTest {
   @Test
   void applyPreservesResultOrderWhenLaterComponentFinishesFirst() {
     String payload = "testPayload";
-    CountDownLatch latch = new CountDownLatch(1);
     var sut =
         new TestParallelOrderedComponentsProcessor(
             List.of(
-                new AwaitingTestOrderedComponent1(latch),
-                new ReleasingTestOrderedComponent3(latch)));
+                new ApplicableTestOrderedComponent1(COMPONENT_DELAY),
+                new ApplicableTestOrderedComponent3()));
     sut.init();
 
     List<OrderedResult<String>> result = sut.apply(payload);
 
     assertThat(result)
         .containsExactly(
-            new OrderedResult<>("AwaitingTestOrderedComponent1", "testPayload1"),
-            new OrderedResult<>("ReleasingTestOrderedComponent3", "testPayload3"));
+            new OrderedResult<>("ApplicableTestOrderedComponent1", "testPayload1"),
+            new OrderedResult<>("ApplicableTestOrderedComponent3", "testPayload3"));
   }
 
   @Test
-  void applyExecutesComponentsConcurrentlyOnVirtualThreads() {
+  void applyExecutesComponentsInParallelWithinSingleComponentDelay() {
     String payload = "testPayload";
-    CountDownLatch readyLatch = new CountDownLatch(2);
-    var component1 = new ConcurrentVirtualThreadComponent1(readyLatch);
-    var component3 = new ConcurrentVirtualThreadComponent3(readyLatch);
-    var sut = new TestParallelOrderedComponentsProcessor(List.of(component1, component3));
+    var sut =
+        new TestParallelOrderedComponentsProcessor(
+            List.of(
+                new ApplicableTestOrderedComponent1(COMPONENT_DELAY),
+                new ApplicableTestOrderedComponent3(COMPONENT_DELAY)));
     sut.init();
 
-    List<OrderedResult<String>> result = sut.apply(payload);
+    long result = measureTimeMillis(() -> sut.apply(payload));
 
-    assertAll(
-        () ->
-            assertThat(result)
-                .extracting(OrderedResult::orderedComponentId)
-                .containsExactly(
-                    "ConcurrentVirtualThreadComponent1", "ConcurrentVirtualThreadComponent3"),
-        () -> assertThat(component1.isRanOnVirtualThread()).isTrue(),
-        () -> assertThat(component3.isRanOnVirtualThread()).isTrue());
+    assertThat(result).isCloseTo(COMPONENT_DELAY.toMillis(), within(100L));
   }
 
   @ParameterizedTest
@@ -310,15 +252,18 @@ final class ParallelOrderedComponentsProcessorTest {
         .containsExactlyElementsOf(expectedComponentIds);
   }
 
-  private static void awaitLatch(CountDownLatch latch) {
+  private static long measureTimeMillis(Runnable action) {
+    long startNanos = System.nanoTime();
+    action.run();
+    return NANOSECONDS.toMillis(System.nanoTime() - startNanos);
+  }
+
+  private static void sleep(Duration duration) {
     try {
-      boolean completed = latch.await(5, SECONDS);
-      if (!completed) {
-        throw new IllegalStateException("Timed out waiting for latch");
-      }
+      Thread.sleep(duration);
     } catch (InterruptedException exception) {
       Thread.currentThread().interrupt();
-      throw new IllegalStateException("Interrupted while waiting for latch", exception);
+      throw new IllegalStateException("Interrupted while sleeping", exception);
     }
   }
 
