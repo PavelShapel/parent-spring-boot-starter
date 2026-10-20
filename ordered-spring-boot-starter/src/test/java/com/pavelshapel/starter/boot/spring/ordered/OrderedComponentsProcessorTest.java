@@ -236,20 +236,21 @@ final class OrderedComponentsProcessorTest {
     return Stream.of(
         new GetSingleThrowsWhenApplicableComponentsCardinalityIsNotOneTestCase(
             List.of(new NotApplicableTestOrderedComponent2()),
-            "Expected exactly 1 element, got 0"),
+            /* expectedMessage= */ "Expected exactly 1 element, got 0"),
         new GetSingleThrowsWhenApplicableComponentsCardinalityIsNotOneTestCase(
             List.of(
                 new ApplicableTestOrderedComponent1(), new ApplicableTestOrderedComponent3()),
-            "Expected exactly 1 element, got 2"));
+            /* expectedMessage= */ "Expected exactly 1 element, got 2"));
   }
 
   private static Stream<GetSingleByIdThrowsWhenNotFoundTestCase>
       getSingleByIdThrowsWhenNotFoundTestCasesProvider() {
     return Stream.of(
         new GetSingleByIdThrowsWhenNotFoundTestCase(
-            "NonExistentId", "No component found for id [NonExistentId]"),
+            /* id= */ "NonExistentId",
+            /* expectedMessage= */ "No component found for id [NonExistentId]"),
         new GetSingleByIdThrowsWhenNotFoundTestCase(
-            /* id= */ null, "No component found for id [null]"));
+            /* id= */ null, /* expectedMessage= */ "No component found for id [null]"));
   }
 
   private record GetSingleThrowsWhenApplicableComponentsCardinalityIsNotOneTestCase(

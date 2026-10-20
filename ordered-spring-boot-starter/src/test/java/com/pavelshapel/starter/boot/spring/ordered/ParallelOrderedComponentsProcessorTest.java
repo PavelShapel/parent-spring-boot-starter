@@ -148,8 +148,12 @@ final class ParallelOrderedComponentsProcessorTest {
 
     assertThat(result)
         .containsExactly(
-            new OrderedResult<>("ApplicableTestOrderedComponent1", "testPayload1"),
-            new OrderedResult<>("ApplicableTestOrderedComponent3", "testPayload3"));
+            new OrderedResult<>(
+                /* orderedComponentId= */ "ApplicableTestOrderedComponent1",
+                /* result= */ "testPayload1"),
+            new OrderedResult<>(
+                /* orderedComponentId= */ "ApplicableTestOrderedComponent3",
+                /* result= */ "testPayload3"));
   }
 
   @Test
@@ -184,8 +188,12 @@ final class ParallelOrderedComponentsProcessorTest {
 
     assertThat(result)
         .containsExactly(
-            new OrderedResult<>("ApplicableTestOrderedComponent1", "testPayload1"),
-            new OrderedResult<>("ApplicableTestOrderedComponent3", "testPayload3"));
+            new OrderedResult<>(
+                /* orderedComponentId= */ "ApplicableTestOrderedComponent1",
+                /* result= */ "testPayload1"),
+            new OrderedResult<>(
+                /* orderedComponentId= */ "ApplicableTestOrderedComponent3",
+                /* result= */ "testPayload3"));
   }
 
   @Test
@@ -279,12 +287,13 @@ final class ParallelOrderedComponentsProcessorTest {
       applyFiltersComponentsBasedOnPayloadTestCasesProvider() {
     return Stream.of(
         new ApplyFiltersComponentsBasedOnPayloadTestCase(
-            "all", List.of("ApplicableTestOrderedComponent1", "ApplicableTestOrderedComponent3")),
+            /* payload= */ "all",
+            List.of("ApplicableTestOrderedComponent1", "ApplicableTestOrderedComponent3")),
         new ApplyFiltersComponentsBasedOnPayloadTestCase(
-            "applicable1Only", List.of("ApplicableTestOrderedComponent1")),
+            /* payload= */ "applicable1Only", List.of("ApplicableTestOrderedComponent1")),
         new ApplyFiltersComponentsBasedOnPayloadTestCase(
-            "applicable3Only", List.of("ApplicableTestOrderedComponent3")),
-        new ApplyFiltersComponentsBasedOnPayloadTestCase("none", List.of()));
+            /* payload= */ "applicable3Only", List.of("ApplicableTestOrderedComponent3")),
+        new ApplyFiltersComponentsBasedOnPayloadTestCase(/* payload= */ "none", List.of()));
   }
 
   private record ApplyReturnsEmptyListWhenNoComponentsExecutedTestCase(

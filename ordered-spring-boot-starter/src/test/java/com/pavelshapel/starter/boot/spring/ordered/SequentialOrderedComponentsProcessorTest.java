@@ -82,7 +82,7 @@ final class SequentialOrderedComponentsProcessorTest {
   }
 
   static class TrackingTestOrderedComponent extends TestOrderedComponent {
-    private final AtomicBoolean executed = new AtomicBoolean(false);
+    private final AtomicBoolean executed = new AtomicBoolean(/* initialValue= */ false);
 
     TrackingTestOrderedComponent() {
       super(/* order= */ 2, /* isApplicable= */ true);
@@ -90,7 +90,7 @@ final class SequentialOrderedComponentsProcessorTest {
 
     @Override
     protected String processPayload(String payload) {
-      executed.set(true);
+      executed.set(/* newValue= */ true);
       return super.processPayload(payload);
     }
 
@@ -172,8 +172,12 @@ final class SequentialOrderedComponentsProcessorTest {
 
     assertThat(result)
         .containsExactly(
-            new OrderedResult<>("ApplicableTestOrderedComponent1", "testPayload1"),
-            new OrderedResult<>("ApplicableTestOrderedComponent3", "testPayload3"));
+            new OrderedResult<>(
+                /* orderedComponentId= */ "ApplicableTestOrderedComponent1",
+                /* result= */ "testPayload1"),
+            new OrderedResult<>(
+                /* orderedComponentId= */ "ApplicableTestOrderedComponent3",
+                /* result= */ "testPayload3"));
   }
 
   @Test
@@ -276,12 +280,13 @@ final class SequentialOrderedComponentsProcessorTest {
       applyFiltersComponentsBasedOnPayloadTestCasesProvider() {
     return Stream.of(
         new ApplyFiltersComponentsBasedOnPayloadTestCase(
-            "all", List.of("ApplicableTestOrderedComponent1", "ApplicableTestOrderedComponent3")),
+            /* payload= */ "all",
+            List.of("ApplicableTestOrderedComponent1", "ApplicableTestOrderedComponent3")),
         new ApplyFiltersComponentsBasedOnPayloadTestCase(
-            "applicable1Only", List.of("ApplicableTestOrderedComponent1")),
+            /* payload= */ "applicable1Only", List.of("ApplicableTestOrderedComponent1")),
         new ApplyFiltersComponentsBasedOnPayloadTestCase(
-            "applicable3Only", List.of("ApplicableTestOrderedComponent3")),
-        new ApplyFiltersComponentsBasedOnPayloadTestCase("none", List.of()));
+            /* payload= */ "applicable3Only", List.of("ApplicableTestOrderedComponent3")),
+        new ApplyFiltersComponentsBasedOnPayloadTestCase(/* payload= */ "none", List.of()));
   }
 
   private record ApplyReturnsEmptyListWhenNoComponentsExecutedTestCase(
