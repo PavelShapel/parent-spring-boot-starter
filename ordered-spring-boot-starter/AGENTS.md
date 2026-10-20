@@ -14,7 +14,7 @@ A lightweight Spring Boot Starter that provides generic abstractions for buildin
 
 ## Tech Stack
 - **Java**: 25 (Virtual Threads, Records, Pattern Matching, Stream API enhancements)
-- **Framework**: Spring Boot 4.0.6 (Spring Framework 7+)
+- **Framework**: Spring Boot 4.1.1 (Spring Framework 7+)
 - **Build System**: Apache Maven (module under `parent-spring-boot-starter:1.0.0`)
 - **Key Dependencies**:
   - `common-api-spring-boot-starter` (provides `StreamCollectors.toSingle()`)
@@ -65,7 +65,7 @@ A lightweight Spring Boot Starter that provides generic abstractions for buildin
   - Integrate proxy-safe target class extraction via `AopProxyUtils`.
   - Integrate `StreamCollectors.toSingle()` for single-component resolution.
 - [x] **Phase 2: Test Suite Modernization**
-  - Revamped `OrderedComponentsProcessorTest` to validate `OrderedResult`, `SequentialOrderedComponentsProcessor`, and `ParallelOrderedComponentsProcessor` (including lookup methods and collision validation).
+  - Dedicated unit test suites (`OrderedComponentTest`, `OrderedComponentsProcessorTest`, `SequentialOrderedComponentsProcessorTest`, `ParallelOrderedComponentsProcessorTest`) covering base lookup/ordering contracts, CGLIB proxy resolution, sequential fail-fast execution, and parallel Virtual Thread execution.
 - [x] **Phase 3: API Surface & Visibility Review**
   - Confirmed `apply(PAYLOAD)` and lookup methods (`getSingle`, `getSingleById`) remain `protected final` to preserve encapsulation within processor subclasses; `init()` exposed as `protected` for testability.
 - [ ] **Phase 4: Concurrency & Fault Tolerance Enhancements**

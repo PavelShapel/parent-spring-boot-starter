@@ -101,6 +101,24 @@ final class OrderedComponentsProcessorTest {
   }
 
   @Test
+  void getApplicableComponentsStreamOrdersComponentsByOrderPrecedenceByDefault() {
+    String payload = "testPayload";
+    var sut =
+        new TestOrderedComponentsProcessor(
+            List.of(
+                new ApplicableTestOrderedComponent3(),
+                new NotApplicableTestOrderedComponent2(),
+                new ApplicableTestOrderedComponent1()));
+    sut.init();
+
+    List<TestOrderedComponent> result = sut.getApplicableComponentsStream(payload).toList();
+
+    assertThat(result)
+        .extracting(TestOrderedComponent::getId)
+        .containsExactly("ApplicableTestOrderedComponent1", "ApplicableTestOrderedComponent3");
+  }
+
+  @Test
   void getApplicableComponentsStreamOrdersAndFiltersByClassesInProcessingOrder() {
     String payload = "testPayload";
     var sut =

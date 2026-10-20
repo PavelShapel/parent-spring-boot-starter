@@ -3,7 +3,7 @@ package com.pavelshapel.starter.boot.spring.ordered;
 import static com.pavelshapel.starter.boot.spring.api.common.StreamCollectors.toSingle;
 import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toUnmodifiableMap;
 
 import jakarta.annotation.PostConstruct;
 import java.util.List;
@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
 abstract class OrderedComponentsProcessor<
     PAYLOAD, RESULT, COMPONENT extends OrderedComponent<PAYLOAD, RESULT>> {
@@ -23,7 +24,7 @@ abstract class OrderedComponentsProcessor<
   private Map<String, COMPONENT> orderedComponentsById;
 
   protected OrderedComponentsProcessor(List<COMPONENT> components) {
-    this.components = components;
+    this.components = List.copyOf(components);
   }
 
   @PostConstruct
@@ -32,7 +33,9 @@ abstract class OrderedComponentsProcessor<
     Map<Class<?>, Integer> processingOrder =
         IntStream.range(0, classesInProcessingOrder.size())
             .boxed()
-            .collect(toMap(classesInProcessingOrder::get, identity(), (existing, _) -> existing));
+            .collect(
+                toUnmodifiableMap(
+                    classesInProcessingOrder::get, identity(), (existing, _) -> existing));
     orderedComponents =
         components.stream()
             .filter(component -> processingOrder.containsKey(component.getTargetClass()))
@@ -41,7 +44,7 @@ abstract class OrderedComponentsProcessor<
     orderedComponentsById =
         orderedComponents.stream()
             .collect(
-                toMap(
+                toUnmodifiableMap(
                     COMPONENT::getId,
                     identity(),
                     (existing, _) -> {
@@ -70,6 +73,7 @@ abstract class OrderedComponentsProcessor<
   @SuppressWarnings("unchecked")
   protected List<Class<? extends COMPONENT>> getClassesInProcessingOrder() {
     return components.stream()
+        .sorted(AnnotationAwareOrderComparator.INSTANCE)
         .<Class<? extends COMPONENT>>map(
             component -> (Class<? extends COMPONENT>) component.getTargetClass())
         .toList();
