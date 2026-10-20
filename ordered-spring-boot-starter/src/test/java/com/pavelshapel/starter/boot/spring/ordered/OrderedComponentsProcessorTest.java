@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import org.aopalliance.intercept.Joinpoint;
+import org.aopalliance.intercept.MethodInterceptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.aop.framework.ProxyFactory;
 
 final class OrderedComponentsProcessorTest {
   private static final int NON_EXISTENT_ORDER = 99;
@@ -58,45 +61,38 @@ final class OrderedComponentsProcessorTest {
     }
   }
 
-  static class TestSequentialOrderedComponentsProcessorInDefinedOrder
-      extends SequentialOrderedComponentsProcessor<String, String, TestOrderedComponent> {
+  static class TestOrderedComponentsProcessor
+      extends OrderedComponentsProcessor<String, String, TestOrderedComponent> {
 
-    TestSequentialOrderedComponentsProcessorInDefinedOrder(List<TestOrderedComponent> components) {
+    TestOrderedComponentsProcessor(List<TestOrderedComponent> components) {
       super(components);
+    }
+
+    @Override
+    protected List<OrderedResult<String>> apply(String payload) {
+      return List.of();
     }
   }
 
-  static class TestSequentialOrderedComponentsProcessorInProcessingOrder
-      extends SequentialOrderedComponentsProcessor<String, String, TestOrderedComponent> {
+  static class CustomOrderTestOrderedComponentsProcessor extends TestOrderedComponentsProcessor {
 
-    TestSequentialOrderedComponentsProcessorInProcessingOrder(
-        List<TestOrderedComponent> components) {
+    CustomOrderTestOrderedComponentsProcessor(List<TestOrderedComponent> components) {
       super(components);
     }
 
     @Override
     protected List<Class<? extends TestOrderedComponent>> getClassesInProcessingOrder() {
       return List.of(
-          ApplicableTestOrderedComponent3.class,
-          NotApplicableTestOrderedComponent2.class,
-          ApplicableTestOrderedComponent1.class);
+          ApplicableTestOrderedComponent3.class, ApplicableTestOrderedComponent1.class);
     }
   }
 
-  static class TestParallelOrderedComponentsProcessor
-      extends ParallelOrderedComponentsProcessor<String, String, TestOrderedComponent> {
-
-    TestParallelOrderedComponentsProcessor(List<TestOrderedComponent> components) {
-      super(components);
-    }
-  }
-
-  private TestSequentialOrderedComponentsProcessorInDefinedOrder sut;
+  private TestOrderedComponentsProcessor sut;
 
   @BeforeEach
   void setUp() {
     sut =
-        new TestSequentialOrderedComponentsProcessorInDefinedOrder(
+        new TestOrderedComponentsProcessor(
             List.of(
                 new ApplicableTestOrderedComponent1(),
                 new NotApplicableTestOrderedComponent2(),
@@ -105,51 +101,60 @@ final class OrderedComponentsProcessorTest {
   }
 
   @Test
-  void applyAppliesOnlyApplicableComponentsInDefinedOrder() {
-    String payload = "testPayload";
-
-    List<OrderedResult<String>> result = sut.apply(payload);
-
-    assertThat(result)
-        .containsExactly(
-            new OrderedResult<>("ApplicableTestOrderedComponent1", "testPayload1"),
-            new OrderedResult<>("ApplicableTestOrderedComponent3", "testPayload3"));
-  }
-
-  @Test
-  void applyAppliesAllComponentsInProcessingOrder() {
+  void getApplicableComponentsStreamOrdersAndFiltersByClassesInProcessingOrder() {
     String payload = "testPayload";
     var sut =
-        new TestSequentialOrderedComponentsProcessorInProcessingOrder(
+        new CustomOrderTestOrderedComponentsProcessor(
             List.of(
                 new ApplicableTestOrderedComponent1(),
                 new NotApplicableTestOrderedComponent2(),
                 new ApplicableTestOrderedComponent3()));
     sut.init();
 
-    List<OrderedResult<String>> result = sut.apply(payload);
+    List<TestOrderedComponent> result = sut.getApplicableComponentsStream(payload).toList();
 
     assertThat(result)
-        .extracting(OrderedResult::orderedComponentId)
+        .extracting(TestOrderedComponent::getId)
         .containsExactly("ApplicableTestOrderedComponent3", "ApplicableTestOrderedComponent1");
   }
 
   @Test
-  void applyAppliesInParallelProcessor() {
-    String payload = "testPayload";
-    var sut =
-        new TestParallelOrderedComponentsProcessor(
-            List.of(
-                new ApplicableTestOrderedComponent1(),
-                new NotApplicableTestOrderedComponent2(),
-                new ApplicableTestOrderedComponent3()));
+  void getSingleByIdResolvesProxiedComponentByUltimateTargetClass() {
+    ProxyFactory factory = new ProxyFactory(new ApplicableTestOrderedComponent1());
+    factory.setProxyTargetClass(/* proxyTargetClass= */ true);
+    factory.addAdvice((MethodInterceptor) Joinpoint::proceed);
+    TestOrderedComponent proxiedComponent = (TestOrderedComponent) factory.getProxy();
+    var sut = new TestOrderedComponentsProcessor(List.of(proxiedComponent));
     sut.init();
 
-    List<OrderedResult<String>> result = sut.apply(payload);
+    TestOrderedComponent result = sut.getSingleById("ApplicableTestOrderedComponent1");
 
-    assertThat(result)
-        .extracting(OrderedResult::orderedComponentId)
-        .containsExactly("ApplicableTestOrderedComponent1", "ApplicableTestOrderedComponent3");
+    assertThat(result).isSameAs(proxiedComponent);
+  }
+
+  @Test
+  void initThrowsWhenDuplicateComponentIdFound() {
+    var component1 = new ApplicableTestOrderedComponent1();
+    var component2 = new ApplicableTestOrderedComponent1();
+    var sut = new TestOrderedComponentsProcessor(List.of(component1, component2));
+
+    assertThatThrownBy(sut::init)
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessage("Duplicate component id found: [ApplicableTestOrderedComponent1]");
+  }
+
+  @Test
+  void getSingleReturnsSingleComponentWhenOnlyOneApplicable() {
+    String payload = "testPayload";
+    var sut =
+        new TestOrderedComponentsProcessor(
+            List.of(
+                new ApplicableTestOrderedComponent1(), new NotApplicableTestOrderedComponent2()));
+    sut.init();
+
+    TestOrderedComponent result = sut.getSingle(payload);
+
+    assertThat(result).isInstanceOf(ApplicableTestOrderedComponent1.class);
   }
 
   @Test
@@ -162,27 +167,19 @@ final class OrderedComponentsProcessorTest {
     assertThat(result).isInstanceOf(ApplicableTestOrderedComponent1.class);
   }
 
-  @Test
-  void getSingleThrowsWhenMultipleApplicableComponentsPresent() {
+  @ParameterizedTest
+  @MethodSource("getSingleThrowsWhenApplicableComponentsCardinalityIsNotOneTestCasesProvider")
+  void getSingleThrowsWhenApplicableComponentsCardinalityIsNotOne(
+      GetSingleThrowsWhenApplicableComponentsCardinalityIsNotOneTestCase testCase) {
     String payload = "testPayload";
-
-    assertThatThrownBy(() -> sut.getSingle(payload))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Expected exactly 1 element, got 2");
-  }
-
-  @Test
-  void getSingleThrowsWhenNoComponentIsApplicable() {
-    String payload = "testPayload";
-    var notApplicableComponent = new NotApplicableTestOrderedComponent2();
-    var sut =
-        new SequentialOrderedComponentsProcessor<String, String, TestOrderedComponent>(
-            List.of(notApplicableComponent)) {};
+    List<TestOrderedComponent> components = testCase.components();
+    String expectedMessage = testCase.expectedMessage();
+    var sut = new TestOrderedComponentsProcessor(components);
     sut.init();
 
     assertThatThrownBy(() -> sut.getSingle(payload))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Expected exactly 1 element, got 0");
+        .hasMessage(expectedMessage);
   }
 
   @Test
@@ -216,17 +213,16 @@ final class OrderedComponentsProcessorTest {
         .hasMessage(expectedMessage);
   }
 
-  @Test
-  void initThrowsWhenDuplicateComponentIdFound() {
-    var component1 = new ApplicableTestOrderedComponent1();
-    var component2 = new ApplicableTestOrderedComponent1();
-    var sut =
-        new SequentialOrderedComponentsProcessor<String, String, TestOrderedComponent>(
-            List.of(component1, component2)) {};
-
-    assertThatThrownBy(sut::init)
-        .isInstanceOf(IllegalStateException.class)
-        .hasMessage("Duplicate component id found: [ApplicableTestOrderedComponent1]");
+  private static Stream<GetSingleThrowsWhenApplicableComponentsCardinalityIsNotOneTestCase>
+      getSingleThrowsWhenApplicableComponentsCardinalityIsNotOneTestCasesProvider() {
+    return Stream.of(
+        new GetSingleThrowsWhenApplicableComponentsCardinalityIsNotOneTestCase(
+            List.of(new NotApplicableTestOrderedComponent2()),
+            "Expected exactly 1 element, got 0"),
+        new GetSingleThrowsWhenApplicableComponentsCardinalityIsNotOneTestCase(
+            List.of(
+                new ApplicableTestOrderedComponent1(), new ApplicableTestOrderedComponent3()),
+            "Expected exactly 1 element, got 2"));
   }
 
   private static Stream<GetSingleByIdThrowsWhenNotFoundTestCase>
@@ -237,6 +233,9 @@ final class OrderedComponentsProcessorTest {
         new GetSingleByIdThrowsWhenNotFoundTestCase(
             /* id= */ null, "No component found for id [null]"));
   }
+
+  private record GetSingleThrowsWhenApplicableComponentsCardinalityIsNotOneTestCase(
+      List<TestOrderedComponent> components, String expectedMessage) {}
 
   private record GetSingleByIdThrowsWhenNotFoundTestCase(String id, String expectedMessage) {}
 }
