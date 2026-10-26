@@ -1,20 +1,21 @@
 package com.pavelshapel.starter.boot.spring.log;
 
-import static java.lang.System.currentTimeMillis;
+import static java.lang.System.nanoTime;
+import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 
 public interface LoggerProvider {
-  Logger getLogger();
+  Logger logger();
 
   default <R> R executeAndLog(String message, Supplier<R> supplier) {
-    getLogger().info("[→] {}...", message);
-    long startTime = currentTimeMillis();
+    logger().info("[→] {}...", message);
+    long startTime = nanoTime();
     R result = supplier.get();
-    long endTime = currentTimeMillis();
-    long executionTime = endTime - startTime;
-    getLogger().info("[←] completed in [{}] ms. {}", executionTime, message);
+    long endTime = nanoTime();
+    long executionTime = NANOSECONDS.toMillis(endTime - startTime);
+    logger().info("[←] completed in [{}] ms. {}", executionTime, message);
     return result;
   }
 

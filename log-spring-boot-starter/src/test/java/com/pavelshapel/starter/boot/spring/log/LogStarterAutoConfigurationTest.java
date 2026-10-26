@@ -1,79 +1,49 @@
 package com.pavelshapel.starter.boot.spring.log;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Member;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.BeanInitializationException;
+import org.springframework.beans.factory.InjectionPoint;
 
-@SpringBootTest(
-    classes = {
-      LogStarterAutoConfiguration.class,
-      LogStarterAutoConfigurationTest.LoggerProvider1.class,
-      LogStarterAutoConfigurationTest.LoggerProvider2.class
-    })
-class LogStarterAutoConfigurationTest {
-  @Component
-  static class LoggerProvider1 implements LoggerProvider {
-    private final Logger logger;
+@ExtendWith(MockitoExtension.class)
+final class LogStarterAutoConfigurationTest {
+  @Mock private InjectionPoint injectionPoint;
 
-    LoggerProvider1(Logger logger) {
-      this.logger = logger;
-    }
+  @Mock private Member member;
 
-    @Override
-    public Logger getLogger() {
-      return logger;
-    }
-  }
+  private LogStarterAutoConfiguration sut;
 
-  @Component
-  static class LoggerProvider2 implements LoggerProvider {
-    private final Logger logger;
-
-    LoggerProvider2(Logger logger) {
-      this.logger = logger;
-    }
-
-    @Override
-    public Logger getLogger() {
-      return logger;
-    }
-  }
-
-  @Autowired private ApplicationContext applicationContext;
-
-  @Autowired private LoggerProvider1 loggerProvider1;
-
-  @Autowired private LoggerProvider2 loggerProvider2;
-
-  @Test
-  void shouldLoadLoggerBeanIntoContext() {
-    boolean result = applicationContext.containsBean("logger");
-
-    assertThat(result).isTrue();
+  @BeforeEach
+  void setUp() {
+    sut = new LogStarterAutoConfiguration();
   }
 
   @Test
-  void shouldHaveLoggerBeanWithPrototypeScope() {
-    assertThat(applicationContext.isPrototype("logger")).isTrue();
+  void loggerReturnsLoggerForDeclaringClassWhenMemberPresent() {
+    when(injectionPoint.getMember()).thenReturn(member);
+    doReturn(LogStarterAutoConfigurationTest.class).when(member).getDeclaringClass();
+
+    Logger result = sut.logger(injectionPoint);
+
+    assertThat(result.getName()).isEqualTo(LogStarterAutoConfigurationTest.class.getName());
   }
 
   @Test
-  void shouldReturnLoggerInstance() {
-    Logger logger = loggerProvider1.getLogger();
+  void loggerThrowsWhenMemberIsNull() {
+    when(injectionPoint.getMember()).thenReturn(null);
 
-    assertThat(logger).isNotNull().isInstanceOf(Logger.class);
-  }
-
-  @Test
-  void shouldCreateNewLoggerBeanEachTime() {
-    Logger loggerOne = loggerProvider1.getLogger();
-    Logger loggerTwo = loggerProvider2.getLogger();
-
-    assertThat(loggerOne).isNotSameAs(loggerTwo);
+    assertThatThrownBy(() -> sut.logger(injectionPoint))
+        .isInstanceOf(BeanInitializationException.class)
+        .hasMessage("Could not initialize logger");
   }
 }

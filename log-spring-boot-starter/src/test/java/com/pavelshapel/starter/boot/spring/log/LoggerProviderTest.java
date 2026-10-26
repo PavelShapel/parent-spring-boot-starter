@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 
 import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,62 +16,42 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 
 @ExtendWith(MockitoExtension.class)
-class LoggerProviderTest {
-  @Mock private Logger mockLogger;
+final class LoggerProviderTest {
+  @Mock private Logger logger;
 
-  private UnderTest underTest;
-
-  private record UnderTest(Logger logger) implements LoggerProvider {
-    String executeAndLog(String message) {
-      return executeAndLog(message, () -> "result");
-    }
-
-    void executeAndLogRunnable(String message, Runnable runnable) {
-      executeAndLog(message, runnable);
-    }
-
-    @Override
-    public Logger getLogger() {
-      return logger;
-    }
-  }
+  private LoggerProvider sut;
 
   @BeforeEach
   void setUp() {
-    underTest = new UnderTest(mockLogger);
+    sut = () -> logger;
   }
 
   @Test
-  void shouldReturnValidResult() {
+  void executeAndLogSupplierReturnsResultAndLogsExecution() {
     String message = "Test DURATION log";
+    String expected = "result";
 
-    String result = underTest.executeAndLog(message);
+    String result = sut.executeAndLog(message, () -> expected);
 
-    assertThat(result).isEqualTo("result");
-  }
-
-  @Test
-  void shouldInvokeLoggerTwice() {
-    String message = "Test DURATION log";
-    underTest.executeAndLog(message);
-
-    InOrder inOrder = inOrder(mockLogger);
-
-    inOrder.verify(mockLogger).info("[→] {}...", "Test DURATION log");
-    inOrder
-        .verify(mockLogger)
-        .info(eq("[←] completed in [{}] ms. {}"), anyLong(), eq("Test DURATION log"));
+    assertThat(result).isEqualTo(expected);
+    InOrder inOrder = inOrder(logger);
+    inOrder.verify(logger).info("[→] {}...", message);
+    inOrder.verify(logger).info(eq("[←] completed in [{}] ms. {}"), anyLong(), eq(message));
     inOrder.verifyNoMoreInteractions();
   }
 
   @Test
-  void shouldExecuteRunnable() {
+  void executeAndLogRunnableExecutesRunnableAndLogsExecution() {
     String message = "Test Runnable execution";
-    HashSet<String> strings = new HashSet<>();
-    Runnable testRunnable = () -> strings.add(message);
+    Set<String> executedMessages = new HashSet<>();
+    Runnable runnable = () -> executedMessages.add(message);
 
-    underTest.executeAndLogRunnable(message, testRunnable);
+    sut.executeAndLog(message, runnable);
 
-    assertThat(strings).containsExactly(message);
+    assertThat(executedMessages).containsExactly(message);
+    InOrder inOrder = inOrder(logger);
+    inOrder.verify(logger).info("[→] {}...", message);
+    inOrder.verify(logger).info(eq("[←] completed in [{}] ms. {}"), anyLong(), eq(message));
+    inOrder.verifyNoMoreInteractions();
   }
 }
