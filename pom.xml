@@ -9,6 +9,14 @@
   <version>1.0.0</version>
   <packaging>pom</packaging>
 
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub PavelShapel Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/PavelShapel/parent-spring-boot-starter</url>
+    </repository>
+  </distributionManagement>
+
   <properties>
     <spring.boot.version>4.1.1</spring.boot.version>
     <java.version>25</java.version>
