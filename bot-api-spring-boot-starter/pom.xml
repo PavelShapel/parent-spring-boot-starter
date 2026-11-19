@@ -7,17 +7,12 @@
   <parent>
     <groupId>com.pavelshapel</groupId>
     <artifactId>parent-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
   </parent>
 
   <artifactId>bot-api-spring-boot-starter</artifactId>
 
   <dependencies>
-    <dependency>
-      <groupId>com.pavelshapel</groupId>
-      <artifactId>log-spring-boot-starter</artifactId>
-      <version>${project.version}</version>
-    </dependency>
     <dependency>
       <groupId>com.pavelshapel</groupId>
       <artifactId>ordered-spring-boot-starter</artifactId>
@@ -26,11 +21,6 @@
     <dependency>
       <groupId>com.pavelshapel</groupId>
       <artifactId>i18n-spring-boot-starter</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.pavelshapel</groupId>
-      <artifactId>common-api-spring-boot-starter</artifactId>
       <version>${project.version}</version>
     </dependency>
 
