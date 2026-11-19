@@ -14,8 +14,8 @@ A lightweight Spring Boot Starter that provides generic abstractions for buildin
 
 ## Tech Stack
 - **Java**: 25 (Virtual Threads, Records, Pattern Matching, Stream API enhancements)
-- **Framework**: Spring Boot 4.1.1 (Spring Framework 7+)
-- **Build System**: Apache Maven (module under `parent-spring-boot-starter:1.0.0`)
+- **Framework**: Spring Boot 4.1.2 (Spring Framework 7+)
+- **Build System**: Apache Maven (module under `parent-spring-boot-starter:1.0.1`)
 - **Key Dependencies**:
   - `common-api-spring-boot-starter` (provides `StreamCollectors.toSingle()`)
   - `org.springframework.boot:spring-boot-starter`
